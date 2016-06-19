@@ -1,0 +1,80 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.soecode.wx-tools</groupId>
+  <artifactId>wx-tools</artifactId>
+  <packaging>jar</packaging>
+  <version>1.0-SNAPSHOT</version>
+  <name>wx-tools</name>
+  <url>http://maven.apache.org</url>
+  <dependencies>
+  	<!-- 使用junit4，因为4可以使用注解的方式单元测试 -->
+    <!--  <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.11</version>
+      <scope>test</scope>
+    </dependency>
+    -->
+    <!-- 补全依赖 -->
+    <!-- 1：日志； java日志：slf4j，log4j，logback，common-logging
+        slf4j接口/规范
+        log4j,logback,common-logging，实现
+        此处使用slf4j+logback
+    -->
+    <!-- 
+    <dependency>
+    	<groupId>org.slf4j</groupId>
+    	<artifactId>slf4j-api</artifactId>
+    	<version>1.7.6</version>
+    </dependency>
+    <dependency>
+    	<groupId>ch.qos.logback</groupId>
+    	<artifactId>logback-core</artifactId>
+    	<version>1.1.1</version>
+    </dependency>
+    -->
+    <!-- 实现slf4j日志 -->
+    <!-- 
+    <dependency>
+    	<groupId>ch.qos.logback</groupId>
+    	<artifactId>logback-classic</artifactId>
+    	<version>1.1.1</version>
+    </dependency> 
+     -->
+    <!-- HttpClient -->
+    <dependency>
+	    <groupId>org.apache.httpcomponents</groupId>
+	    <artifactId>httpclient</artifactId>
+	    <version>4.3.6</version>
+	</dependency>
+	<!-- http://mvnrepository.com/artifact/org.apache.httpcomponents/httpmime -->
+	<dependency>
+	    <groupId>org.apache.httpcomponents</groupId>
+	    <artifactId>httpmime</artifactId>
+	    <version>4.3.6</version>
+	</dependency>
+	
+	<!-- JSON -->
+	<dependency>
+	    <groupId>org.codehaus.jackson</groupId>
+	    <artifactId>jackson-mapper-asl</artifactId>
+	    <version>1.9.13</version>
+	</dependency>
+	<!-- XML -->
+	<!-- http://mvnrepository.com/artifact/com.thoughtworks.xstream/xstream -->
+	<dependency>
+	    <groupId>com.thoughtworks.xstream</groupId>
+	    <artifactId>xstream</artifactId>
+	    <version>1.4.7</version>
+	</dependency>
+	<!-- IO -->
+	<!-- http://mvnrepository.com/artifact/commons-io/commons-io -->
+	<dependency>
+	    <groupId>commons-io</groupId>
+	    <artifactId>commons-io</artifactId>
+	    <version>2.4</version>
+	</dependency>
+	
+  </dependencies>
+</project>

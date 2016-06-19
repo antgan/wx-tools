@@ -1,6 +1,6 @@
 {
   "name": "Wx-tools",
   "tagline": "Wx-tools是基于微信公众平台API的轻量级框架。 基于Wx-tools你可以开速开发一个订阅号/服务号的web应用后台。",
-  "body": "Wx-tools是基于微信公众平台API的轻量级框架。\r\n基于Wx-tools你可以开速开发一个订阅号/服务号的web应用后台。\r\n\r\n#特性：\r\n* 简单的API，可以快速上手。\r\n* 链式赋值编程，更加容易理解和使用。\r\n* 对于微信服务器发来的消息，提供匹配器（Matcher），拦截器（interceptor），处理器（Handler）接口，具有可扩展性。\r\n\r\n#源码：\r\n* [wx-tools-1.0.0-code.zip](https://github.com/antgan/wx-tools/archive/master.zip)\r\n\r\n#文档：\r\n* [开发文档](https://antgan.gitbooks.io/wx-tools/content)\r\n\r\n#Jar下载：\r\n* [wx-tools-1.0.0.jar](https://raw.githubusercontent.com/antgan/wx-tools/master/lib/wx-tools-1.0.0.jar)\r\n\r\n#讨论：\r\n* BUG反馈及建议：https://github.com/antgan/wx-tools/issues\r\n\r\n\r\n\r\n\r\n",
+  "body": "Wx-tools是基于微信公众平台API的轻量级框架。\r\n基于Wx-tools你可以开速开发一个订阅号/服务号的web应用后台。\r\n\r\n#特性：\r\n* 简单的API，可以快速上手。\r\n* 链式赋值编程，更加容易理解和使用。\r\n* 对于微信服务器发来的消息，提供匹配器（Matcher），拦截器（interceptor），处理器（Handler）接口，具有可扩展性。\r\n\r\n#源码：\r\n* [wx-tools-1.0.0-code.zip](https://github.com/antgan/wx-tools/archive/master.zip)\r\n\r\n#文档：\r\n* [开发文档](https://antgan.gitbooks.io/wx-tools/content)\r\n\r\n#Jar下载：\r\n* [wx-tools-1.0.0.jar](https://raw.githubusercontent.com/antgan/wx-tools/master/lib/wx-tools-1.0.0.jar)\r\n\r\n#讨论：\r\n* BUG反馈及建议：https://github.com/antgan/wx-tools/issues\r\n* 微信开发交流QQ群：570937047\r\n\r\n\r\n\r\n\r\n",
   "note": "Don't delete this file! It's used internally to help with page regeneration."
 }

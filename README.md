@@ -17,6 +17,7 @@ Wx-tools是基于微信公众平台API的轻量级框架。
 
 #讨论：
 * BUG反馈及建议：https://github.com/antgan/wx-tools/issues
+* 微信开发交流QQ群：570937047
 
 
 

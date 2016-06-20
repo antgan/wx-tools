@@ -12,6 +12,9 @@ Wx-tools是基于微信公众平台API的轻量级框架。
 #文档：
 * [开发文档](https://antgan.gitbooks.io/wx-tools/content)
 
+#实例教程：
+* [CSDN实例教程](http://blog.csdn.net/antgan/article/details/51717424)
+
 #Jar下载：
 * [wx-tools-1.0.0.jar](https://raw.githubusercontent.com/antgan/wx-tools/master/lib/wx-tools-1.0.0.jar)
 

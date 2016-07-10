@@ -115,6 +115,7 @@ public class WxMessageRouter {
 	 */
 	public WxXmlOutMessage route(final WxXmlMessage wxMessage) {
 		if (isDuplicateMessage(wxMessage)) {
+			System.out.println("重复消息");
 			// 如果是重复消息，那么就不做处理
 			return null;
 		}
@@ -157,15 +158,15 @@ public class WxMessageRouter {
 	}
 
 	/**
-	 * 验证是否重复消息
+	 * 验证重试消息
 	 * @param wxMessage
 	 * @return
 	 */
 	protected boolean isDuplicateMessage(WxXmlMessage wxMessage) {
 		String messageId = "";
 		if (wxMessage.getMsgId() == null) {
-			messageId = String.valueOf(wxMessage.getCreateTime()) + "-"
-					+ wxMessage.getFromUserName() + "-"
+			messageId = String.valueOf(wxMessage.getToUserName()) + "-"
+					+ wxMessage.getFromUserName() + "-"+wxMessage.getContent()+"-"
 					+ String.valueOf(wxMessage.getEventKey() == null ? "" : wxMessage.getEventKey()) + "-"
 					+ String.valueOf(wxMessage.getEvent() == null ? "" : wxMessage.getEvent());
 		} else {

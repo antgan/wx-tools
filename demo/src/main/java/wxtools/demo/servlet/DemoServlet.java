@@ -40,11 +40,14 @@ public class DemoServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private WxConfigStorage config;
 	private WxService service;
+	private WxMessageRouter router = null;//理论上，路由器只有一个。所以只初始化一次。
+	//之前是有错误的。之前把router放进doPost里，会导致每个请求多初始化一次，线程池多初始化一次。
 	
 	public DemoServlet() {
 		config = WxInMemoryConfigStorage.getInstance();
 		service = WxServiceImpl.getInstance();
 		service.setWxConfigStorage(config);
+		router = new WxMessageRouter(WxServiceImpl.getInstance());
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -56,8 +59,6 @@ public class DemoServlet extends HttpServlet {
 		if(WxServiceImpl.getInstance().checkSignature(signature, timestamp, nonce, echostr)){
 			out.print(echostr);
 		}
-		
-		
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -73,7 +74,7 @@ public class DemoServlet extends HttpServlet {
 			String XMLMessage = XStreamTransformer.toXml(WxXmlMessage.class, wx);
 			System.out.println("消息(xml)：\n "+XMLMessage);
 			
-			WxMessageRouter router = new WxMessageRouter(WxServiceImpl.getInstance());
+			//路由器在整个程序中只有一个。
 			router.rule().msgType(WxConsts.XML_MSG_TEXT).async(false).matcher(new DemoMatcher()).interceptor(new DemoInterceptor()).handler(new DemoMessageHandler()).end();
 			xmlOutMsg = router.route(wx);
 			if(xmlOutMsg!=null)

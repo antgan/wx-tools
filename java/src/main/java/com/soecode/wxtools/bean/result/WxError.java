@@ -17,6 +17,14 @@ public class WxError{
 
 	private String errmsg;
 
+	public WxError() {
+		// TODO Auto-generated constructor stub
+	}
+	
+	public WxError(int errcode, String errmsg) {
+		this.errcode = errcode;
+		this.errmsg = errmsg;
+	}
 	
 	public int getErrcode() {
 		return errcode;

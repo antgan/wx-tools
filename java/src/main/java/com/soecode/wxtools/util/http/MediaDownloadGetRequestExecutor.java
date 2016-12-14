@@ -53,7 +53,10 @@ public class MediaDownloadGetRequestExecutor implements RequestExecutor<File, Ma
 		HttpGet httpGet = new HttpGet(uri);
 
 		try (CloseableHttpResponse response = httpclient.execute(httpGet)) {
+			System.out.println(response);
 			Header[] contentTypeHeader = response.getHeaders("Content-Type");
+			for(Header h : contentTypeHeader)
+				System.out.println(h);
 			if (contentTypeHeader != null && contentTypeHeader.length > 0) {
 				// 下载媒体文件出错
 				if (ContentType.TEXT_PLAIN.getMimeType().equals(contentTypeHeader[0].getValue())) {

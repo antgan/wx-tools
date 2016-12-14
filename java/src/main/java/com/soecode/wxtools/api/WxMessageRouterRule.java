@@ -22,11 +22,6 @@ public class WxMessageRouterRule {
 	 */
 	private final WxMessageRouter routerBuilder;
 
-	/**
-	 * 是否异步，默认为true
-	 */
-	private boolean async = true;
-
 	private String fromUser;
 
 	private String msgType;
@@ -55,17 +50,6 @@ public class WxMessageRouterRule {
 
 	protected WxMessageRouterRule(WxMessageRouter routerBuilder) {
 		this.routerBuilder = routerBuilder;
-	}
-
-	/**
-	 * 设置是否异步执行，默认是true
-	 *
-	 * @param async
-	 * @return
-	 */
-	public WxMessageRouterRule async(boolean async) {
-		this.async = async;
-		return this;
 	}
 
 	/**
@@ -241,17 +225,17 @@ public class WxMessageRouterRule {
 	 * 处理微信推送过来的消息
 	 *
 	 * @param wxMessage
-	 * @param wxService
+	 * @param iService
 	 * @param exceptionHandler
 	 * @return 
 	 */
-	protected WxXmlOutMessage service(WxXmlMessage wxMessage, WxService wxService,
+	protected WxXmlOutMessage service(WxXmlMessage wxMessage, IService iService,
 			WxErrorExceptionHandler exceptionHandler) {
 		try {
 			Map<String, Object> context = new HashMap<String, Object>();
 			// 如果拦截器不通过，返回null
 			for (WxMessageInterceptor interceptor : this.interceptors) {
-				if (!interceptor.intercept(wxMessage, context, wxService)) {
+				if (!interceptor.intercept(wxMessage, context, iService)) {
 					return null;
 				}
 			}
@@ -259,10 +243,11 @@ public class WxMessageRouterRule {
 			WxXmlOutMessage res = null;
 			for (WxMessageHandler handler : this.handlers) {
 				// 返回最后handler的结果
-				res = handler.handle(wxMessage, context, wxService);
+				res = handler.handle(wxMessage, context, iService);
 			}
 			return res;
 		} catch (WxErrorException e) {
+			e.printStackTrace();
 			exceptionHandler.handle(e);
 		}
 		return null;
@@ -302,14 +287,6 @@ public class WxMessageRouterRule {
 
 	public void setInterceptors(List<WxMessageInterceptor> interceptors) {
 		this.interceptors = interceptors;
-	}
-
-	public boolean isAsync() {
-		return async;
-	}
-
-	public void setAsync(boolean async) {
-		this.async = async;
 	}
 
 	public boolean isReEnter() {

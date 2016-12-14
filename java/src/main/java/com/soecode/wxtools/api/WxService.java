@@ -3,18 +3,26 @@ package com.soecode.wxtools.api;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.slf4j.LoggerFactory;
+
+import com.soecode.wxtools.bean.WxAccessToken;
 import com.soecode.wxtools.bean.WxJsapiSignature;
 import com.soecode.wxtools.bean.WxMenu;
-import com.soecode.wxtools.bean.WxMessage;
 import com.soecode.wxtools.bean.WxNewsInfo;
 import com.soecode.wxtools.bean.WxQrcode;
 import com.soecode.wxtools.bean.WxUserList;
+import com.soecode.wxtools.bean.WxVideoIntroduction;
 import com.soecode.wxtools.bean.WxUserList.WxUser;
 import com.soecode.wxtools.bean.WxUserList.WxUser.WxUserGet;
-import com.soecode.wxtools.bean.WxVideoIntroduction;
 import com.soecode.wxtools.bean.result.QrCodeResult;
 import com.soecode.wxtools.bean.result.WxBatchGetMaterialResult;
 import com.soecode.wxtools.bean.result.WxCurMenuInfoResult;
@@ -28,654 +36,732 @@ import com.soecode.wxtools.bean.result.WxUserGroupResult;
 import com.soecode.wxtools.bean.result.WxUserListResult;
 import com.soecode.wxtools.bean.result.WxVideoMediaResult;
 import com.soecode.wxtools.exception.WxErrorException;
+import com.soecode.wxtools.util.RandomUtils;
+import com.soecode.wxtools.util.crypto.SHA1;
+import com.soecode.wxtools.util.file.FileUtils;
+import com.soecode.wxtools.util.http.MediaDownloadGetRequestExecutor;
+import com.soecode.wxtools.util.http.MediaDownloadPostRequestExecutor;
+import com.soecode.wxtools.util.http.MediaUploadRequestExecutor;
+import com.soecode.wxtools.util.http.QrCodeDownloadGetRequestExecutor;
 import com.soecode.wxtools.util.http.RequestExecutor;
+import com.soecode.wxtools.util.http.SimpleGetRequestExecutor;
+import com.soecode.wxtools.util.http.SimplePostRequestExecutor;
+import com.soecode.wxtools.util.http.URIUtil;
+import com.soecode.wxtools.util.http.VideoDownloadPostRequestExecutor;
+
+import ch.qos.logback.classic.Logger;
 
 /**
- * 微信API Service
+ * 统一业务处理类
  * @author antgan
- * @datetime 2016/6/15
- *
+ * @date 2016/12/14
+ * 
  */
-public interface WxService {
+public class WxService implements IService{
+	//日志
+	private static Logger logger = (Logger) LoggerFactory.getLogger(WxService.class);
+	//统一业务调用接口
+	private static IService service = null;
+	//全局的是否正在刷新access token的锁
+	protected final Object globalAccessTokenRefreshLock = new Object();
+	//全局的是否正在刷新jsapi_ticket的锁
+	protected final Object globalJsapiTicketRefreshLock = new Object();
+	//HttpClient
+	protected CloseableHttpClient httpClient;
+	//重试间隔
+	private int retrySleepMillis = 1000;
+	//重试次数
+	private int maxRetryTimes = 5;
+	/**
+	 * 构造方法，初始化httpClient
+	 */
+	public WxService() {
+		httpClient = HttpClients.createDefault();
+	}
+	/**
+	 * 【单例模式】WxService全局只有一个
+	 * @return
+	 */
+	public static synchronized IService getInstance() {
+		if (service == null) {
+			service = new WxService();
+		}
+		return service;
+	}
+	
+	/*****************************
+	 *                           *
+	 *    以下为微信公众号API接口     *
+	 *                           *
+	 *****************************/
+	
+	@Override
+	public boolean checkSignature(String signature, String timestamp, String nonce, String echostr) {
+		try {
+			return SHA1.gen(WxConfig.getInstance().getToken(), timestamp, nonce).equals(signature);
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	@Override
+	public String getAccessToken() throws WxErrorException {
+		return getAccessToken(false);
+	}
+
+	@Override
+	public String getAccessToken(boolean forceRefresh) throws WxErrorException {
+		if (forceRefresh) {
+			WxConfig.getInstance().expireAccessToken();
+		}
+		if (WxConfig.getInstance().isAccessTokenExpired()) {
+			synchronized (globalAccessTokenRefreshLock) {
+				if (WxConfig.getInstance().isAccessTokenExpired()) {
+					String url = WxConsts.URL_GET_ACCESSTOEKN.replace("APPID", WxConfig.getInstance().getAppId())
+							.replace("APPSECRET", WxConfig.getInstance().getAppSecret());
+					try {
+						String resultContent = get(url, null);
+						WxAccessToken accessToken = WxAccessToken.fromJson(resultContent);
+						WxConfig.getInstance().updateAccessToken(accessToken.getAccess_token(), accessToken.getExpires_in());
+						logger.info("[wx-tools]update accessToken success. accessToken:"+accessToken.getAccess_token());
+					} catch (IOException e) {
+						throw new WxErrorException("[wx-tools]refresh accessToken failure.");
+					}
+				}
+			}
+		}
+		return WxConfig.getInstance().getAccessToken();
+	}
+
+	@Override
+	public String[] getCallbackIp() throws WxErrorException {
+		String[] ips = null;
+		String url = WxConsts.URL_GET_WX_SERVICE_IP.replace("ACCESS_TOKEN", getAccessToken());
+		String responseContent = get(url, null);
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			JsonNode node = mapper.readTree(responseContent);
+			ips = mapper.readValue(node.get("ip_list"), String[].class);
+		} catch (IOException e) {
+			throw new WxErrorException("[wx-tools]getCallbackIp failure.");
+		}
+		return ips;
+	}
+
+	@Override
+	public String createMenu(WxMenu menu, boolean condition) throws WxErrorException {
+		String url = null, result = null;
+		if (condition)
+			url = WxConsts.URL_CREATE_MENU_CONDITIONAL.replace("ACCESS_TOKEN", getAccessToken());
+		else
+			url = WxConsts.URL_CREATE_MENU.replace("ACCESS_TOKEN", getAccessToken());
+
+		try {
+			result = post(url, menu.toJson());
+			logger.info("[wx-tools]Create Menu result:" + result);
+		} catch (IOException e) {
+			throw new WxErrorException("[wx-tools]createMenu failure.");
+		}
+		return result;
+	}
+
+	@Override
+	public String deleteMenu() throws WxErrorException {
+		String url = WxConsts.URL_DELETE_MENU.replace("ACCESS_TOKEN", getAccessToken());
+		String result = get(url, null);
+		logger.info("[wx-tools]Delete Menu result:" + result);
+		return result;
+	}
+
+	@Override
+	public String deleteMenu(String menuid) throws WxErrorException {
+		String url = WxConsts.URL_DELETE_MENU_CONDITIONAL.replace("ACCESS_TOKEN", getAccessToken());
+
+		String json = "{" + "\"menuid\":" + menuid + "}";
+		String result = post(url, json);
+		logger.info("[wx-tools]Delete Conditional Menu result:" + result);
+		return result;
+	}
+
+	@Override
+	public WxMenuResult getMenu() throws WxErrorException {
+		String url = WxConsts.URL_GET_MENU.replace("ACCESS_TOKEN", getAccessToken());
+		WxMenuResult result = null;
+		try {
+			result = WxMenuResult.fromJson(get(url, null));
+		} catch (Exception e) {
+			throw new WxErrorException("[wx-tools]getMenu failure.");
+		}
+		return result;
+	}
+
+	@Override
+	public WxCurMenuInfoResult getMenuCurInfo() throws WxErrorException {
+		String url = WxConsts.URL_GET_CURRENT_MENU_INFO.replace("ACCESS_TOKEN", getAccessToken());
+		WxCurMenuInfoResult result = null;
+		try {
+			result = WxCurMenuInfoResult.fromJson(get(url, null));
+		} catch (Exception e) {
+			throw new WxErrorException("[wx-tools]getMenuCurInfo failure.");
+		}
+		return result;
+	}
+
+	@Override
+	public String menuTryMatch(String user_id) throws WxErrorException {
+		String url = WxConsts.URL_TRYMATCH_MENU.replace("ACCESS_TOKEN", getAccessToken());
+		String json = "{" + "\"user_id\":\"" + user_id + "\"" + "}";
+		return post(url, json);
+	}
+
+	@Override
+	public WxMediaUploadResult uploadTempMedia(String mediaType, String fileType, InputStream inputStream)
+			throws WxErrorException, IOException {
+		return uploadTempMedia(mediaType, FileUtils.createTmpFile(inputStream, UUID.randomUUID().toString(), fileType));
+	}
+
+	@Override
+	public WxMediaUploadResult uploadTempMedia(String mediaType, File file) throws WxErrorException {
+		String url = WxConsts.URL_UPLOAD_TEMP_MEDIA.replace("ACCESS_TOKEN", getAccessToken()).replace("TYPE", mediaType);
+		return execute(new MediaUploadRequestExecutor(), url, file);
+	}
+
+	public File downloadTempMedia(String media_id,File path) throws WxErrorException {
+		String url = WxConsts.URL_DOWNLOAD_TEMP_MEDIA.replace("ACCESS_TOKEN", getAccessToken()).replace("MEDIA_ID",
+				media_id);
+		return execute(new MediaDownloadGetRequestExecutor(path), url, null);
+	}
+
+	@Override
+	public WxMediaUploadResult uploadMedia(String mediaType, String fileType, InputStream inputStream,
+			WxVideoIntroduction introduction) throws WxErrorException, IOException {
+		return uploadMedia(mediaType, FileUtils.createTmpFile(inputStream, UUID.randomUUID().toString(), fileType),
+				introduction);
+	}
+
+	@Override
+	public WxMediaUploadResult uploadMedia(String mediaType, File file, WxVideoIntroduction introduction)
+			throws WxErrorException {
+		WxMediaUploadResult result = null;
+		String url = WxConsts.URL_UPLOAD_MATERIAL_MEDIA.replace("ACCESS_TOKEN", getAccessToken()).replace("TYPE",
+				mediaType);
+		// 如果是视频素材，添加视频描述对象
+		if (WxConsts.MEDIA_VIDEO.equals(mediaType)) {
+			result = execute(new MediaUploadRequestExecutor(introduction), url, file);
+		} else {
+			result = execute(new MediaUploadRequestExecutor(), url, file);
+		}
+		return result;
+	}
+
+	@Override
+	public File downloadMedia(String media_id,File path) throws WxErrorException {
+		String url = WxConsts.URL_DOWNLOAD_MATERIAL_MEDIA.replace("ACCESS_TOKEN", getAccessToken());
+		String json = "{" + "\"media_id\":\"" + media_id + "\"" + "}";
+		return execute(new MediaDownloadPostRequestExecutor(path), url, json);
+	}
+
+	@Override
+	public WxNewsMediaResult downloadNewsMedia(String media_id) throws WxErrorException {
+		WxNewsMediaResult newsResult = null;
+		String url = WxConsts.URL_DOWNLOAD_MATERIAL_MEDIA.replace("ACCESS_TOKEN", getAccessToken());
+		String json = "{" + "\"media_id\":\"" + media_id + "\"" + "}";
+		String result = execute(new SimplePostRequestExecutor(), url, json);
+		try {
+			newsResult = WxNewsMediaResult.fromJson(result);
+		} catch (IOException e) {
+			throw new WxErrorException("[wx-tools]downloadNewsMedia failure.");
+		}
+		return newsResult;
+	}
+
+	@Override
+	public WxVideoMediaResult downloadVideoMedia(String media_id,File path) throws WxErrorException {
+		String url = WxConsts.URL_DOWNLOAD_MATERIAL_MEDIA.replace("ACCESS_TOKEN", getAccessToken());
+		String json = "{" + "\"media_id\":\"" + media_id + "\"" + "}";
+		return execute(new VideoDownloadPostRequestExecutor(path), url, json);
+	}
+
+	@Override
+	public WxError deleteMediaMaterial(String media_id) throws WxErrorException {
+		String url = WxConsts.URL_DELETE_MATERIAL_MEDIA.replace("ACCESS_TOKEN", getAccessToken());
+		String json = "{" + "\"media_id\":\"" + media_id + "\"" + "}";
+		String result = execute(new SimplePostRequestExecutor(), url, json);
+		WxError err = null;
+		try {
+			err = WxError.fromJson(result);
+		} catch (IOException e) {
+			throw new WxErrorException("[wx-tools]deleteMediaMaterial failure.");
+		}
+		return err;
+	}
+
+	@Override
+	public String addNewsMedia(List<WxNewsInfo> news) throws WxErrorException {
+		String media_id = null;
+		String url = WxConsts.URL_ADD_NEWS_MEDIA.replace("ACCESS_TOKEN", getAccessToken());
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			String arrayJson = mapper.writeValueAsString(news);
+			String json = "{\"articles\":" + arrayJson + "}";
+			String result = execute(new SimplePostRequestExecutor(), url, json);
+			JsonNode node = mapper.readTree(result);
+			media_id = node.get("media_id").asText();
+		} catch (IOException e) {
+			throw new WxErrorException("[wx-tools]addNewsMedia failure.");
+		}
+		return media_id;
+	}
+
+	@Override
+	public WxMediaUploadResult imageDomainChange(File file) throws WxErrorException {
+		String url = WxConsts.URL_IMAGE_DOMAIN_CHANGE.replace("ACCESS_TOKEN", getAccessToken());
+		return execute(new MediaUploadRequestExecutor(), url, file);
+	}
+
+	@Override
+	public WxError updateNewsInfo(String media_id, int index, WxNewsInfo newInfo) throws WxErrorException {
+		WxError err = null;
+		String url = WxConsts.URL_UPDATE_NEWS_MEDIA.replace("ACCESS_TOKEN", getAccessToken());
+
+		try {
+			String json = "{" + "\"media_id\":" + "\"" + media_id + "\"," + "\"index\":" + index + "," + "\"articles\":"
+					+ newInfo.toJson() + "}";
+			String result = execute(new SimplePostRequestExecutor(), url, json);
+			err = WxError.fromJson(result);
+		} catch (IOException e) {
+			throw new WxErrorException("[wx-tools]updateNewsInfo failure.");
+		}
+		return err;
+	}
+
+	@Override
+	public WxMaterialCountResult getMaterialCount() throws WxErrorException {
+		String url = WxConsts.URL_GET_MATERIAL_COUNT.replace("ACCESS_TOKEN", getAccessToken());
+		WxMaterialCountResult result = null;
+		try {
+			result = WxMaterialCountResult.fromJson(get(url, null));
+		} catch (Exception e) {
+			throw new WxErrorException("[wx-tools]getMaterialCount failure.");
+		}
+		return result;
+	}
+
+	@Override
+	public WxBatchGetMaterialResult batchGetMeterial(String type, int offset, int count) throws WxErrorException {
+		String url = WxConsts.URL_BATCHGET_MATERIAL_MEDIA_LIST.replace("ACCESS_TOKEN", getAccessToken());
+		String json = "{" + "\"type\":\"" + type + "\"," + "\"offset\":" + offset + "," + "\"count\":" + count + "}";
+		String result = post(url, json);
+		WxBatchGetMaterialResult materialResult = null;
+		try {
+			materialResult = WxBatchGetMaterialResult.fromJson(result);
+		} catch (IOException e) {
+			throw new WxErrorException("[wx-tools]batchGetMeterial failure.");
+		}
+		return materialResult;
+	}
+
+	@Override
+	public WxUserGroupResult createUserGroup(String name) throws WxErrorException {
+		WxUserGroupResult result = null;
+		String url = WxConsts.URL_CREATE_USER_GROUP.replace("ACCESS_TOKEN", getAccessToken());
+		String json = "{\"group\":{\"name\":\"" + name + "\"}}";
+		String postResult = post(url, json);
+		try {
+			result = WxUserGroupResult.fromJson(postResult);
+		} catch (IOException e) {
+			throw new WxErrorException("[wx-tools]createUserGroup failure.");
+		}
+		return result;
+	}
+
+	@Override
+	public WxUserGroupResult queryAllUserGroup() throws WxErrorException {
+		WxUserGroupResult result = null;
+		String url = WxConsts.URL_QUERY_ALL_USER_GROUP.replace("ACCESS_TOKEN", getAccessToken());
+		String getResult = get(url, null);
+		try {
+			result = WxUserGroupResult.fromJson(getResult);
+		} catch (IOException e) {
+			throw new WxErrorException("[wx-tools]queryAllUserGroup failure.");
+		}
+		return result;
+	}
+
+	@Override
+	public int queryGroupIdByOpenId(String openid) throws WxErrorException {
+		int result = -1;
+		String url = WxConsts.URL_QUERY_USER_GROUP_BY_OPENID.replace("ACCESS_TOKEN", getAccessToken());
+		String json = "{\"openid\":\"" + openid + "\"}";
+		String postResult = post(url, json);
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			JsonNode node = mapper.readTree(postResult);
+			result = Integer.parseInt(node.get("groupid").toString());
+		} catch (IOException e) {
+			throw new WxErrorException("[wx-tools]queryGroupIdByOpenId failure.");
+		}
+		return result;
+	}
+
+	@Override
+	public WxError updateUserGroupName(int groupid, String name) throws WxErrorException {
+		WxError err = null;
+		String url = WxConsts.URL_UPDATE_USER_GROUP_NAME.replace("ACCESS_TOKEN", getAccessToken());
+		String json = "{\"group\":{\"id\":" + groupid + ",\"name\":\"" + name + "\"}}";
+		String postResult = post(url, json);
+		try {
+			err = WxError.fromJson(postResult);
+		} catch (IOException e) {
+			throw new WxErrorException("[wx-tools]updateUserGroupName failure.");
+		}
+		return err;
+	}
+
+	@Override
+	public WxError movingUserToNewGroup(String openid, int to_groupid) throws WxErrorException {
+		WxError err = null;
+		String url = WxConsts.URL_MOVING_USER_GROUP.replace("ACCESS_TOKEN", getAccessToken());
+		String json = "{\"openid\":\"" + openid + "\",\"to_groupid\":" + to_groupid + "}";
+		String postResult = post(url, json);
+		try {
+			err = WxError.fromJson(postResult);
+		} catch (IOException e) {
+			throw new WxErrorException("[wx-tools]movingUserToNewGroup failure.");
+		}
+		return err;
+	}
+
+	@Override
+	public WxError batchMovingUserToNewGroup(List<String> openids, int to_groupid) throws WxErrorException {
+		WxError err = null;
+		String url = WxConsts.URL_BATCH_MOVING_USER_GROUP.replace("ACCESS_TOKEN", getAccessToken());
+		ObjectMapper mapper = new ObjectMapper();
+		String arrayJson = null;
+		try {
+			arrayJson = mapper.writeValueAsString(openids);
+			String json = "{\"openid_list\":" + arrayJson + ",\"to_groupid\":" + to_groupid + "}";
+			String postResult = post(url, json);
+			err = WxError.fromJson(postResult);
+		} catch (IOException e) {
+			throw new WxErrorException("[wx-tools]batchMovingUserToNewGroup failure.");
+		}
+		return err;
+	}
+
+	@Override
+	public WxError deleteUserGroup(int groupid) throws WxErrorException {
+		WxError err = null;
+		String url = WxConsts.URL_DELETE_USER_GROUP.replace("ACCESS_TOKEN", getAccessToken());
+		try {
+			String json = "{\"group\":{\"id\":" + groupid + "}}";
+			String postResult = post(url, json);
+			err = WxError.fromJson(postResult);
+		} catch (IOException e) {
+			throw new WxErrorException("[wx-tools]deleteUserGroup failure.");
+		}
+		return err;
+	}
+
+	@Override
+	public WxError updateUserRemark(String openid, String remark) throws WxErrorException {
+		WxError err = null;
+		String url = WxConsts.URL_UPDATE_USER_REMARK.replace("ACCESS_TOKEN", getAccessToken());
+		String json = "{\"openid\":\"" + openid + "\",\"remark\":\"" + remark + "\"}";
+		String postResult = post(url, json);
+		try {
+			err = WxError.fromJson(postResult);
+		} catch (IOException e) {
+			throw new WxErrorException("[wx-tools]updateUserRemark failure.");
+		}
+		return err;
+	}
+
+	@Override
+	public WxUser getUserInfoByOpenId(WxUserGet userGet) throws WxErrorException {
+		WxUser user = null;
+		String url = WxConsts.URL_GET_USER_INFO.replace("ACCESS_TOKEN", getAccessToken())
+				.replace("OPENID", userGet.getOpenid()).replace("zh_CN", userGet.getLang());
+		String postResult = post(url, null);
+		try {
+			user = WxUser.fromJson(postResult);
+		} catch (IOException e) {
+			throw new WxErrorException("[wx-tools]getUserInfoByOpenId failure.");
+		}
+		return user;
+	}
+
+	@Override
+	public WxUserList batchGetUserInfo(List<WxUserGet> usersGet) throws WxErrorException {
+		WxUserList list = null;
+		String url = WxConsts.URL_BATCH_GET_USER_INFO.replace("ACCESS_TOKEN", getAccessToken());
+		ObjectMapper mapper = new ObjectMapper();
+		String arrayJson = null;
+		try {
+			arrayJson = mapper.writeValueAsString(usersGet);
+			String json = "{\"user_list\":" + arrayJson + "}";
+			String postResult = post(url, json);
+			list = WxUserList.fromJson(postResult);
+		} catch (IOException e) {
+			throw new WxErrorException("[wx-tools]batchGetUserInfo failure.");
+		}
+		return list;
+	}
+
+	@Override
+	public WxUserListResult batchGetUserOpenId(String next_openid) throws WxErrorException {
+		WxUserListResult result = null;
+		String url = WxConsts.URL_BATCH_GET_USER_OPENID.replace("ACCESS_TOKEN", getAccessToken()).replace("NEXT_OPENID",
+				next_openid);
+		String getResult = get(url, null);
+		try {
+			result = WxUserListResult.fromJson(getResult);
+		} catch (IOException e) {
+			throw new WxErrorException("[wx-tools]batchGetUserOpenId failure.");
+		}
+		return result;
+	}
+
+	@Override
+	public String oauth2buildAuthorizationUrl(String redirectUri, String scope, String state) {
+		redirectUri = URIUtil.encodeURIComponent(redirectUri);
+		String url = WxConsts.URL_OAUTH2_GET_CODE.replace("APPID", WxConfig.getInstance().getAppId())
+				.replace("REDIRECT_URI", redirectUri).replace("SCOPE", scope).replace("STATE", state);
+		return url;
+	}
+
+	@Override
+	public WxOAuth2AccessTokenResult oauth2ToGetAccessToken(String code) throws WxErrorException {
+		WxOAuth2AccessTokenResult result = null;
+		String url = WxConsts.URL_OAUTH2_GET_ACCESSTOKEN.replace("APPID", WxConfig.getInstance().getAppId())
+				.replace("SECRET", WxConfig.getInstance().getAppSecret()).replace("CODE", code);
+		String getResult = get(url, null);
+		try {
+			result = WxOAuth2AccessTokenResult.fromJson(getResult);
+		} catch (IOException e) {
+			throw new WxErrorException("[wx-tools]oauth2ToGetAccessToken failure.");
+		}
+		return result;
+	}
+
+	@Override
+	public WxOAuth2AccessTokenResult oauth2ToGetRefreshAccessToken(String refresh_token) throws WxErrorException {
+		WxOAuth2AccessTokenResult result = null;
+		String url = WxConsts.URL_OAUTH2_GET_REFRESH_ACCESSTOKEN.replace("APPID", WxConfig.getInstance().getAppId())
+				.replace("REFRESH_TOKEN", refresh_token);
+		String getResult = get(url, null);
+		try {
+			result = WxOAuth2AccessTokenResult.fromJson(getResult);
+		} catch (IOException e) {
+			throw new WxErrorException("[wx-tools]oauth2ToGetRefreshAccessToken failure.");
+		}
+		return result;
+	}
+
+	@Override
+	public WxUser oauth2ToGetUserInfo(String access_token, WxUserGet userGet) throws WxErrorException {
+		WxUser user = null;
+		String url = WxConsts.URL_OAUTH2_GET_USER_INFO.replace("ACCESS_TOKEN", access_token)
+				.replace("OPENID", userGet.getOpenid()).replace("zh_CN", userGet.getLang());
+		String getResult = get(url, null);
+		try {
+			user = WxUser.fromJson(getResult);
+		} catch (IOException e) {
+			throw new WxErrorException("[wx-tools]oauth2ToGetUserInfo failure.");
+		}
+		return user;
+	}
+
+	@Override
+	public WxError oauth2CheckAccessToken(String access_token, String openid) throws WxErrorException {
+		WxError err = null;
+		String url = WxConsts.URL_OAUTH2_CHECK_ACCESSTOKEN.replace("ACCESS_TOKEN", access_token).replace("OPENID",
+				openid);
+		String getResult = get(url, null);
+		try {
+			err = WxError.fromJson(getResult);
+		} catch (IOException e) {
+			throw new WxErrorException("[wx-tools]oauth2CheckAccessToken failure.");
+		}
+		return err;
+	}
+
+	@Override
+	public QrCodeResult createQrCode(WxQrcode qrcode) throws WxErrorException {
+		QrCodeResult result = null;
+		String url = WxConsts.URL_GET_QR_CODE.replace("TOKEN", getAccessToken());
+		String json = null;
+		try {
+			json = qrcode.toJson();
+			String postResult = post(url, json);
+			result = QrCodeResult.fromJson(postResult);
+		} catch (IOException e) {
+			throw new WxErrorException("[wx-tools]createQrCode failure.");
+		}
+		return result;
+	}
+
+	@Override
+	public File downloadQrCode(File dir, String ticket) throws WxErrorException {
+		String url = WxConsts.URL_DOWNLOAD_QR_CODE.replace("TICKET", URIUtil.encodeURIComponent(ticket));
+		return execute(new QrCodeDownloadGetRequestExecutor(dir), url, null);
+	}
+
+	@Override
+	public String getShortUrl(String long_url) throws WxErrorException {
+		String url = WxConsts.URL_LONGURL_TO_SHORTURL.replace("ACCESS_TOKEN", getAccessToken());
+		String json = "{\"action\":\"long2short\",\"long_url\":\"" + long_url + "\"}";
+		String postResult = post(url, json);
+		ObjectMapper mapper = new ObjectMapper();
+		JsonNode node = null;
+		try {
+			node = mapper.readTree(postResult);
+		} catch (IOException e) {
+			throw new WxErrorException("[wx-tools]getShortUrl failure.");
+		}
+		String shortUrl = node.get("short_url").asText();
+		return shortUrl;
+	}
+
+	public String getJsapiTicket() throws WxErrorException {
+		return getJsapiTicket(false);
+	}
+
+	public String getJsapiTicket(boolean forceRefresh) throws WxErrorException {
+		if (forceRefresh) {
+			WxConfig.getInstance().expireJsapiTicket();
+		}
+		if (WxConfig.getInstance().isJsapiTicketExpired()) {
+			synchronized (globalJsapiTicketRefreshLock) {
+				if (WxConfig.getInstance().isJsapiTicketExpired()) {
+					String url = WxConsts.URL_GET_JS_API_TICKET.replace("ACCESS_TOKEN", getAccessToken());
+					String responseContent = execute(new SimpleGetRequestExecutor(), url, null);
+					ObjectMapper mapper = new ObjectMapper();
+					JsonNode node = null;
+					try {
+						node = mapper.readTree(responseContent);
+						if(node.get("errcode")!=null && !(node.get("errcode").asInt()==0)){
+							WxError error = WxError.fromJson(responseContent);
+							throw new WxErrorException(error);
+						}
+						String jsapiTicket = node.get("ticket").asText();
+						int expiresInSeconds = node.get("expires_in").asInt();
+						WxConfig.getInstance().updateJsapiTicket(jsapiTicket, expiresInSeconds);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+		return WxConfig.getInstance().getJsapiTicket();
+	}
+
+	public WxJsapiSignature createJsapiSignature(String url) throws WxErrorException {
+		long timestamp = System.currentTimeMillis() / 1000;
+		String noncestr = RandomUtils.getRandomStr(16);
+		String jsapiTicket = getJsapiTicket();
+		try {
+			String signature = SHA1.genWithAmple("noncestr="+noncestr,
+					"jsapi_ticket="+jsapiTicket,"timestamp="+timestamp,"url="+url);
+			WxJsapiSignature jsapiSignature = new WxJsapiSignature();
+			jsapiSignature.setTimestamp(timestamp);
+			jsapiSignature.setNoncestr(noncestr);
+			jsapiSignature.setUrl(url);
+			jsapiSignature.setSignature(signature);
+			return jsapiSignature;
+		} catch (NoSuchAlgorithmException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected CloseableHttpClient getHttpclient() {
+		return this.httpClient;
+	}
+
+	@Override
+	public void setRetrySleepMillis(int retrySleepMillis) {
+		this.retrySleepMillis = retrySleepMillis;
+	}
+
+	@Override
+	public void setMaxRetryTimes(int maxRetryTimes) {
+		this.maxRetryTimes = maxRetryTimes;
+	}
+
+	public String get(String url, Map<String, String> params) throws WxErrorException {
+		return execute(new SimpleGetRequestExecutor(), url, params);
+	}
+
+	public String post(String url, String params) throws WxErrorException {
+		return execute(new SimplePostRequestExecutor(), url, params);
+	}
 
 	/**
-	 * <pre>
-	 * 验证推送过来的消息的正确性
-	 * 详情请见: {@link http://mp.weixin.qq.com/wiki/8/f9a0b8382e0b77d87b3bcc1ce6fbc104.html}
-	 * </pre>
+	 * 
+	 * 向微信端发送请求，在这里执行的策略是当发生access_token过期时才去刷新，然后重新执行请求，而不是全局定时请求
 	 *
-	 * @param msgSignature
-	 * @param timestamp
-	 * @param nonce
-	 * @param data  
-	 * @return 微信传输过来的数据，有可能是echoStr，有可能是xml消息
+	 * @param executor
+	 * @param uri
+	 * @param data
+	 * @return
+	 * @throws WxErrorException
 	 */
-	boolean checkSignature(String msgSignature, String timestamp, String nonce, String data);
+	public <T, E> T execute(RequestExecutor<T, E> executor, String uri, E data) throws WxErrorException {
+		int retryTimes = 0;
+		do {
+			try {
+				return executeInternal(executor, uri, data);
+			} catch (WxErrorException e) {
+				WxError error = e.getError();
+				/**
+				 * -1 系统繁忙, 1000ms后重试
+				 */
+				if (error.getErrcode() == -1) {
+					int sleepMillis = retrySleepMillis * (1 << retryTimes);
+					try {
+						logger.info("[wx-tools]微信系统繁忙，{%d}ms 后重试(第{%d}次)",sleepMillis, retryTimes + 1);
+						Thread.sleep(sleepMillis);
+					} catch (InterruptedException e1) {
+						throw new RuntimeException(e1);
+					}
+				} else {
+					throw e;
+				}
+			}
+		} while (++retryTimes < maxRetryTimes);
+		throw new RuntimeException("微信服务端异常，超出重试次数");
+	}
 
 	/**
-	 * <pre>
-	 * 获取access_token, 不强制刷新access_token
-	 * 详情请见：{@link http://mp.weixin.qq.com/wiki/14/9f9c82c1af308e3b14ba9b973f99a8ba.html}
-	 * </pre>
-	 * @see #getAccessToken(boolean)
-	 * @return
-	 * @throws WxErrorException
-	 */
-	String getAccessToken() throws WxErrorException;
-
-	/**
-	 * <pre>
-	 * 获取access_token，本方法线程安全
-	 * 且在多线程同时刷新时只刷新一次，避免超出2000次/日的调用次数上限
-	 * 另：本service的所有方法都会在access_token过期是调用此方法
-	 * 程序员在非必要情况下尽量不要主动调用此方法
-	 * 详情请见: {@link http://mp.weixin.qq.com/wiki/14/9f9c82c1af308e3b14ba9b973f99a8ba.html}
-	 * </pre>
-	 * 
-	 * @param forceRefresh
-	 *            强制刷新
-	 * @return
-	 * @throws WxErrorException
-	 */
-	String getAccessToken(boolean forceRefresh) throws WxErrorException;
-
-	/**
-	 * <pre>
-	 * 自定义菜单创建接口
-	 * 详情请见:{@link http://mp.weixin.qq.com/wiki/10/0234e39a2025342c17a7d23595c6b40a.html}
-	 *
-	 * </pre>
-	 * @param menu
-	 * @param condition 是否为个性菜单，当为个性菜单，需要添加MatchRule
-	 * @throws WxErrorException
-	 */
-	String createMenu(WxMenu menu, boolean condition) throws WxErrorException;
-
-	/**
-	 * <pre>
-	 * 【自定义】菜单删除接口
-	 * 详情请见: {@link http://mp.weixin.qq.com/wiki/3/de21624f2d0d3dafde085dafaa226743.html}
-	 * 
-	 * </pre>
-	 * @return String 查询结果
-	 * @throws WxErrorException
-	 */
-	String deleteMenu() throws WxErrorException;
-
-	/**
-	 * <pre>
-	 * 【个性化】菜单删除接口
-	 * 详情请见: {@link http://mp.weixin.qq.com/wiki/0/c48ccd12b69ae023159b4bfaa7c39c20.html}
-	 * 
-	 * </pre>
-	 * @param menuid
-	 * @return String 查询结果
-	 * @throws WxErrorException
-	 */
-	String deleteMenu(String menuid) throws WxErrorException;
-
-	/**
-	 * <pre>
-	 * 自定义菜单查询接口
-	 * 详情请见: {@link http://mp.weixin.qq.com/wiki/5/f287d1a5b78a35a8884326312ac3e4ed.html}
-	 * </pre>
-	 *
-	 * @return WxMenuResult 菜单栏查询结果
-	 * @throws WxErrorException
-	 */
-	WxMenuResult getMenu() throws WxErrorException;
-
-	/**
-	 * <pre>
-	 * 获取公众号菜单配置
-	 * 详情请见: {@link http://mp.weixin.qq.com/wiki/14/293d0cb8de95e916d1216a33fcb81fd6.html}
-	 * </pre>
-	 *
-	 * @return WxCurMenuInfoResult 菜单栏菜单配置结果
-	 * @throws WxErrorException
-	 */
-	WxCurMenuInfoResult getMenuCurInfo() throws WxErrorException;
-	
-	/**
-	 * <pre>
-	 * 个性化菜单栏
-	 * 测试个性化菜单匹配结果
-	 * </pre>
-	 * @param user_id user_id可以是粉丝的OpenID，也可以是粉丝的微信号。
-	 * @return
-	 * @throws WxErrorException
-	 */
-	String menuTryMatch(String user_id) throws WxErrorException;
-	
-	/**
-	 * <pre>
-	 * 上传【临时】多媒体文件，三天后微信服务器自动删除。
-	 * 上传的多媒体文件有格式和大小限制，如下：
-	 *   图片（image）: 1M，支持JPG格式
-	 *   语音（voice）：2M，播放长度不超过60s，支持AMR\MP3格式
-	 *   视频（video）：10MB，支持MP4格式
-	 *   缩略图（thumb）：64KB，支持JPG格式
-	 *   临时素材 请见：{@link http://mp.weixin.qq.com/wiki/15/2d353966323806a202cd2deaafe8e557.html}
-	 * </pre>
-	 *
-	 * @param mediaType 媒体类型  {@link WxConsts}
-	 * @param fileType  文件类型  {@link WxConsts}
-	 * @param inputStream
-	 *            输入流
-	 * @throws WxErrorException
-	 */
-	WxMediaUploadResult uploadTempMedia(String mediaType, String fileType, InputStream inputStream)
-			throws WxErrorException, IOException;
-
-	/**
-	 * <pre>
-	 * 上传【临时】多媒体文件，三天后微信服务器自动删除。
-	 * 上传的多媒体文件有格式和大小限制，如下：
-	 *   图片（image）: 1M，支持JPG格式
-	 *   语音（voice）：2M，播放长度不超过60s，支持AMR\MP3格式
-	 *   视频（video）：10MB，支持MP4格式
-	 *   缩略图（thumb）：64KB，支持JPG格式
-	 *   临时素材 请见：{@link http://mp.weixin.qq.com/wiki/15/2d353966323806a202cd2deaafe8e557.html}
-	 * </pre>
-	 *
-	 * @param mediaType 媒体类型  {@link WxConsts}
-	 * @param fileType  文件类型  {@link WxConsts}
-	 * @throws WxErrorException
-	 */
-	WxMediaUploadResult uploadTempMedia(String mediaType, File file) throws WxErrorException;
-
-	/**
-	 * <pre>
-	 * 下载【临时】多媒体文件，下载到{@link WxConfigStorage}中的【临时】目录下（TmpDirFile）
-	 * 详情请见: {@link http://mp.weixin.qq.com/wiki/9/677a85e3f3849af35de54bb5516c2521.html}
-	 * </pre>
-	 *
-	 * @return File 临时文件File
-	 * @throws WxErrorException
-	 * @params media_id
-	 */
-	File downloadTempMedia(String media_id) throws WxErrorException;
-	
-	
-	/**
-	 * <pre>
-	 * 上传【永久】多媒体文件
-	 * 上传的多媒体文件有格式和大小限制，如下：
-	 *   图片（image）: 1M，支持JPG格式
-	 *   语音（voice）：2M，播放长度不超过60s，支持AMR\MP3格式
-	 *   视频（video）：10MB，支持MP4格式
-	 *   缩略图（thumb）：64KB，支持JPG格式
-	 *   永久素材 请见: {@link http://mp.weixin.qq.com/wiki/10/10ea5a44870f53d79449290dfd43d006.html}
-	 * </pre>
-	 *
-	 * @param mediaType 媒体类型  {@link WxConsts}
-	 * @param fileType  文件类型  {@link WxConsts}
-	 * @param introduction 当上传为视频资源时(Video)，可以附带说明。其他资源传null即可
-	 * @param inputStream 输入流
-	 * @throws WxErrorException
-	 */
-	WxMediaUploadResult uploadMedia(String mediaType, String fileType, InputStream inputStream, WxVideoIntroduction introduction)
-			throws WxErrorException, IOException;
-
-	/**
-	 * <pre>
-	 * 上传【永久】多媒体文件
-	 * 上传的多媒体文件有格式和大小限制，如下：
-	 *   图片（image）: 1M，支持JPG格式
-	 *   语音（voice）：2M，播放长度不超过60s，支持AMR\MP3格式
-	 *   视频（video）：10MB，支持MP4格式
-	 *   缩略图（thumb）：64KB，支持JPG格式
-	 *   永久素材 请见: {@link http://mp.weixin.qq.com/wiki/10/10ea5a44870f53d79449290dfd43d006.html}
-	 * </pre>
-	 *
-	 * @param mediaType 媒体类型  {@link WxConsts}
-	 * @param fileType  文件类型  {@link WxConsts}
-	 * @param introduction 当上传为视频资源时(Video)，可以附带说明。其他资源传null即可
-	 * @throws WxErrorException
-	 */
-	WxMediaUploadResult uploadMedia(String mediaType, File file, WxVideoIntroduction introduction) throws WxErrorException;
-	
-	/**
-	 * <pre>
-	 * 下载【永久】多媒体文件，下载到{@link WxConfigStorage}中的【永久】目录下（MaterialDirFile）
-	 * 详情请见: http://mp.weixin.qq.com/wiki/12/3c12fac7c14cb4d0e0d4fe2fbc87b638.html
-	 * </pre>
-	 *
-	 * @return 保存到本地的永久文件
-	 * @throws WxErrorException
-	 * @params media_id
-	 */
-	File downloadMedia(String media_id) throws WxErrorException;
-	
-	/**
-	 * 下载获取永久图文素材，返回图文信息结果{@link WxNewsMediaResult}
-	 * @param media_id
-	 * @return
-	 * @throws WxErrorException
-	 */
-	WxNewsMediaResult downloadNewsMedia(String media_id) throws WxErrorException;
-	
-	/**
-	 * <pre>
-	 * 下载获取永久视频素材，返回图文信息结果{@link WxVideoMediaResult}
-	 * 保存在 {@link WxConfigStorage} 下的永久目录下
-	 * </pre>
-	 * @param media_id
-	 * @return
-	 * @throws WxErrorException
-	 */
-	WxVideoMediaResult downloadVideoMedia(String media_id) throws WxErrorException;
-	
-	/**
-	 * 删除永久素材
-	 * @param media_id
-	 * @return WxError ，若 errcode = 0 则删除成功
-	 * @throws WxErrorException
-	 */
-	WxError deleteMediaMaterial(String media_id) throws WxErrorException;
-	
-	/**
-	 * <pre>
-	 * 新增永久图文，最多8个
-	 * 
-	 * 请注意，在图文消息的具体内容中，将过滤外部的图片链接，只能使用腾讯域名下的图片资源。
-	 * 可以调用 imageDomainChange() 方法将图片上传转成腾讯域名下的图片资源。
-	 * </pre>
-	 * @param news
-	 * @return String MediaId
-	 * @throws WxErrorException
-	 */
-	String addNewsMedia(List<WxNewsInfo> news) throws WxErrorException;
-	
-	/**
-	 * <pre>
-	 * 上传图片，获取腾讯域名下的图片资源路径
-	 * 
-	 * </pre>
-	 * @return WxMediaUploadResult    获取成员变量Url
-	 * 								腾讯域名下的图片资源。用于图文正文
-	 * @throws WxErrorException
-	 */
-	WxMediaUploadResult imageDomainChange(File file) throws WxErrorException;
-	
-	/**
-	 * <pre>
-	 * 修改永久图文素材
-	 * 
-	 * </pre>
-	 * @param media_id  图文id
-	 * @param index  图文的位置，第一篇为0
-	 * @param WxNewsInfo 新的图文
-	 * 
-	 * @return WxError, 若errcode = 0 修改成功
-	 * @throws WxErrorException
-	 */
-	WxError updateNewsInfo(String media_id, int index, WxNewsInfo newInfo) throws WxErrorException;
-	
-	/**
-	 * <pre>
-	 * 获取永久素材数量接口
-	 * 详情请见：{@link http://mp.weixin.qq.com/wiki/5/a641fd7b5db7a6a946ebebe2ac166885.html}
-	 * </pre>
-	 * @return WxMaterialCountResult
-	 * @throws WxErrorException
-	 */
-	WxMaterialCountResult getMaterialCount() throws WxErrorException;
-	
-	/**
-	 * <pre>
-	 * 批量获取永久素材资源信息
-	 * 详情请见：{@link http://mp.weixin.qq.com/wiki/15/8386c11b7bc4cdd1499c572bfe2e95b3.html}
-	 * </pre> 
-	 * @param type
-	 * @param offset
-	 * @param count
-	 * @return WxBatchGetMaterialResult
-	 * @throws WxErrorException
-	 */
-	WxBatchGetMaterialResult batchGetMeterial(String type, int offset, int count) throws WxErrorException;
-	
-	/**
-	 * <pre>
-	 * 创建用户分组
-	 * 详情请见：{@link http://mp.weixin.qq.com/wiki/8/d6d33cf60bce2a2e4fb10a21be9591b8.html}
-	 * </pre>
-	 * @param name
-	 * @return
-	 * @throws WxErrorException
-	 */
-	WxUserGroupResult createUserGroup(String name) throws WxErrorException;
-	
-	/**
-	 * <pre>
-	 * 查询所有用户分组
-	 * 详情请见：{@link http://mp.weixin.qq.com/wiki/8/d6d33cf60bce2a2e4fb10a21be9591b8.html}
-	 * </pre>
-	 * @param name
-	 * @return
-	 * @throws WxErrorException
-	 */
-	WxUserGroupResult queryAllUserGroup() throws WxErrorException;
-	
-	/**
-	 * <pre>
-	 * 查询用户所在用户组
-	 * 详情请见：{@link http://mp.weixin.qq.com/wiki/8/d6d33cf60bce2a2e4fb10a21be9591b8.html}
-	 * </pre>
-	 * @param openid
-	 * @return
-	 * @throws WxErrorException
-	 */
-	int queryGroupIdByOpenId(String openid) throws WxErrorException;
-	
-	/**
-	 * <pre>
-	 * 修改用户组名
-	 * 详情请见：{@link http://mp.weixin.qq.com/wiki/8/d6d33cf60bce2a2e4fb10a21be9591b8.html}
-	 * </pre>
-	 * @param groupId
-	 * @param name
-	 * @return
-	 * @throws WxErrorException
-	 */
-	WxError updateUserGroupName(int groupid, String name) throws WxErrorException;
-	
-	/**
-	 * <pre>
-	 * 移动一个用户到指定用户组里
-	 * 详情请见：{@link http://mp.weixin.qq.com/wiki/8/d6d33cf60bce2a2e4fb10a21be9591b8.html}
-	 * </pre>
-	 * @param openid
-	 * @param to_groupid
-	 * @return
-	 * @throws WxErrorException
-	 */
-	WxError movingUserToNewGroup(String openid, int to_groupid) throws WxErrorException;
-	
-	/**
-	 * <pre>
-	 * 批量移动用户到指定用户组
-	 * 详情请见：{@link http://mp.weixin.qq.com/wiki/8/d6d33cf60bce2a2e4fb10a21be9591b8.html}
-	 * </pre>
-	 * @param openids
-	 * @param to_groupid
-	 * @return
-	 * @throws WxErrorException
-	 */
-	WxError batchMovingUserToNewGroup(List<String> openids, int to_groupid) throws WxErrorException;
-	
-	/**
-	 * <pre>
-	 * 删除用户组
-	 * 详情请见：{@link http://mp.weixin.qq.com/wiki/8/d6d33cf60bce2a2e4fb10a21be9591b8.html}
-	 * </pre>
-	 * @param groupid
-	 * @return
-	 * @throws WxErrorException
-	 */
-	WxError deleteUserGroup(int groupid) throws WxErrorException;
-	
-	/**
-	 * <pre>
-	 * 修改用户备注名
-	 * 详情请见：{@link http://mp.weixin.qq.com/wiki/16/528098c4a6a87b05120a7665c8db0460.html}
-	 * </pre>
-	 * @param openid
-	 * @param remark
-	 * @return
-	 * @throws WxErrorException
-	 */
-	WxError updateUserRemark(String openid, String remark) throws WxErrorException;
-	
-	/**
-	 * <pre>
-	 * 获取用户个人信息
-	 * 详情请见：{@link http://mp.weixin.qq.com/wiki/1/8a5ce6257f1d3b2afb20f83e72b72ce9.html}
-	 * </pre>
-	 * @param openid
-	 * @param lang  返回结果的语言版本  {@link WxConsts} 
-	 * @return
-	 * @throws WxErrorException
-	 */
-	WxUser getUserInfoByOpenId(WxUserGet userGet) throws WxErrorException;
-	
-	/**
-	 * <pre>
-	 * 批量获取用户信息
-	 * 详情请见：{@link http://mp.weixin.qq.com/wiki/1/8a5ce6257f1d3b2afb20f83e72b72ce9.html}
-	 * </pre>
-	 * @param usersGet
-	 * @return
-	 * @throws WxErrorException
-	 */
-	WxUserList batchGetUserInfo(List<WxUserGet> usersGet) throws WxErrorException;
-	
-	/**
-	 * <pre>
-	 * 批量获取关注者openid
-	 * 详情请见：{@link http://mp.weixin.qq.com/wiki/12/54773ff6da7b8bdc95b7d2667d84b1d4.html}
-	 * </pre>
-	 * @param next_openid 第一个拉取的OPENID，不填默认从头开始拉取
-	 * @return
-	 * @throws WxErrorException
-	 */
-	WxUserListResult batchGetUserOpenId(String next_openid) throws WxErrorException;
-	
-	/**
-	 * <pre>
-	 * 构造oauth2授权的url连接
-	 * 详情请见: {@link http://mp.weixin.qq.com/wiki/4/9ac2e7b1f1d22e9e57260f6553822520.html}
-	 * </pre>
-	 * 
-	 * @param redirectUri   重定向地址
-	 * @param scope {@link WxConsts} 
-	 * 				snsapi_base 用户静默授权
-	 * 				snsapi_userinfo 用户手动授权
-	 * @param state 重定向后会带上state参数，开发者可以填写a-zA-Z0-9的参数值，最多128字节
-	 * @return url
-	 */
-	String oauth2buildAuthorizationUrl(String redirectUri, String scope, String state) throws WxErrorException;;
-
-	/**
-	 * <pre>
-	 * 获取OAuth2.0认证的凭证 access_token
-	 * 这个access_token跟全局的access_token不同，可以到官方文档查阅
-	 * {@link http://mp.weixin.qq.com/wiki/4/9ac2e7b1f1d22e9e57260f6553822520.html}
-	 * </pre>
-	 * @param code  
-	 * 				oauth2buildAuthorizationUrl()重定向后会携带code
-	 * @return
-	 * @throws WxErrorException
-	 */
-	WxOAuth2AccessTokenResult oauth2ToGetAccessToken(String code) throws WxErrorException; 
-	
-	/**
-	 * <pre>
-	 * 刷新access_token（如果需要）
-	 * 由于access_token拥有较短的有效期，当access_token超时后，可以使用refresh_token进行刷新，
-	 * refresh_token拥有较长的有效期（7天、30天、60天、90天），当refresh_token失效的后，需要用户重新授权
-	 * 
-	 * 详情请见：{@link http://mp.weixin.qq.com/wiki/4/9ac2e7b1f1d22e9e57260f6553822520.html}
-	 * </pre>
-	 * @param refresh_token 填写通过access_token获取到的refresh_token参数
-	 * @return
-	 * @throws WxErrorException
-	 */
-	WxOAuth2AccessTokenResult oauth2ToGetRefreshAccessToken(String refresh_token) throws WxErrorException; 
-	
-	/**
-	 * <pre>
-	 * 拉取用户信息(需scope为 snsapi_userinfo)
-	 * 如果网页授权作用域为snsapi_userinfo，则此时开发者可以通过access_token和openid拉取用户信息了。
-	 * 
-	 * 详情请见：{@link http://mp.weixin.qq.com/wiki/4/9ac2e7b1f1d22e9e57260f6553822520.html}
-	 * 
-	 * </pre>
-	 * @param userGet
-	 * @return
-	 * @throws WxErrorException
-	 */
-	WxUser oauth2ToGetUserInfo(String access_token, WxUserGet userGet) throws WxErrorException; 
-	
-	/**
-	 * <pre>
-	 * 检验授权凭证（access_token）是否有效
-	 * 
-	 * 详情请见：{@link http://mp.weixin.qq.com/wiki/4/9ac2e7b1f1d22e9e57260f6553822520.html}
-	 * </pre>
-	 * @param access_token
-	 * @param openid
-	 * @return WxError 若errcode=0，有效；反之，无效。
-	 * @throws WxErrorException
-	 */
-	WxError oauth2CheckAccessToken(String access_token, String openid) throws WxErrorException; 
-	
-	/**
-	 * <pre>
-	 * 生成二维码
-	 * 详情请见：{@link http://mp.weixin.qq.com/wiki/18/167e7d94df85d8389df6c94a7a8f78ba.html}
-	 * </pre>
-	 * @param WxQrcode里的action_name
-	 * 					{@link WxConsts.QR_CODE_LIMIT_SCENE} 临时二维码
-	 * 					{@link WxConsts.QR_CODE_LIMIT_STR_SCENE} 永久二维码
-	 * @return
-	 * @throws WxErrorException
-	 */
-	QrCodeResult createQrCode(WxQrcode qrcode) throws WxErrorException; 
-	
-	/**
-	 * <pre>
-	 * 下载/展示 二维码
-	 * </pre>
-	 * @param dir 二维码存放目录目录
-	 * @param ticket
-	 * @return
-	 * @throws WxErrorException
-	 */
-	File downloadQrCode(File dir, String ticket) throws WxErrorException; 
-	
-	/**
-	 * 长链接转成短链接
-	 * @param long_url
-	 * @return
-	 * @throws WxErrorException
-	 */
-	String getShortUrl(String long_url) throws WxErrorException; 
-	
-	/////////////////////////////////////////////////////////
-	
-	/**
-	 * 获得jsapi_ticket,不强制刷新jsapi_ticket
-	 * 
-	 * @see #getJsapiTicket(boolean)
-	 * @return
-	 * @throws WxErrorException
-	 */
-	public String getJsapiTicket() throws WxErrorException;
-
-	/**
-	 * <pre>
-	 * 获得jsapi_ticket
-	 * 获得时会检查jsapiToken是否过期，如果过期了，那么就刷新一下，否则就什么都不干
-	 *
-	 * 详情请见：http://mp.weixin.qq.com/wiki/11/74ad127cc054f6b80759c40f77ec03db.html
-	 * </pre>
-	 * 
-	 * @param forceRefresh
-	 *            强制刷新
-	 * @return
-	 * @throws WxErrorException
-	 */
-	public String getJsapiTicket(boolean forceRefresh) throws WxErrorException;
-
-	/**
-	 * <pre>
-	 * 创建调用jsapi时所需要的签名
-	 *
-	 * 详情请见：http://mp.weixin.qq.com/wiki/11/74ad127cc054f6b80759c40f77ec03db.html
-	 * 校验：http://mp.weixin.qq.com/debug/cgi-bin/sandbox?t=jsapisign
-	 * </pre>
-	 * 
-	 * @param url
-	 *            url
-	 * @return
-	 */
-	public WxJsapiSignature createJsapiSignature(String url) throws WxErrorException;
-
-	/**
-	 * <pre>
-	 * 获取微信服务器的ip段
-	 * 详情请见: {@link http://mp.weixin.qq.com/wiki/4/41ef0843d6e108cf6b5649480207561c.html}
-	 * </pre>
-	 * 
-	 * @return { "ip_list": ["101.226.103.*", "101.226.62.*"] }
-	 * @throws WxErrorException
-	 */
-	String[] getCallbackIp() throws WxErrorException;
-
-
-	/**
-	 * 注入 {@link WxConfigStorage} 的实现
-	 *
-	 * @param wxConfigProvider
-	 */
-	void setWxConfigStorage(WxConfigStorage wxConfigProvider);
-
-	/**
-	 * <pre>
-	 * 设置当微信系统响应系统繁忙时，要等待多少 retrySleepMillis(ms) * 2^(重试次数 - 1) 再发起重试
-	 * 默认：1000ms
-	 * </pre>
-	 * 
-	 * @param retrySleepMillis
-	 */
-	void setRetrySleepMillis(int retrySleepMillis);
-
-	/**
-	 * <pre>
-	 * 设置当微信系统响应系统繁忙时，最大重试次数
-	 * 默认：5次
-	 * </pre>
-	 * 
-	 * @param maxRetryTimes
-	 */
-	void setMaxRetryTimes(int maxRetryTimes);
-	
-	/**
-	 * 当本Service没有实现某个API的时候，可以用这个，针对所有微信API中的GET请求
-	 * 
-	 * @param url
-	 * @param queryParam
-	 * @return
-	 * @throws WxErrorException
-	 */
-	String get(String url, Map<String, String> params) throws WxErrorException;
-
-	/**
-	 * 当本Service没有实现某个API的时候，可以用这个，针对所有微信API中的POST请求
-	 * 
-	 * @param url
-	 * @param postData
-	 * @return
-	 * @throws WxErrorException
-	 */
-	String post(String url, String params) throws WxErrorException;
-
-	/**
-	 * <pre>
-	 * Service没有实现某个API的时候，可以用这个，
-	 * 比{@link #get}和{@link #post}方法更灵活，可以自己构造RequestExecutor用来处理不同的参数和不同的返回类型。
-	 * 可以参考，{@link com.soecode.wxtools.utll.http.MediaDownloadGetRequestExecutor}的实现方法
-	 * </pre>
+	 * 请求执行器
 	 * 
 	 * @param executor
 	 * @param uri
 	 * @param data
-	 * @param <T>
-	 * @param <E>
 	 * @return
 	 * @throws WxErrorException
 	 */
-	<T, E> T execute(RequestExecutor<T, E> executor, String uri, E data) throws WxErrorException;
-
+	protected synchronized <T, E> T executeInternal(RequestExecutor<T, E> executor, String uri, E data)
+			throws WxErrorException {
+		try {
+			return executor.execute(getHttpclient(), uri, data);
+		} catch (WxErrorException e) {
+			WxError error = e.getError();
+			/*
+			 * 发生以下情况时尝试刷新access_token 40001
+			 * 获取access_token时AppSecret错误，或者access_token无效 42001 access_token超时
+			 */
+			if (error.getErrcode() == 42001 || error.getErrcode() == 40001) {
+				// 强制设置wxCpConfigStorage它的accesstoken过期，这样在下一次请求里就会刷新accesstoken
+				WxConfig.getInstance().expireAccessToken();
+				return execute(executor, uri, data);
+			}
+			if (error.getErrcode() != 0) {
+				throw new WxErrorException(error);
+			}
+			return null;
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
 }

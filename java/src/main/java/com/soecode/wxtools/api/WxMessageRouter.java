@@ -2,9 +2,6 @@ package com.soecode.wxtools.api;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 import com.soecode.wxtools.bean.WxXmlMessage;
 import com.soecode.wxtools.bean.WxXmlOutMessage;
@@ -40,48 +37,17 @@ import com.soecode.wxtools.handler.WxErrorExceptionHandler;
  *
  */
 public class WxMessageRouter {
-	//默认线程池为100
-	private static final int DEFAULT_THREAD_POOL_SIZE = 100;
+
 	//规则集合
 	private final List<WxMessageRouterRule> rules = new ArrayList<WxMessageRouterRule>();
 	//业务
-	private final WxService wxService;
-	//线程池执行服务
-	private ExecutorService executorService;
-	//重复检查器
-	private WxMessageDuplicateChecker messageDuplicateChecker;
+	private final IService iService;
 	//异常处理器
 	private WxErrorExceptionHandler exceptionHandler;
 
 	//消息路由器构造方法
-	public WxMessageRouter(WxService wxService) {
-		this.wxService = wxService;
-		this.executorService = Executors.newFixedThreadPool(DEFAULT_THREAD_POOL_SIZE);
-		this.messageDuplicateChecker = new WxMessageInMemoryDuplicateChecker();
-	}
-
-	/**
-	 * <pre>
-	 * 设置自定义的 {@link ExecutorService}
-	 * 如果不调用该方法，默认使用 Executors.newFixedThreadPool(100)
-	 * </pre>
-	 * 
-	 * @param executorService
-	 */
-	public void setExecutorService(ExecutorService executorService) {
-		this.executorService = executorService;
-	}
-
-	/**
-	 * <pre>
-	 * 设置自定义的 {@link com.soecode.wxtools.api.WxMessageDuplicateChecker}
-	 * 如果不调用该方法，默认使用 {@link com.soecode.wxtools.api.WxMessageInMemoryDuplicateChecker}
-	 * </pre>
-	 * 
-	 * @param messageDuplicateChecker
-	 */
-	public void setMessageDuplicateChecker(WxMessageDuplicateChecker messageDuplicateChecker) {
-		this.messageDuplicateChecker = messageDuplicateChecker;
+	public WxMessageRouter(IService iService) {
+		this.iService = iService;
 	}
 
 	/**
@@ -114,12 +80,7 @@ public class WxMessageRouter {
 	 * @param wxMessage
 	 */
 	public WxXmlOutMessage route(final WxXmlMessage wxMessage) {
-		if (isDuplicateMessage(wxMessage)) {
-			System.out.println("重复消息");
-			// 如果是重复消息，那么就不做处理
-			return null;
-		}
-
+		
 		final List<WxMessageRouterRule> matchRules = new ArrayList<WxMessageRouterRule>();
 		// 收集匹配的规则
 		for (final WxMessageRouterRule rule : rules) {
@@ -136,46 +97,13 @@ public class WxMessageRouter {
 		if (matchRules.size() == 0) {
 			return null;
 		}
-
+		
 		WxXmlOutMessage res = null;
-		//创建Future接口，用于管理线程
-		final List<Future> futures = new ArrayList<Future>();
 		for (final WxMessageRouterRule rule : matchRules) {
-			// 返回最后一个非异步的rule的执行结果
-			if (rule.isAsync()) {
-				futures.add(executorService.submit(new Runnable() {
-					@Override
-					public void run() {
-						rule.service(wxMessage, wxService, exceptionHandler);
-					}
-				}));
-			} else {
-				// 在同步操作结束
-				res = rule.service(wxMessage, wxService, exceptionHandler);	
-			}
+			// 在同步操作结束
+			res = rule.service(wxMessage, iService, exceptionHandler);	
 		}
 		return res;
-	}
-
-	/**
-	 * 验证重试消息
-	 * @param wxMessage
-	 * @return
-	 */
-	protected boolean isDuplicateMessage(WxXmlMessage wxMessage) {
-		String messageId = "";
-		if (wxMessage.getMsgId() == null) {
-			messageId = String.valueOf(wxMessage.getToUserName()) + "-"
-					+ wxMessage.getFromUserName() + "-"+wxMessage.getContent()+"-"
-					+ String.valueOf(wxMessage.getEventKey() == null ? "" : wxMessage.getEventKey()) + "-"
-					+ String.valueOf(wxMessage.getEvent() == null ? "" : wxMessage.getEvent());
-		} else {
-			messageId = String.valueOf(wxMessage.getMsgId());
-		}
-		if (messageDuplicateChecker.isDuplicate(messageId)) {
-			return true;
-		}
-		return false;
 	}
 
 }

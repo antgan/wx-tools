@@ -1,13 +1,14 @@
 package com.soecode.wxtools.bean;
 
-import com.soecode.wxtools.api.WxConfigStorage;
+import com.soecode.wxtools.api.WxConfig;
 import com.soecode.wxtools.bean.outxmlbuilder.ImageBuilder;
 import com.soecode.wxtools.bean.outxmlbuilder.MusicBuilder;
 import com.soecode.wxtools.bean.outxmlbuilder.NewsBuilder;
 import com.soecode.wxtools.bean.outxmlbuilder.TextBuilder;
 import com.soecode.wxtools.bean.outxmlbuilder.VideoBuilder;
 import com.soecode.wxtools.bean.outxmlbuilder.VoiceBuilder;
-import com.soecode.wxtools.util.crypto.WxCpCryptUtil;
+import com.soecode.wxtools.exception.AesException;
+import com.soecode.wxtools.util.crypto.WXBizMsgCrypt;
 import com.soecode.wxtools.util.xml.XStreamCDataConverter;
 import com.soecode.wxtools.util.xml.XStreamTransformer;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -78,13 +79,12 @@ public abstract class WxXmlOutMessage {
 
 	/**
 	 * 转换成加密的xml格式
-	 * //TODO
 	 * @return
+	 * @throws AesException 
 	 */
-	public String toEncryptedXml(WxConfigStorage wxConfigStorage) {
-		String plainXml = toXml();
-		WxCpCryptUtil pc = new WxCpCryptUtil(wxConfigStorage);
-		return pc.encrypt(plainXml);
+	public static String encryptMsg(WxConfig wxconfig, String replyMsg, String timeStamp, String nonce) throws AesException {
+		WXBizMsgCrypt pc = new WXBizMsgCrypt(WxConfig.getInstance().getToken(), WxConfig.getInstance().getAesKey(), WxConfig.getInstance().getAppId());
+		return pc.encryptMsg(replyMsg, timeStamp, nonce);
 	}
 
 	/**

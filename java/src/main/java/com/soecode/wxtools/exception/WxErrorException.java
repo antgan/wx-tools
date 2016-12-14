@@ -18,6 +18,10 @@ public class WxErrorException extends Exception {
 		super(error.toString());
 		this.error = error;
 	}
+	
+	public WxErrorException(String msg){
+		super(msg);
+	}
 
 	public WxError getError() {
 		return error;

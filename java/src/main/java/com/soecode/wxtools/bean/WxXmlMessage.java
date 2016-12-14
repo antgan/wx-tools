@@ -5,13 +5,16 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.soecode.wxtools.api.WxConfigStorage;
-import com.soecode.wxtools.util.crypto.WxCpCryptUtil;
+import org.apache.commons.io.IOUtils;
+
+import com.soecode.wxtools.api.WxConfig;
+import com.soecode.wxtools.api.WxConsts;
+import com.soecode.wxtools.exception.AesException;
+import com.soecode.wxtools.util.crypto.WXBizMsgCrypt;
 import com.soecode.wxtools.util.xml.XStreamCDataConverter;
 import com.soecode.wxtools.util.xml.XStreamTransformer;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
-import org.apache.commons.io.IOUtils;
 
 
 /**
@@ -437,7 +440,7 @@ public class WxXmlMessage {
 	}
 
 	/**
-	 * 从加密字符串转换
+	 * 密文转明文
 	 *
 	 * @param encryptedXml
 	 * @param wxConfigStorage
@@ -445,18 +448,28 @@ public class WxXmlMessage {
 	 * @param nonce
 	 * @param msgSignature
 	 * @return
+	 * @throws AesException 
 	 */
-	public static WxXmlMessage fromEncryptedXml(String encryptedXml, WxConfigStorage wxConfigStorage,
-			String timestamp, String nonce, String msgSignature) {
-		WxCpCryptUtil cryptUtil = new WxCpCryptUtil(wxConfigStorage);
-		String plainText = cryptUtil.decrypt(msgSignature, timestamp, nonce, encryptedXml);
+	public static WxXmlMessage decryptMsg(String encryptedXml, WxConfig wxConfig,
+			String timestamp, String nonce, String msgSignature) throws AesException {
+		WXBizMsgCrypt pc = new WXBizMsgCrypt(WxConfig.getInstance().getToken(), WxConfig.getInstance().getAesKey(), WxConfig.getInstance().getAppId());
+		String plainText = pc.decryptMsg(msgSignature, timestamp, nonce, encryptedXml);
 		return fromXml(plainText);
 	}
-
-	public static WxXmlMessage fromEncryptedXml(InputStream is, WxConfigStorage wxConfigStorage, String timestamp,
-			String nonce, String msgSignature) {
+	/**
+	 * 密文转明文
+	 * @param is
+	 * @param wxConfig
+	 * @param timestamp
+	 * @param nonce
+	 * @param msgSignature
+	 * @return
+	 * @throws AesException
+	 */
+	public static WxXmlMessage decryptMsg(InputStream is, WxConfig wxConfig, String timestamp,
+			String nonce, String msgSignature) throws AesException {
 		try {
-			return fromEncryptedXml(IOUtils.toString(is, "UTF-8"), wxConfigStorage, timestamp, nonce, msgSignature);
+			return decryptMsg(IOUtils.toString(is, "UTF-8"), wxConfig, timestamp, nonce, msgSignature);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}

@@ -16,7 +16,7 @@ import com.soecode.wxtools.bean.WxXmlOutMessage;
  * 3. 规则的结束必须用{@link WxMessageRouterRule#end()}或者{@link WxMessageRouterRule#next()}，否则不会生效
  *
  * 使用方法：
- * WxCpMessageRouter router = new WxCpMessageRouter();
+ * WxMessageRouter router = new WxMessageRouter(wxService);
  * router
  *   .rule()
  *       .msgType("MSG_TYPE").event("EVENT").eventKey("EVENT_KEY").content("CONTENT")

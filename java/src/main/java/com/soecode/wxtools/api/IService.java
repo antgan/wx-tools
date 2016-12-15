@@ -6,7 +6,7 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
-import com.soecode.wxtools.bean.WxJsapiSignature;
+import com.soecode.wxtools.bean.WxJsapiConfig;
 import com.soecode.wxtools.bean.WxMenu;
 import com.soecode.wxtools.bean.WxNewsInfo;
 import com.soecode.wxtools.bean.WxQrcode;
@@ -30,7 +30,7 @@ import com.soecode.wxtools.exception.WxErrorException;
 import com.soecode.wxtools.util.http.RequestExecutor;
 
 /**
- * 微信API Service
+ * 微信API Service接口
  * @author antgan
  * @datetime 2016/6/15
  *
@@ -85,7 +85,7 @@ public interface IService {
 	 *
 	 * </pre>
 	 * @param menu
-	 * @param condition 是否为个性菜单，当为个性菜单，需要添加MatchRule
+	 * @param condition 是否为个性菜单，当为个性菜单，需要在WxMenu添加MatchRule
 	 * @throws WxErrorException
 	 */
 	String createMenu(WxMenu menu, boolean condition) throws WxErrorException;
@@ -590,17 +590,17 @@ public interface IService {
 
 	/**
 	 * <pre>
-	 * 创建调用jsapi时所需要的签名
+	 * 创建调用jsapi时所需要的config，包括签名，appId等
 	 *
 	 * 详情请见：http://mp.weixin.qq.com/wiki/11/74ad127cc054f6b80759c40f77ec03db.html
 	 * 校验：http://mp.weixin.qq.com/debug/cgi-bin/sandbox?t=jsapisign
 	 * </pre>
 	 * 
-	 * @param url
-	 *            url
-	 * @return
+	 * @param url 调用api的页面url
+	 * @param jsApiList 需要调用的api，详情见附录二【http://mp.weixin.qq.com/wiki/11/74ad127cc054f6b80759c40f77ec03db.html】
+	 * @return WxJsapiConfig
 	 */
-	public WxJsapiSignature createJsapiSignature(String url) throws WxErrorException;
+	public WxJsapiConfig createJsapiConfig(String url, List<String> jsApiList) throws WxErrorException;
 
 	/**
 	 * <pre>

@@ -5,8 +5,5 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
 					http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" 
 								id="WebApp_ID" version="3.0">
   <display-name>demo</display-name>
-  <listener>
-    <display-name>DemoInitListener</display-name>
-    <listener-class>wxtools.demo.init.DemoInitListener</listener-class>
-  </listener>
+
 </web-app>

@@ -19,7 +19,7 @@ import ch.qos.logback.classic.Logger;
  */
 public class WxConfig {
 	private static Logger logger = (Logger) LoggerFactory.getLogger(WxConfig.class);
-	private static final String configFile = "/config.properties";
+	private static final String configFile = "/wx.properties";
 	private static WxConfig config = null;
 	
 	//配置文件读取项
@@ -27,7 +27,7 @@ public class WxConfig {
 	private volatile String appSecret;
 	private volatile String token;
 	private volatile String aesKey;
-	private volatile String oauth2redirectUri;
+	private volatile String mchId;
 	
 	//内存更新
 	private volatile String accessToken;
@@ -40,7 +40,7 @@ public class WxConfig {
 		Properties p = new Properties();
 		InputStream inStream = this.getClass().getResourceAsStream(configFile);
 		if(inStream == null){
-			logger.error("根目录下找不到wxconfig.properties文件");
+			logger.error("根目录下找不到wx.properties文件");
 			return;
 		}
 		try {
@@ -53,14 +53,14 @@ public class WxConfig {
             if(StringUtils.isNotBlank(this.token)) this.token = this.token.trim();
             this.aesKey = p.getProperty("wx.aesKey");
             if(StringUtils.isNotBlank(this.aesKey)) this.aesKey = this.aesKey.trim();
-            this.oauth2redirectUri = p.getProperty("wx.oauth2redirectUri");
-            if(StringUtils.isNotBlank(this.oauth2redirectUri)) this.oauth2redirectUri = this.oauth2redirectUri.trim();
+            this.mchId = p.getProperty("wx.mchId");
+            if(StringUtils.isNotBlank(this.mchId)) this.mchId = this.mchId.trim();
 			inStream.close();
 		} catch (IOException e) {
-			logger.error("load wxconfig.properties error,class根目录下找不到wxconfig.properties文件");
+			logger.error("load wx.properties error,class根目录下找不到wx.properties文件");
 			e.printStackTrace();
 		}
-		logger.info("load wxconfig.properties success");
+		logger.info("load wx.properties success");
 	}
 	
 	/**
@@ -144,11 +144,11 @@ public class WxConfig {
 	public String getAesKey() {
 		return aesKey;
 	}
-
-	public String getOauth2redirectUri() {
-		return oauth2redirectUri;
-	}
 	
+	public String getMchId() {
+		return mchId;
+	}
+
 	@Override
 	public String toString() {
 		return "WxConfig [accessToken=" + accessToken + ", expiresTime=" + expiresTime + ", jsapiTicket=" + jsapiTicket

@@ -1,4 +1,4 @@
-package wxtools.demo.interceptor;
+package com.soecode.wxtools.interceptor;
 
 import java.util.Map;
 

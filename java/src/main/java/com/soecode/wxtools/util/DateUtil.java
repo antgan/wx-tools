@@ -10,7 +10,7 @@ import java.util.Date;
  * 日期工具类<br>
  * 获取当前日期<br>
  * 获取当前星期<br>
- * @author 甘海彬
+ * @author antgan
  *
  */
 public class DateUtil {

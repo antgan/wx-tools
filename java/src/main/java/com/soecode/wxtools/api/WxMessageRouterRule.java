@@ -9,7 +9,6 @@ import java.util.regex.Pattern;
 import com.soecode.wxtools.bean.WxXmlMessage;
 import com.soecode.wxtools.bean.WxXmlOutMessage;
 import com.soecode.wxtools.exception.WxErrorException;
-import com.soecode.wxtools.handler.WxErrorExceptionHandler;
 
 /**
  * 路由规则

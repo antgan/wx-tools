@@ -15,14 +15,14 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.LoggerFactory;
 
 import com.soecode.wxtools.bean.WxAccessToken;
-import com.soecode.wxtools.bean.WxJsapiSignature;
+import com.soecode.wxtools.bean.WxJsapiConfig;
 import com.soecode.wxtools.bean.WxMenu;
 import com.soecode.wxtools.bean.WxNewsInfo;
 import com.soecode.wxtools.bean.WxQrcode;
 import com.soecode.wxtools.bean.WxUserList;
-import com.soecode.wxtools.bean.WxVideoIntroduction;
 import com.soecode.wxtools.bean.WxUserList.WxUser;
 import com.soecode.wxtools.bean.WxUserList.WxUser.WxUserGet;
+import com.soecode.wxtools.bean.WxVideoIntroduction;
 import com.soecode.wxtools.bean.result.QrCodeResult;
 import com.soecode.wxtools.bean.result.WxBatchGetMaterialResult;
 import com.soecode.wxtools.bean.result.WxCurMenuInfoResult;
@@ -60,12 +60,10 @@ import ch.qos.logback.classic.Logger;
 public class WxService implements IService{
 	//日志
 	private static Logger logger = (Logger) LoggerFactory.getLogger(WxService.class);
-	//统一业务调用接口
-	private static IService service = null;
 	//全局的是否正在刷新access token的锁
-	protected final Object globalAccessTokenRefreshLock = new Object();
+	protected static final Object globalAccessTokenRefreshLock = new Object();
 	//全局的是否正在刷新jsapi_ticket的锁
-	protected final Object globalJsapiTicketRefreshLock = new Object();
+	protected static final Object globalJsapiTicketRefreshLock = new Object();
 	//HttpClient
 	protected CloseableHttpClient httpClient;
 	//重试间隔
@@ -78,17 +76,7 @@ public class WxService implements IService{
 	public WxService() {
 		httpClient = HttpClients.createDefault();
 	}
-	/**
-	 * 【单例模式】WxService全局只有一个
-	 * @return
-	 */
-	public static synchronized IService getInstance() {
-		if (service == null) {
-			service = new WxService();
-		}
-		return service;
-	}
-	
+
 	/*****************************
 	 *                           *
 	 *    以下为微信公众号API接口     *
@@ -648,7 +636,7 @@ public class WxService implements IService{
 						int expiresInSeconds = node.get("expires_in").asInt();
 						WxConfig.getInstance().updateJsapiTicket(jsapiTicket, expiresInSeconds);
 					} catch (Exception e) {
-						e.printStackTrace();
+						throw new WxErrorException("[wx-tools]getJsapiTicket failure.");
 					}
 				}
 			}
@@ -656,24 +644,25 @@ public class WxService implements IService{
 		return WxConfig.getInstance().getJsapiTicket();
 	}
 
-	public WxJsapiSignature createJsapiSignature(String url) throws WxErrorException {
+	public WxJsapiConfig createJsapiConfig(String url, List<String> jsApiList) throws WxErrorException {
 		long timestamp = System.currentTimeMillis() / 1000;
 		String noncestr = RandomUtils.getRandomStr(16);
 		String jsapiTicket = getJsapiTicket();
 		try {
 			String signature = SHA1.genWithAmple("noncestr="+noncestr,
 					"jsapi_ticket="+jsapiTicket,"timestamp="+timestamp,"url="+url);
-			WxJsapiSignature jsapiSignature = new WxJsapiSignature();
-			jsapiSignature.setTimestamp(timestamp);
-			jsapiSignature.setNoncestr(noncestr);
-			jsapiSignature.setUrl(url);
-			jsapiSignature.setSignature(signature);
-			return jsapiSignature;
+			WxJsapiConfig jsapiConfig = new WxJsapiConfig();
+			jsapiConfig.setTimestamp(timestamp);
+			jsapiConfig.setNoncestr(noncestr);
+			jsapiConfig.setUrl(url);
+			jsapiConfig.setSignature(signature);
+			jsapiConfig.setJsApiList(jsApiList);
+			return jsapiConfig;
 		} catch (NoSuchAlgorithmException e) {
-			throw new RuntimeException(e);
+			throw new WxErrorException("[wx-tools]createJsapiConfig failure.");
 		}
 	}
-
+	
 	protected CloseableHttpClient getHttpclient() {
 		return this.httpClient;
 	}
@@ -722,7 +711,9 @@ public class WxService implements IService{
 						logger.info("[wx-tools]微信系统繁忙，{%d}ms 后重试(第{%d}次)",sleepMillis, retryTimes + 1);
 						Thread.sleep(sleepMillis);
 					} catch (InterruptedException e1) {
+						logger.info("[wx-tools]execute too busy");
 						throw new RuntimeException(e1);
+						
 					}
 				} else {
 					throw e;

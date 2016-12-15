@@ -1,4 +1,4 @@
-package wxtools.demo.matcher;
+package com.soecode.wxtools.matcher;
 
 import com.soecode.wxtools.api.WxMessageMatcher;
 import com.soecode.wxtools.bean.WxXmlMessage;

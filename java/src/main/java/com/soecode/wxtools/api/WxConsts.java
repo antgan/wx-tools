@@ -264,5 +264,4 @@ public class WxConsts {
 	/////////////////////////
 	public static final String URL_GET_JS_API_TICKET = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=ACCESS_TOKEN&type=jsapi";
 	
-	
 }

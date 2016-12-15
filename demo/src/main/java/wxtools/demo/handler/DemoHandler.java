@@ -1,4 +1,4 @@
-package com.soecode.wxtools.handler;
+package wxtools.demo.handler;
 
 import java.util.Map;
 

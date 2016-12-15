@@ -3,9 +3,9 @@ package com.soecode.wxtools.util;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 /**
- * Emoji表情 转码工具�?<br>
+ * Emoji表情 转码工具<br>
  * utf-8的emoji表情转换为unicode字符编码 
- * @author 甘海�?
+ * @author antgan
  */
 public class EmojiUtil {
 	/**

@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.soecode.wxtools.bean.WxXmlMessage;
 import com.soecode.wxtools.bean.WxXmlOutMessage;
-import com.soecode.wxtools.handler.WxErrorExceptionHandler;
 
 /**
  * <pre>

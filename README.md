@@ -10,7 +10,7 @@ Wx-tools是基于微信公众平台API的轻量级框架。
 * [wx-tools-2.0.0-code.zip](https://github.com/antgan/wx-tools/archive/master.zip)
 
 #文档:
-* [开发文档](https://antgan.gitbooks.io/wx-tools/content)【更新中】
+* [开发文档](https://antgan.gitbooks.io/wx-tools/content) （文档写得比较详细，可以看看快速入门~）
  
 #实例教程
 * [CSDN实例教程](http://blog.csdn.net/antgan/article/details/51717424)
@@ -23,4 +23,4 @@ Wx-tools是基于微信公众平台API的轻量级框架。
 * 微信开发交流QQ群：570937047
 
 #博主有话说：
-* 大四快毕业了，最近才把工作和实习定了下来。闲暇有空，结合了在几个项目的实践中，把遇到的问题和设计重新整理修复了一遍。受益匪浅。但是小弟能力不才，如果有BUG或者其他建议，希望能提出来~让wx-tools更加好用。文档正在更新中，喜欢的话欢迎star哦~
+* 大四快毕业了，最近才把工作和实习定了下来。闲暇有空，结合了在几个项目的实践中，把遇到的问题和设计重新整理修复了一遍。受益匪浅。但是小弟能力不才，如果有BUG或者其他建议，希望能提出来~让wx-tools更加好用。喜欢的话欢迎star哦~无限感激！

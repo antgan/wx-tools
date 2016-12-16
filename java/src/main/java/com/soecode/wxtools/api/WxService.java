@@ -635,6 +635,7 @@ public class WxService implements IService{
 						String jsapiTicket = node.get("ticket").asText();
 						int expiresInSeconds = node.get("expires_in").asInt();
 						WxConfig.getInstance().updateJsapiTicket(jsapiTicket, expiresInSeconds);
+						logger.info("[wx-tools]update jsapiTicket success. ticket: "+jsapiTicket);
 					} catch (Exception e) {
 						throw new WxErrorException("[wx-tools]getJsapiTicket failure.");
 					}

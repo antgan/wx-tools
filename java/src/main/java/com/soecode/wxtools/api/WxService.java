@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -14,16 +15,29 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.LoggerFactory;
 
+import com.soecode.wxtools.bean.InvokePay;
+import com.soecode.wxtools.bean.PayOrderInfo;
+import com.soecode.wxtools.bean.PreviewSender;
+import com.soecode.wxtools.bean.TemplateSender;
 import com.soecode.wxtools.bean.WxAccessToken;
+import com.soecode.wxtools.bean.WxGroupSender;
 import com.soecode.wxtools.bean.WxJsapiConfig;
 import com.soecode.wxtools.bean.WxMenu;
 import com.soecode.wxtools.bean.WxNewsInfo;
+import com.soecode.wxtools.bean.WxOpenidSender;
 import com.soecode.wxtools.bean.WxQrcode;
+import com.soecode.wxtools.bean.WxUnifiedOrder;
 import com.soecode.wxtools.bean.WxUserList;
 import com.soecode.wxtools.bean.WxUserList.WxUser;
 import com.soecode.wxtools.bean.WxUserList.WxUser.WxUserGet;
 import com.soecode.wxtools.bean.WxVideoIntroduction;
+import com.soecode.wxtools.bean.result.IndustryResult;
 import com.soecode.wxtools.bean.result.QrCodeResult;
+import com.soecode.wxtools.bean.result.SenderResult;
+import com.soecode.wxtools.bean.result.TemplateListResult;
+import com.soecode.wxtools.bean.result.TemplateResult;
+import com.soecode.wxtools.bean.result.TemplateSenderResult;
+import com.soecode.wxtools.bean.result.UnifiedOrderResult;
 import com.soecode.wxtools.bean.result.WxBatchGetMaterialResult;
 import com.soecode.wxtools.bean.result.WxCurMenuInfoResult;
 import com.soecode.wxtools.bean.result.WxError;
@@ -36,6 +50,8 @@ import com.soecode.wxtools.bean.result.WxUserGroupResult;
 import com.soecode.wxtools.bean.result.WxUserListResult;
 import com.soecode.wxtools.bean.result.WxVideoMediaResult;
 import com.soecode.wxtools.exception.WxErrorException;
+import com.soecode.wxtools.util.DateUtil;
+import com.soecode.wxtools.util.PayUtil;
 import com.soecode.wxtools.util.RandomUtils;
 import com.soecode.wxtools.util.crypto.SHA1;
 import com.soecode.wxtools.util.file.FileUtils;
@@ -664,6 +680,194 @@ public class WxService implements IService{
 		}
 	}
 	
+	@Override
+	public SenderResult sendAllByGroup(WxGroupSender sender) throws WxErrorException {
+		SenderResult result = null;
+		String url = WxConsts.URL_GROUP_SEND_ALL.replace("ACCESS_TOKEN", getAccessToken());
+		try {
+			String postResult = post(url, sender.toJson());
+			result = SenderResult.fromJson(postResult);
+		} catch (IOException e) {
+			throw new WxErrorException("[wx-tools]sendAllByGroup failure.");
+		}
+		return result;
+	}
+	
+	@Override
+	public SenderResult sendAllByOpenid(WxOpenidSender sender) throws WxErrorException {
+		SenderResult result = null;
+		String url = WxConsts.URL_OPENID_SEND_ALL.replace("ACCESS_TOKEN", getAccessToken());
+		try {
+			String postResult = post(url, sender.toJson());
+			result = SenderResult.fromJson(postResult);
+		} catch (IOException e) {
+			throw new WxErrorException("[wx-tools]sendAllByOpenid failure.");
+		}
+		return result;
+	}
+	
+	@Override
+	public SenderResult sendAllPreview(PreviewSender sender) throws WxErrorException {
+		SenderResult result = null;
+		String url = WxConsts.URL_PREVIEW_SEND_ALL.replace("ACCESS_TOKEN", getAccessToken());
+		try {
+			String postResult = post(url, sender.toJson());
+			result = SenderResult.fromJson(postResult);
+		} catch (IOException e) {
+			throw new WxErrorException("[wx-tools]sendAllPreview failure.");
+		}
+		return result;
+	}
+	
+	@Override
+	public SenderResult sendAllDelete(String msg_id) throws WxErrorException {
+		SenderResult result = null;
+		String json = "{\"msg_id\":"+msg_id+"}";
+		String url = WxConsts.URL_DELETE_SEND_ALL.replace("ACCESS_TOKEN", getAccessToken());
+		try {
+			String postResult = post(url, json);
+			result = SenderResult.fromJson(postResult);
+		} catch (IOException e) {
+			throw new WxErrorException("[wx-tools]sendAllDelete failure.");
+		}
+		return result;
+	}
+	
+	@Override
+	public SenderResult sendAllGetStatus(String msg_id) throws WxErrorException {
+		SenderResult result = null;
+		String json = "{\"msg_id\":\""+msg_id+"\"}";
+		String url = WxConsts.URL_GET_STATUS_SEND_ALL.replace("ACCESS_TOKEN", getAccessToken());
+		try {
+			String postResult = post(url, json);
+			result = SenderResult.fromJson(postResult);
+		} catch (IOException e) {
+			throw new WxErrorException("[wx-tools]sendAllGetStatus failure.");
+		}
+		return result;
+	}
+	
+	@Deprecated
+	@Override
+	public InvokePay unifiedOrder(PayOrderInfo order, String notifyUrl, String openid) throws WxErrorException{
+		InvokePay ivp = new InvokePay();
+		WxUnifiedOrder payinfo = PayUtil.createPayInfo(order, notifyUrl, openid);
+		String postResult = null;
+		try {
+			postResult = post(WxConsts.URL_PAY_UNIFIEORDER, payinfo.toXml());
+		} catch (WxErrorException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println(postResult);
+		
+		UnifiedOrderResult result = UnifiedOrderResult.fromXml(postResult);
+		
+		//赋值
+		ivp.setAppId(result.getAppid());
+		ivp.setNonceStr(result.getNonceStr());
+		ivp.setPaySign(result.getSign());
+		ivp.setPrepayId(result.getPrepayId());
+		ivp.setSignType("MD5");
+		ivp.setTimeStamp(DateUtil.getTimestamp());
+		
+		//拼接map
+		Map<String,String> map = new HashMap<>();
+		map.put("appId", ivp.getAppId());
+		map.put("timeStamp", ivp.getTimeStamp());
+		map.put("nonceStr", ivp.getNonceStr());
+		map.put("package", "prepay_id="+ivp.getPrepayId());
+		map.put("signType", ivp.getSignType());
+		ivp.setPaySign(PayUtil.createSign(map, WxConfig.getInstance().getApiKey()));;
+		return ivp;
+	}
+	
+	@Override
+	public WxError templateSetIndustry(String industry1, String industry2) throws WxErrorException {
+		WxError result = null;
+		String url = WxConsts.URL_TEMPLATE_SET_INDUSTRY.replace("ACCESS_TOKEN", getAccessToken());
+		String json = "{\"industry_id1\":\""+industry1+"\",\"industry_id2\":\""+industry2+"\"}";
+		try {
+			String postResult = post(url, json);
+			result = WxError.fromJson(postResult);
+		} catch (IOException e) {
+			throw new WxErrorException("[wx-tools]templateSetIndustry failure.");
+		}
+		return result;
+	}
+	
+	@Override
+	public IndustryResult templateGetIndustry() throws WxErrorException {
+		IndustryResult result = null;
+		String getResult = null;
+		String url = WxConsts.URL_TEMPLATE_GET_INDUSTRY.replace("ACCESS_TOKEN", getAccessToken());
+		try {
+			getResult = get(url, null);
+			result = IndustryResult.fromJson(getResult);
+		} catch (IOException e) {
+			throw new WxErrorException("[wx-tools]templateGetIndustry failure.");
+		}
+		return result;
+	}
+	
+	@Override
+	public TemplateResult templateGetId(String template_id_short) throws WxErrorException {
+		TemplateResult result = null;
+		String postResult = null;
+		String url = WxConsts.URL_TEMPLATE_GET_ID.replace("ACCESS_TOKEN", getAccessToken());
+		String json = "{\"template_id_short\":\""+template_id_short+"\"}";
+		try {
+			postResult = post(url, json);
+			result = TemplateResult.fromJson(postResult);
+		} catch (IOException e) {
+			throw new WxErrorException("[wx-tools]templateGetId failure.");
+		}
+		return result;
+	}
+	
+	@Override
+	public TemplateListResult templateGetList() throws WxErrorException {
+		TemplateListResult result = null;
+		String getResult = null;
+		String url = WxConsts.URL_TEMPLATE_GET_LIST.replace("ACCESS_TOKEN", getAccessToken());
+		try {
+			getResult = get(url, null);
+			result = TemplateListResult.fromJson(getResult);
+		} catch (IOException e) {
+			throw new WxErrorException("[wx-tools]templateGetList failure.");
+		}
+		return result;
+	}
+	
+	@Override
+	public WxError templateDelete(String template_id) throws WxErrorException {
+		WxError result = null;
+		String postResult = null;
+		String url = WxConsts.URL_TEMPLATE_DELETE.replace("ACCESS_TOKEN", getAccessToken());
+		String json = "{\"template_id\":\""+template_id+"\"}";
+		try {
+			postResult = post(url, json);
+			result = WxError.fromJson(postResult);
+		} catch (IOException e) {
+			throw new WxErrorException("[wx-tools]templateDelete failure.");
+		}
+		return result;
+	}
+	
+	@Override
+	public TemplateSenderResult templateSend(TemplateSender sender) throws WxErrorException {
+		TemplateSenderResult result = null;
+		String postResult = null;
+		String url = WxConsts.URL_TEMPLATE_SEND.replace("ACCESS_TOKEN", getAccessToken());
+		try {
+			postResult = post(url, sender.toJson());
+			result = TemplateSenderResult.fromJson(postResult);
+		} catch (IOException e) {
+			throw new WxErrorException("[wx-tools]templateSend failure.");
+		}
+		return result;
+	}
+
 	protected CloseableHttpClient getHttpclient() {
 		return this.httpClient;
 	}

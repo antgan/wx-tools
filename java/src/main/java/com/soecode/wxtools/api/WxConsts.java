@@ -198,6 +198,16 @@ public class WxConsts {
 	public static final String MATERIAL_VOICE = "voice";
 	public static final String MATERIAL_IMAGE = "image";
 	public static final String MATERIAL_VIDEO = "video";
+	
+	///////////////////////
+	// 群发类型/////////
+	///////////////////////
+	public static final String SEND_ALL_NEWS = "mpnews";
+	public static final String SEND_ALL_TEXT = "text";
+	public static final String SEND_ALL_VOICE = "voice";
+	public static final String SEND_ALL_IMAGE = "image";
+	public static final String SEND_ALL_VIDEO = "mpvideo";
+	
 
 	/////////////////////////////////// 请求URL常量//////////////////////////////////////////
 	// ACCESSTOKEN
@@ -263,5 +273,31 @@ public class WxConsts {
 	//////JsapiTicket
 	/////////////////////////
 	public static final String URL_GET_JS_API_TICKET = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=ACCESS_TOKEN&type=jsapi";
+	
+	/////////////////////////
+	//////群发相关(不支持卡券)
+	/////////////////////////
+	public static final String URL_GROUP_SEND_ALL= "https://api.weixin.qq.com/cgi-bin/message/mass/sendall?access_token=ACCESS_TOKEN";
+	public static final String URL_OPENID_SEND_ALL = "https://api.weixin.qq.com/cgi-bin/message/mass/send?access_token=ACCESS_TOKEN";
+	public static final String URL_DELETE_SEND_ALL ="https://api.weixin.qq.com/cgi-bin/message/mass/delete?access_token=ACCESS_TOKEN";
+	public static final String URL_PREVIEW_SEND_ALL ="https://api.weixin.qq.com/cgi-bin/message/mass/preview?access_token=ACCESS_TOKEN";
+	public static final String URL_GET_STATUS_SEND_ALL = "https://api.weixin.qq.com/cgi-bin/message/mass/get?access_token=ACCESS_TOKEN";
+	
+	/////////////////////////
+	//////支付相关
+	/////////////////////////
+	public static final String URL_PAY_UNIFIEORDER = "https://api.mch.weixin.qq.com/pay/unifiedorder";
+	
+	/////////////////////////
+	//////模板消息
+	/////////////////////////
+	public static final String URL_TEMPLATE_SET_INDUSTRY = "https://api.weixin.qq.com/cgi-bin/template/api_set_industry?access_token=ACCESS_TOKEN";
+	public static final String URL_TEMPLATE_GET_INDUSTRY = "https://api.weixin.qq.com/cgi-bin/template/get_industry?access_token=ACCESS_TOKEN";
+	public static final String URL_TEMPLATE_GET_ID = "https://api.weixin.qq.com/cgi-bin/template/api_add_template?access_token=ACCESS_TOKEN";
+	public static final String URL_TEMPLATE_GET_LIST = "https://api.weixin.qq.com/cgi-bin/template/get_all_private_template?access_token=ACCESS_TOKEN";
+	public static final String URL_TEMPLATE_DELETE = "https://api.weixin.qq.com/cgi-bin/template/del_private_template?access_token=ACCESS_TOKEN";
+	public static final String URL_TEMPLATE_SEND = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=ACCESS_TOKEN";
+	
+	
 	
 }

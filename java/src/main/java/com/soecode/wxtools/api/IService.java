@@ -6,15 +6,26 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
+import com.soecode.wxtools.bean.InvokePay;
+import com.soecode.wxtools.bean.PayOrderInfo;
+import com.soecode.wxtools.bean.PreviewSender;
+import com.soecode.wxtools.bean.TemplateSender;
+import com.soecode.wxtools.bean.WxGroupSender;
 import com.soecode.wxtools.bean.WxJsapiConfig;
 import com.soecode.wxtools.bean.WxMenu;
 import com.soecode.wxtools.bean.WxNewsInfo;
+import com.soecode.wxtools.bean.WxOpenidSender;
 import com.soecode.wxtools.bean.WxQrcode;
 import com.soecode.wxtools.bean.WxUserList;
 import com.soecode.wxtools.bean.WxUserList.WxUser;
 import com.soecode.wxtools.bean.WxUserList.WxUser.WxUserGet;
 import com.soecode.wxtools.bean.WxVideoIntroduction;
+import com.soecode.wxtools.bean.result.IndustryResult;
 import com.soecode.wxtools.bean.result.QrCodeResult;
+import com.soecode.wxtools.bean.result.SenderResult;
+import com.soecode.wxtools.bean.result.TemplateListResult;
+import com.soecode.wxtools.bean.result.TemplateResult;
+import com.soecode.wxtools.bean.result.TemplateSenderResult;
 import com.soecode.wxtools.bean.result.WxBatchGetMaterialResult;
 import com.soecode.wxtools.bean.result.WxCurMenuInfoResult;
 import com.soecode.wxtools.bean.result.WxError;
@@ -33,6 +44,7 @@ import com.soecode.wxtools.util.http.RequestExecutor;
  * 微信API Service接口
  * @author antgan
  * @datetime 2016/6/15
+ * @updatetime 2017/4/13
  *
  */
 public interface IService {
@@ -276,6 +288,17 @@ public interface IService {
 	
 	/**
 	 * <pre>
+	 * 上传图片，获取腾讯域名下的图片资源路径
+	 * 
+	 * </pre>
+	 * @return WxMediaUploadResult    获取成员变量Url
+	 * 								腾讯域名下的图片资源。用于图文正文
+	 * @throws WxErrorException
+	 */
+	WxMediaUploadResult imageDomainChange(File file) throws WxErrorException;
+	
+	/**
+	 * <pre>
 	 * 新增永久图文，最多8个
 	 * 
 	 * 请注意，在图文消息的具体内容中，将过滤外部的图片链接，只能使用腾讯域名下的图片资源。
@@ -286,18 +309,7 @@ public interface IService {
 	 * @throws WxErrorException
 	 */
 	String addNewsMedia(List<WxNewsInfo> news) throws WxErrorException;
-	
-	/**
-	 * <pre>
-	 * 上传图片，获取腾讯域名下的图片资源路径
-	 * 
-	 * </pre>
-	 * @return WxMediaUploadResult    获取成员变量Url
-	 * 								腾讯域名下的图片资源。用于图文正文
-	 * @throws WxErrorException
-	 */
-	WxMediaUploadResult imageDomainChange(File file) throws WxErrorException;
-	
+
 	/**
 	 * <pre>
 	 * 修改永久图文素材
@@ -601,7 +613,7 @@ public interface IService {
 	 * @return WxJsapiConfig
 	 */
 	public WxJsapiConfig createJsapiConfig(String url, List<String> jsApiList) throws WxErrorException;
-
+	
 	/**
 	 * <pre>
 	 * 获取微信服务器的ip段
@@ -612,7 +624,152 @@ public interface IService {
 	 * @throws WxErrorException
 	 */
 	String[] getCallbackIp() throws WxErrorException;
+	
+	/**
+	 * <pre>
+	 * 通过组 群发
+	 * 详情请见: {@link http://mp.weixin.qq.com/wiki/15/40b6865b893947b764e2de8e4a1fb55f.html}
+	 * </pre>
+	 * 
+	 * @return 
+	 * @throws WxErrorException
+	 */
+	SenderResult sendAllByGroup(WxGroupSender sender) throws WxErrorException;
+	
+	/**
+	 * <pre>
+	 * 通过openid列表 群发
+	 * 详情请见: {@link http://mp.weixin.qq.com/wiki/15/40b6865b893947b764e2de8e4a1fb55f.html}
+	 * </pre>
+	 * 
+	 * @return 
+	 * @throws WxErrorException
+	 */
+	SenderResult sendAllByOpenid(WxOpenidSender sender) throws WxErrorException;
+	
+	/**
+	 * <pre>
+	 * 群发预览
+	 * 详情请见: {@link http://mp.weixin.qq.com/wiki/15/40b6865b893947b764e2de8e4a1fb55f.html}
+	 * </pre>
+	 * 
+	 * @return 
+	 * @throws WxErrorException
+	 */
+	SenderResult sendAllPreview(PreviewSender sender) throws WxErrorException;
 
+	/**
+	 * <pre>
+	 * 群发删除
+	 * 1、只有已经发送成功的消息才能删除
+	 * 2、删除消息是将消息的图文详情页失效，已经收到的用户，还是能在其本地看到消息卡片。
+	 * 3、删除群发消息只能删除图文消息和视频消息，其他类型的消息一经发送，无法删除。
+	 * 4、如果多次群发发送的是一个图文消息，那么删除其中一次群发，就会删除掉这个图文消息也，导致所有群发都失效
+	 * 详情请见: {@link http://mp.weixin.qq.com/wiki/15/40b6865b893947b764e2de8e4a1fb55f.html}
+	 * </pre>
+	 * 
+	 * @return 
+	 * @throws WxErrorException
+	 */
+	SenderResult sendAllDelete(String msg_id) throws WxErrorException;
+	
+	/**
+	 * <pre>
+	 * 获取群发状态
+	 * 
+	 * 详情请见: {@link http://mp.weixin.qq.com/wiki/15/40b6865b893947b764e2de8e4a1fb55f.html}
+	 * </pre>
+	 * 
+	 * @return 
+	 * @throws WxErrorException
+	 */
+	SenderResult sendAllGetStatus(String msg_id) throws WxErrorException;
+	
+	/**
+	 * <pre>
+	 * 模板消息--设置行业
+	 * 
+	 * 参数参考：{@link http://mp.weixin.qq.com/wiki/5/6dde9eaa909f83354e0094dc3ad99e05.html}的行业代码
+	 * </pre>
+	 * 
+	 * @return 
+	 * @throws WxErrorException
+	 */
+	WxError templateSetIndustry(String industry1, String industry2) throws WxErrorException;
+	
+	/**
+	 * <pre>
+	 * 模板消息--获取设置的行业信息
+	 * 
+	 * 参数参考：{@link http://mp.weixin.qq.com/wiki/5/6dde9eaa909f83354e0094dc3ad99e05.html}的行业代码
+	 * </pre>
+	 * 
+	 * @return 
+	 * @throws WxErrorException
+	 */
+	IndustryResult templateGetIndustry() throws WxErrorException;
+	
+	/**
+	 * <pre>
+	 * 模板消息--获取模板ID
+	 * 
+	 * 参数参考：{@link http://mp.weixin.qq.com/wiki/5/6dde9eaa909f83354e0094dc3ad99e05.html}的行业代码
+	 * </pre>
+	 * 
+	 * @return 
+	 * @throws WxErrorException
+	 */
+	TemplateResult templateGetId(String template_id_short)throws WxErrorException; 
+	
+	/**
+	 * <pre>
+	 * 模板消息--获取模板列表
+	 * 
+	 * 参数参考：{@link http://mp.weixin.qq.com/wiki/5/6dde9eaa909f83354e0094dc3ad99e05.html}的行业代码
+	 * </pre>
+	 * 
+	 * @return 
+	 * @throws WxErrorException
+	 */
+	TemplateListResult templateGetList()throws WxErrorException; 
+	
+	/**
+	 * <pre>
+	 * 模板消息--删除模板
+	 * 
+	 * 参数参考：{@link http://mp.weixin.qq.com/wiki/5/6dde9eaa909f83354e0094dc3ad99e05.html}的行业代码
+	 * </pre>
+	 * 
+	 * @return 
+	 * @throws WxErrorException
+	 */
+	WxError templateDelete(String template_id)throws WxErrorException; 
+	
+	/**
+	 * <pre>
+	 * 模板消息--发送模板
+	 * 
+	 * 参数参考：{@link http://mp.weixin.qq.com/wiki/5/6dde9eaa909f83354e0094dc3ad99e05.html}的行业代码
+	 * </pre>
+	 * 
+	 * @return 
+	 * @throws WxErrorException
+	 */
+	TemplateSenderResult templateSend(TemplateSender sender)throws WxErrorException; 
+	
+	/**
+	 * <pre>
+	 * 支付--统一下单接口【未测试】
+	 * 
+	 * 详情请见: {@link https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_1}
+	 * </pre>
+	 * 
+	 * @return 
+	 * @throws WxErrorException
+	 */
+	@Deprecated
+	InvokePay unifiedOrder(PayOrderInfo order, String notifyUrl , String openid) throws WxErrorException;
+	
 	/**
 	 * <pre>
 	 * 设置当微信系统响应系统繁忙时，要等待多少 retrySleepMillis(ms) * 2^(重试次数 - 1) 再发起重试

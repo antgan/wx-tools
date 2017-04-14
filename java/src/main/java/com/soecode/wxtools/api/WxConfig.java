@@ -28,6 +28,7 @@ public class WxConfig {
 	private volatile String token;
 	private volatile String aesKey;
 	private volatile String mchId;
+	private volatile String apiKey;
 	
 	//内存更新
 	private volatile String accessToken;
@@ -55,6 +56,8 @@ public class WxConfig {
             if(StringUtils.isNotBlank(this.aesKey)) this.aesKey = this.aesKey.trim();
             this.mchId = p.getProperty("wx.mchId");
             if(StringUtils.isNotBlank(this.mchId)) this.mchId = this.mchId.trim();
+            this.apiKey = p.getProperty("wx.apiKey");
+            if(StringUtils.isNotBlank(this.apiKey)) this.apiKey = this.apiKey.trim();
 			inStream.close();
 		} catch (IOException e) {
 			logger.error("load wx.properties error,class根目录下找不到wx.properties文件");
@@ -149,9 +152,21 @@ public class WxConfig {
 		return mchId;
 	}
 
+	public String getApiKey() {
+		return apiKey;
+	}
+
+	public void setApiKey(String apiKey) {
+		this.apiKey = apiKey;
+	}
+
 	@Override
 	public String toString() {
-		return "WxConfig [accessToken=" + accessToken + ", expiresTime=" + expiresTime + ", jsapiTicket=" + jsapiTicket
-				+ ", jsapiTicketExpiresTime=" + jsapiTicketExpiresTime + "]";
+		return "WxConfig [appId=" + appId + ", appSecret=" + appSecret + ", token=" + token + ", aesKey=" + aesKey
+				+ ", mchId=" + mchId + ", apiKey=" + apiKey + ", accessToken=" + accessToken + ", expiresTime="
+				+ expiresTime + ", jsapiTicket=" + jsapiTicket + ", jsapiTicketExpiresTime=" + jsapiTicketExpiresTime
+				+ "]";
 	}
+
+	
 }

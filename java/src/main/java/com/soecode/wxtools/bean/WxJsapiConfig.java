@@ -1,6 +1,11 @@
 package com.soecode.wxtools.bean;
 
+import java.io.IOException;
 import java.util.List;
+
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
 
 /**
  * Jsapi signature
@@ -69,4 +74,8 @@ public class WxJsapiConfig {
 		this.appid = appid;
 	}
 
+	public String toJson() throws JsonGenerationException, JsonMappingException, IOException{
+		ObjectMapper mapper = new ObjectMapper();
+		return mapper.writeValueAsString(this);
+	}
 }

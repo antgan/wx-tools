@@ -1,6 +1,0 @@
-{
-  "name": "Wx-tools",
-  "tagline": "Wx-tools是基于微信公众平台API的轻量级框架。 基于Wx-tools你可以开速开发一个订阅号/服务号的web应用后台。",
-  "body": "Wx-tools是基于微信公众平台API的轻量级框架。\r\n基于Wx-tools你可以开速开发一个订阅号/服务号的web应用后台。\r\n\r\n#特性：\r\n* 统一、简单的API，可以快速上手。\r\n* 链式赋值编程，更加容易理解和使用。\r\n* 对于微信服务器发来的消息，提供匹配器（Matcher），拦截器（interceptor），处理器（Handler）接口，定制实现，具有可扩展性。\r\n\r\n#源码：\r\n* [wx-tools-2.0.0-code.zip](https://github.com/antgan/wx-tools/archive/master.zip)\r\n\r\n#文档:\r\n* [开发文档](https://antgan.gitbooks.io/wx-tools/content) （文档写得比较详细，可以看看快速入门~）\r\n \r\n#实例教程\r\n* [CSDN实例教程](http://blog.csdn.net/antgan/article/details/51717424)\r\n \r\n#Jar下载：\r\n* [wx-tools-2.0.0.jar](https://github.com/antgan/wx-tools/raw/master/lib/wx-tools-2.0.0.jar)\r\n\r\n#讨论：\r\n* BUG反馈及建议：https://github.com/antgan/wx-tools/issues\r\n* 微信开发交流QQ群：570937047\r\n\r\n#博主有话说：\r\n* 大四快毕业了，最近才把工作和实习定了下来。闲暇有空，结合了在几个项目的实践中，把遇到的问题和设计重新整理修复了一遍。受益匪浅。但是小弟能力不才，如果有BUG或者其他建议，希望能提出来~让wx-tools更加好用。喜欢的话欢迎star哦~无限感激！\r\n",
-  "note": "Don't delete this file! It's used internally to help with page regeneration."
-}

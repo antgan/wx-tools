@@ -7,7 +7,7 @@ Wx-tools是基于微信公众平台API的轻量级框架。
 * 对于微信服务器发来的消息，提供匹配器（Matcher），拦截器（interceptor），处理器（Handler）接口，定制实现，具有可扩展性。
 
 #源码：
-* [wx-tools-2.1.0-code.zip](https://github.com/antgan/wx-tools/archive/master.zip)
+* [wx-tools-2.1.1-code.zip](https://github.com/antgan/wx-tools/archive/master.zip)
 
 #文档:
 * [开发文档](https://antgan.gitbooks.io/wx-tools/content) （文档写得比较详细，可以看看快速入门~）
@@ -16,7 +16,7 @@ Wx-tools是基于微信公众平台API的轻量级框架。
 * [CSDN实例教程](http://blog.csdn.net/antgan/article/details/51717424)
  
 #Jar下载：
-* [wx-tools-2.1.0.jar](https://github.com/antgan/wx-tools/raw/master/lib/wx-tools-2.1.0.jar)
+* [wx-tools-2.1.1.jar](https://github.com/antgan/wx-tools/raw/master/lib/wx-tools-2.1.1.jar)
 
 #讨论：
 * BUG反馈及建议：https://github.com/antgan/wx-tools/issues

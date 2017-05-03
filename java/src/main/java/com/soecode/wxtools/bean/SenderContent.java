@@ -68,19 +68,19 @@ public class SenderContent {
 	}
 
 	public static class Text{
-		private String cotent;
+		private String content;
 		public Text() {
 			// TODO Auto-generated constructor stub
 		}
 		public Text(String content){
-			this.cotent = content;
+			this.content = content;
 		}
-		public String getCotent() {
-			return cotent;
+		public String getContent() {
+			return content;
 		}
 
-		public void setCotent(String cotent) {
-			this.cotent = cotent;
+		public void setContent(String content) {
+			this.content = content;
 		}
 		
 	}

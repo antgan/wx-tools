@@ -26,6 +26,7 @@ import com.soecode.wxtools.exception.WxErrorException;
  */
 public class MessageApi {
 	IService iService =  new WxService();
+
 	/**
 	 * 通过用户组来群发
 	 */

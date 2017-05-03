@@ -887,7 +887,9 @@ public class WxService implements IService{
 	}
 
 	public String post(String url, String params) throws WxErrorException {
-		return execute(new SimplePostRequestExecutor(), url, params);
+		String result = execute(new SimplePostRequestExecutor(), url, params);
+		
+		return result;
 	}
 
 	/**

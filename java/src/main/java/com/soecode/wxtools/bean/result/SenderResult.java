@@ -14,7 +14,7 @@ import org.codehaus.jackson.map.ObjectMapper;
  *
  */
 public class SenderResult extends WxError{
-	@JsonIgnore
+
 	private long msg_id;
 	private long msg_data_id;
 	private String msg_status;
@@ -44,7 +44,9 @@ public class SenderResult extends WxError{
 	}
 	@Override
 	public String toString() {
-		return "SenderResult [msg_id=" + msg_id + ", msg_data_id=" + msg_data_id + ", msg_status=" + msg_status + "]";
+		return "SenderResult [msg_id=" + msg_id + ", msg_data_id=" + msg_data_id + ", msg_status=" + msg_status 
+				+ " errcode= "+ getErrcode()+
+				 " errmsg= " + getErrmsg()+"]";
 	}
 	
 	

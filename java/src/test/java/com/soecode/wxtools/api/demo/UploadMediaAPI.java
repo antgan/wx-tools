@@ -29,7 +29,7 @@ public class UploadMediaAPI {
 	public void uploadTempMedia(){
 		//可以上传file或者InputSteam，拿到MediaID
 		try {
-			WxMediaUploadResult result = iService.uploadTempMedia(WxConsts.MEDIA_IMAGE,new File("E://test.jpg"));
+			WxMediaUploadResult result = iService.uploadTempMedia(WxConsts.MEDIA_IMAGE,new File("E://test.png"));
 			System.out.println(result.getMedia_id());
 		} catch (WxErrorException e) {
 			// TODO Auto-generated catch block
@@ -37,7 +37,7 @@ public class UploadMediaAPI {
 		}
 		
 	}
-	
+
 	/**
 	 * 下载临时文件，存在E://temp文件夹
 	 */

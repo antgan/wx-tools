@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.soecode.wxtools.api.IService;
+import com.soecode.wxtools.api.WxConsts;
 import com.soecode.wxtools.api.WxService;
 import com.soecode.wxtools.bean.PreviewSender;
 import com.soecode.wxtools.bean.SenderContent.Media;
@@ -24,7 +25,7 @@ import com.soecode.wxtools.exception.WxErrorException;
  * @author antgan
  *
  */
-public class MessageApi {
+public class MessageAPI {
 	IService iService =  new WxService();
 
 	/**
@@ -53,13 +54,14 @@ public class MessageApi {
 	public void sendAllByOpenid(){
 		WxOpenidSender sender = new WxOpenidSender();
 		List<String> openidList = new ArrayList<>();
-		openidList.add("openid1");
-		openidList.add("openid2");
+		openidList.add("oROCnuNihJnO9bnKOAORDFFriPgQ");
+		openidList.add("oROCnuNihJnO9bnKOAORDFFriPgQ");
 		sender.setTouser(openidList);
 		//群发文本内容
-		sender.setText(new Text("文本内容"));
+		sender.setText(new Text("文本内容12"));
+		sender.setMsgtype(WxConsts.SEND_ALL_TEXT);
 		//群发图片，以此类推
-		sender.setImage(new Media("media_id"));
+//		sender.setImage(new Media("media_id"));
 		try {
 			SenderResult result = iService.sendAllByOpenid(sender);
 			System.out.println(result.toString());
@@ -75,10 +77,11 @@ public class MessageApi {
 	public void sendAllPreview(){
 		PreviewSender sender = new PreviewSender();
 		//设置openid或者微信号，优先级为wxname高
-		sender.setTouser("openid");
+		sender.setTouser("oROCnuNihJnO9bnKOAORDFFriPgQ");
 		sender.setTowxname("微信号");
 		//群发文本内容
 		sender.setText(new Text("文本内容"));
+		sender.setMsgtype(WxConsts.SEND_ALL_TEXT);
 		//群发图片，以此类推
 		sender.setImage(new Media("media_id"));
 		try {
@@ -89,6 +92,7 @@ public class MessageApi {
 			e.printStackTrace();
 		}
 	}
+
 	
 	/**
 	 * 删除群发

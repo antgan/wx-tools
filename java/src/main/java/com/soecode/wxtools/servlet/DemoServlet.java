@@ -88,7 +88,7 @@ public class DemoServlet extends HttpServlet {
 				// 微信服务器推送过来的是XML格式。
 				WxXmlMessage wx = XStreamTransformer.fromXml(WxXmlMessage.class, request.getInputStream());
 				System.out.println("消息：\n " + wx.toString());
-				
+				iService.getAccessToken();
 				router.rule().matcher(new DemoMatcher()).interceptor(new DemoInterceptor()).handler(new DemoHandler()).end();
 				// 把消息传递给路由器进行处理
 				WxXmlOutMessage xmlOutMsg = router.route(wx);

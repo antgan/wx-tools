@@ -4,12 +4,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-import org.slf4j.LoggerFactory;
-
 import com.soecode.wxtools.bean.WxAccessToken;
+import com.soecode.wxtools.exception.WxErrorException;
 import com.soecode.wxtools.util.StringUtils;
-
-import ch.qos.logback.classic.Logger;
 
 /**
  * 微信全局配置对象-从配置文件读取
@@ -18,7 +15,6 @@ import ch.qos.logback.classic.Logger;
  *
  */
 public class WxConfig {
-	private static Logger logger = (Logger) LoggerFactory.getLogger(WxConfig.class);
 	private static final String configFile = "/wx.properties";
 	private static WxConfig config = null;
 	
@@ -41,8 +37,11 @@ public class WxConfig {
 		Properties p = new Properties();
 		InputStream inStream = this.getClass().getResourceAsStream(configFile);
 		if(inStream == null){
-			logger.error("根目录下找不到wx.properties文件");
-			return;
+			try {
+				throw new WxErrorException("根目录找不到文件");
+			} catch (WxErrorException e) {
+				e.printStackTrace();
+			}
 		}
 		try {
 			p.load(inStream);
@@ -60,10 +59,13 @@ public class WxConfig {
             if(StringUtils.isNotBlank(this.apiKey)) this.apiKey = this.apiKey.trim();
 			inStream.close();
 		} catch (IOException e) {
-			logger.error("load wx.properties error,class根目录下找不到wx.properties文件");
-			e.printStackTrace();
+			try {
+				throw new WxErrorException("load wx.properties error,class根目录下找不到wx.properties文件");
+			} catch (WxErrorException e1) {
+				e1.printStackTrace();
+			}
 		}
-		logger.info("load wx.properties success");
+		System.out.println("load wx.properties success");
 	}
 	
 	/**

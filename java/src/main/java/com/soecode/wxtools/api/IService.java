@@ -769,26 +769,7 @@ public interface IService {
 	 */
 	@Deprecated
 	InvokePay unifiedOrder(PayOrderInfo order, String notifyUrl , String openid) throws WxErrorException;
-	
-	/**
-	 * <pre>
-	 * 设置当微信系统响应系统繁忙时，要等待多少 retrySleepMillis(ms) * 2^(重试次数 - 1) 再发起重试
-	 * 默认：1000ms
-	 * </pre>
-	 * 
-	 * @param retrySleepMillis
-	 */
-	void setRetrySleepMillis(int retrySleepMillis);
 
-	/**
-	 * <pre>
-	 * 设置当微信系统响应系统繁忙时，最大重试次数
-	 * 默认：5次
-	 * </pre>
-	 * 
-	 * @param maxRetryTimes
-	 */
-	void setMaxRetryTimes(int maxRetryTimes);
 	
 	/**
 	 * 当本Service没有实现某个API的时候，可以用这个，针对所有微信API中的GET请求

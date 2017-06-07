@@ -13,7 +13,6 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.slf4j.LoggerFactory;
 
 import com.soecode.wxtools.bean.InvokePay;
 import com.soecode.wxtools.bean.PayOrderInfo;
@@ -65,8 +64,6 @@ import com.soecode.wxtools.util.http.SimplePostRequestExecutor;
 import com.soecode.wxtools.util.http.URIUtil;
 import com.soecode.wxtools.util.http.VideoDownloadPostRequestExecutor;
 
-import ch.qos.logback.classic.Logger;
-
 /**
  * 统一业务处理类
  * @author antgan
@@ -74,18 +71,13 @@ import ch.qos.logback.classic.Logger;
  * 
  */
 public class WxService implements IService{
-	//日志
-	private static Logger logger = (Logger) LoggerFactory.getLogger(WxService.class);
 	//全局的是否正在刷新access token的锁
 	protected static final Object globalAccessTokenRefreshLock = new Object();
 	//全局的是否正在刷新jsapi_ticket的锁
 	protected static final Object globalJsapiTicketRefreshLock = new Object();
 	//HttpClient
 	protected CloseableHttpClient httpClient;
-	//重试间隔
-	private int retrySleepMillis = 1000;
-	//重试次数
-	private int maxRetryTimes = 5;
+	
 	/**
 	 * 构造方法，初始化httpClient
 	 */
@@ -127,7 +119,7 @@ public class WxService implements IService{
 						String resultContent = get(url, null);
 						WxAccessToken accessToken = WxAccessToken.fromJson(resultContent);
 						WxConfig.getInstance().updateAccessToken(accessToken.getAccess_token(), accessToken.getExpires_in());
-						logger.info("[wx-tools]update accessToken success. accessToken:"+accessToken.getAccess_token());
+						System.out.println("[wx-tools]update accessToken success. accessToken:"+accessToken.getAccess_token());
 					} catch (IOException e) {
 						throw new WxErrorException("[wx-tools]refresh accessToken failure.");
 					}
@@ -162,7 +154,7 @@ public class WxService implements IService{
 
 		try {
 			result = post(url, menu.toJson());
-			logger.info("[wx-tools]Create Menu result:" + result);
+			System.out.println("[wx-tools]Create Menu result:" + result);
 		} catch (IOException e) {
 			throw new WxErrorException("[wx-tools]createMenu failure.");
 		}
@@ -173,7 +165,7 @@ public class WxService implements IService{
 	public String deleteMenu() throws WxErrorException {
 		String url = WxConsts.URL_DELETE_MENU.replace("ACCESS_TOKEN", getAccessToken());
 		String result = get(url, null);
-		logger.info("[wx-tools]Delete Menu result:" + result);
+		System.out.println("[wx-tools]Delete Menu result:" + result);
 		return result;
 	}
 
@@ -183,7 +175,7 @@ public class WxService implements IService{
 
 		String json = "{" + "\"menuid\":" + menuid + "}";
 		String result = post(url, json);
-		logger.info("[wx-tools]Delete Conditional Menu result:" + result);
+		System.out.println("[wx-tools]Delete Conditional Menu result:" + result);
 		return result;
 	}
 
@@ -651,7 +643,7 @@ public class WxService implements IService{
 						String jsapiTicket = node.get("ticket").asText();
 						int expiresInSeconds = node.get("expires_in").asInt();
 						WxConfig.getInstance().updateJsapiTicket(jsapiTicket, expiresInSeconds);
-						logger.info("[wx-tools]update jsapiTicket success. ticket: "+jsapiTicket);
+						System.out.println("[wx-tools]update jsapiTicket success. ticket: "+jsapiTicket);
 					} catch (Exception e) {
 						throw new WxErrorException("[wx-tools]getJsapiTicket failure.");
 					}
@@ -872,24 +864,12 @@ public class WxService implements IService{
 		return this.httpClient;
 	}
 
-	@Override
-	public void setRetrySleepMillis(int retrySleepMillis) {
-		this.retrySleepMillis = retrySleepMillis;
-	}
-
-	@Override
-	public void setMaxRetryTimes(int maxRetryTimes) {
-		this.maxRetryTimes = maxRetryTimes;
-	}
-
 	public String get(String url, Map<String, String> params) throws WxErrorException {
 		return execute(new SimpleGetRequestExecutor(), url, params);
 	}
 
 	public String post(String url, String params) throws WxErrorException {
-		String result = execute(new SimplePostRequestExecutor(), url, params);
-		
-		return result;
+		return execute(new SimplePostRequestExecutor(), url, params);
 	}
 
 	/**
@@ -901,33 +881,14 @@ public class WxService implements IService{
 	 * @param data
 	 * @return
 	 * @throws WxErrorException
+	 * @throws IOException 
 	 */
-	public <T, E> T execute(RequestExecutor<T, E> executor, String uri, E data) throws WxErrorException {
-		int retryTimes = 0;
-		do {
-			try {
-				return executeInternal(executor, uri, data);
-			} catch (WxErrorException e) {
-				WxError error = e.getError();
-				/**
-				 * -1 系统繁忙, 1000ms后重试
-				 */
-				if (error.getErrcode() == -1) {
-					int sleepMillis = retrySleepMillis * (1 << retryTimes);
-					try {
-						logger.info("[wx-tools]微信系统繁忙，{%d}ms 后重试(第{%d}次)",sleepMillis, retryTimes + 1);
-						Thread.sleep(sleepMillis);
-					} catch (InterruptedException e1) {
-						logger.info("[wx-tools]execute too busy");
-						throw new RuntimeException(e1);
-						
-					}
-				} else {
-					throw e;
-				}
-			}
-		} while (++retryTimes < maxRetryTimes);
-		throw new RuntimeException("微信服务端异常，超出重试次数");
+	public <T, E> T execute(RequestExecutor<T, E> executor, String uri, E data) throws WxErrorException{
+		try {
+			return executeInternal(executor, uri, data);
+		} catch (WxErrorException e) {
+			throw e;
+		}
 	}
 
 	/**
@@ -938,28 +899,17 @@ public class WxService implements IService{
 	 * @param data
 	 * @return
 	 * @throws WxErrorException
+	 * @throws IOException 
 	 */
 	protected synchronized <T, E> T executeInternal(RequestExecutor<T, E> executor, String uri, E data)
-			throws WxErrorException {
+			throws WxErrorException{
 		try {
 			return executor.execute(getHttpclient(), uri, data);
 		} catch (WxErrorException e) {
-			WxError error = e.getError();
-			/*
-			 * 发生以下情况时尝试刷新access_token 40001
-			 * 获取access_token时AppSecret错误，或者access_token无效 42001 access_token超时
-			 */
-			if (error.getErrcode() == 42001 || error.getErrcode() == 40001) {
-				// 强制设置wxCpConfigStorage它的accesstoken过期，这样在下一次请求里就会刷新accesstoken
-				WxConfig.getInstance().expireAccessToken();
-				return execute(executor, uri, data);
-			}
-			if (error.getErrcode() != 0) {
-				throw new WxErrorException(error);
-			}
-			return null;
+			throw e;
 		} catch (IOException e) {
-			throw new RuntimeException(e);
+			e.printStackTrace();
 		}
+		return null;
 	}
 }

@@ -1,11 +1,16 @@
 package com.soecode.wxtools.api.demo;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.soecode.wxtools.api.IService;
 import com.soecode.wxtools.api.WxConsts;
 import com.soecode.wxtools.api.WxService;
+import com.soecode.wxtools.bean.SenderContent.Media;
+import com.soecode.wxtools.bean.WxOpenidSender;
 import com.soecode.wxtools.bean.WxVideoIntroduction;
+import com.soecode.wxtools.bean.result.SenderResult;
 import com.soecode.wxtools.bean.result.WxBatchGetMaterialResult;
 import com.soecode.wxtools.bean.result.WxError;
 import com.soecode.wxtools.bean.result.WxMaterialCountResult;

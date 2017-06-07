@@ -8,24 +8,6 @@
   <name>wx-tools</name>
   <url>http://maven.apache.org</url>
   <dependencies>
-    <!-- 补全依赖 -->
-    <!-- 1：日志； java日志：slf4j，log4j，logback，common-logging
-        slf4j接口/规范
-        log4j,logback,common-logging，实现
-        此处使用slf4j+logback -->
-    <dependency>
-    	<groupId>org.slf4j</groupId>
-    	<artifactId>slf4j-api</artifactId>
-    	<version>1.7.6</version>
-    </dependency>
-
-    <!-- 实现slf4j日志 -->
-    <dependency>
-    	<groupId>ch.qos.logback</groupId>
-    	<artifactId>logback-classic</artifactId>
-    	<version>1.1.1</version>
-    </dependency> 
-  
     <!-- HttpClient -->
     <dependency>
 	    <groupId>org.apache.httpcomponents</groupId>
@@ -61,4 +43,19 @@
 	</dependency>
 	
   </dependencies>
+  <build>
+  	<pluginManagement>
+  		<plugins>
+  			<plugin>
+  				<groupId>org.apache.maven.plugins</groupId>
+  				<artifactId>maven-compiler-plugin</artifactId>
+  				<version>2.1</version>
+  				<configuration>
+  					<source>1.7</source>
+  					<target>1.7</target>
+  				</configuration>
+  			</plugin>
+  		</plugins>
+  	</pluginManagement>
+  </build>
 </project>

@@ -1,12 +1,9 @@
 package com.soecode.wxtools.api;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.soecode.wxtools.bean.WxAccessToken;
-import com.soecode.wxtools.exception.WxErrorException;
-import com.soecode.wxtools.util.StringUtils;
 
 /**
  * 微信全局配置对象-从配置文件读取
@@ -15,68 +12,50 @@ import com.soecode.wxtools.util.StringUtils;
  *
  */
 public class WxConfig {
-	private static final String configFile = "/wx.properties";
-	private static WxConfig config = null;
+	//private static final String configFile = "/wx.properties";
+	//private static WxConfig config = null;
+	
+	public final Object accessTokenRefreshLock =new Object();
+	public final Object jsapiTicketRefreshLock =new Object();
+	
+	private static List<WxConfig> pools=new ArrayList<WxConfig>();
 	
 	//配置文件读取项
-	private volatile String appId;
-	private volatile String appSecret;
-	private volatile String token;
-	private volatile String aesKey;
-	private volatile String mchId;
-	private volatile String apiKey;
+	private String appId;
+	private String appSecret;
+	private String token;
+	private String aesKey;
+	private String mchId;
+	private String apiKey;
 	
 	//内存更新
-	private volatile String accessToken;
-	private volatile long expiresTime;
-	private volatile String jsapiTicket;
-	private volatile long jsapiTicketExpiresTime;
+	private String accessToken;
+	private long expiresTime;
+	private String jsapiTicket;
+	private long jsapiTicketExpiresTime;
 	
-	public WxConfig() {
-		//写读配置文件代码
-		Properties p = new Properties();
-		InputStream inStream = this.getClass().getResourceAsStream(configFile);
-		if(inStream == null){
-			try {
-				throw new WxErrorException("根目录找不到文件");
-			} catch (WxErrorException e) {
-				e.printStackTrace();
-			}
-		}
-		try {
-			p.load(inStream);
-			this.appId = p.getProperty("wx.appId");
-            if(StringUtils.isNotBlank(this.appId)) this.appId = this.appId.trim();
-            this.appSecret = p.getProperty("wx.appSecret");
-            if(StringUtils.isNotBlank(this.appSecret)) this.appSecret = this.appSecret.trim();
-            this.token = p.getProperty("wx.token");
-            if(StringUtils.isNotBlank(this.token)) this.token = this.token.trim();
-            this.aesKey = p.getProperty("wx.aesKey");
-            if(StringUtils.isNotBlank(this.aesKey)) this.aesKey = this.aesKey.trim();
-            this.mchId = p.getProperty("wx.mchId");
-            if(StringUtils.isNotBlank(this.mchId)) this.mchId = this.mchId.trim();
-            this.apiKey = p.getProperty("wx.apiKey");
-            if(StringUtils.isNotBlank(this.apiKey)) this.apiKey = this.apiKey.trim();
-			inStream.close();
-		} catch (IOException e) {
-			try {
-				throw new WxErrorException("load wx.properties error,class根目录下找不到wx.properties文件");
-			} catch (WxErrorException e1) {
-				e1.printStackTrace();
-			}
-		}
-		System.out.println("load wx.properties success");
+	private WxConfig(String appId,String appSecret,String token,String aesKey,String mchId,String apiKey) {
+			this.appId = appId;
+            this.appSecret = appSecret;
+            this.token = token;
+            this.aesKey = aesKey;
+            this.mchId = mchId;
+            this.apiKey = apiKey;
 	}
 	
 	/**
 	 * 同步获取/加载单例
 	 * @return
 	 */
-	public static synchronized WxConfig getInstance(){
-		if(config == null){
-			config = new WxConfig();
+	public static synchronized WxConfig getInstance(String appId,String appSecret,String token,String aesKey,String mchId,String apiKey){
+		for(WxConfig c: pools){
+			if(c.appId.equals(appId)){
+				return c;
+			}
 		}
-		return config;
+		WxConfig c=new WxConfig(appId,appSecret,token,aesKey,mchId,apiKey);
+		pools.add(c);
+		return c;
 	}
 	
 	public String getAccessToken() {
@@ -169,6 +148,5 @@ public class WxConfig {
 				+ expiresTime + ", jsapiTicket=" + jsapiTicket + ", jsapiTicketExpiresTime=" + jsapiTicketExpiresTime
 				+ "]";
 	}
-
 	
 }

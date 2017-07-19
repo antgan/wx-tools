@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.soecode.wxtools.api.IService;
+import com.soecode.wxtools.api.WxConfig;
 import com.soecode.wxtools.api.WxConsts;
 import com.soecode.wxtools.api.WxService;
 import com.soecode.wxtools.bean.PreviewSender;
@@ -26,7 +27,7 @@ import com.soecode.wxtools.exception.WxErrorException;
  *
  */
 public class MessageAPI {
-	IService iService =  new WxService();
+	IService iService =  new WxService(WxConfig.getInstance("appId", "appSecret", "token", "aesKey", null, null));
 
 	/**
 	 * 通过用户组来群发

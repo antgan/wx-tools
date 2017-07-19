@@ -1,6 +1,7 @@
 package com.soecode.wxtools.api.demo;
 
 import com.soecode.wxtools.api.IService;
+import com.soecode.wxtools.api.WxConfig;
 import com.soecode.wxtools.api.WxService;
 import com.soecode.wxtools.bean.InvokePay;
 import com.soecode.wxtools.bean.PayOrderInfo;
@@ -12,7 +13,7 @@ import com.soecode.wxtools.exception.WxErrorException;
  *
  */
 public class PayAPI {
-	IService iService = new WxService();
+	IService iService = new WxService(WxConfig.getInstance("appId", "appSecret", "token", "aesKey", null, null));
 	/**
 	 * 统一下单接口
 	 */

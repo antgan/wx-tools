@@ -5,7 +5,7 @@
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/java"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/resources"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/test/java"/>
-        <property name="context-root" value="wx-tools"/>
         <property name="java-output-path" value="/wx-tools/target/classes"/>
+        <property name="context-root" value="mp-tools"/>
     </wb-module>
 </project-modules>

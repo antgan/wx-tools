@@ -3,6 +3,7 @@ package com.soecode.wxtools.api.demo;
 import java.io.File;
 
 import com.soecode.wxtools.api.IService;
+import com.soecode.wxtools.api.WxConfig;
 import com.soecode.wxtools.api.WxService;
 import com.soecode.wxtools.bean.WxQrcode;
 import com.soecode.wxtools.bean.WxQrcode.WxQrActionInfo;
@@ -16,7 +17,7 @@ import com.soecode.wxtools.exception.WxErrorException;
  *
  */
 public class OtherAPI {
-	IService iService = new WxService();
+	IService iService = new WxService(WxConfig.getInstance("appId", "appSecret", "token", "aesKey", null, null));
 	/**
 	 * 生产二维码
 	 */

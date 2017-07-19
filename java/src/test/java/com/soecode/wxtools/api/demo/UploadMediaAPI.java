@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.soecode.wxtools.api.IService;
+import com.soecode.wxtools.api.WxConfig;
 import com.soecode.wxtools.api.WxConsts;
 import com.soecode.wxtools.api.WxService;
 import com.soecode.wxtools.bean.SenderContent.Media;
@@ -20,13 +21,13 @@ import com.soecode.wxtools.bean.result.WxVideoMediaResult;
 import com.soecode.wxtools.exception.WxErrorException;
 
 /**
- * 上传相关API示例
+ * 素材上传相关API示例
  * @author antgan
  *
  */
 public class UploadMediaAPI {
 
-	IService iService = new WxService();
+	IService iService = new WxService(WxConfig.getInstance("appId", "appSecret", "token", "aesKey", null, null));
 	
 	/**
 	 * 上传临时文件到微信服务器
@@ -40,7 +41,6 @@ public class UploadMediaAPI {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
 	}
 
 	/**

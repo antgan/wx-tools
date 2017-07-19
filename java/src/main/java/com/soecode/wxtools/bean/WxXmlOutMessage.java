@@ -83,7 +83,7 @@ public abstract class WxXmlOutMessage {
 	 * @throws AesException 
 	 */
 	public static String encryptMsg(WxConfig wxconfig, String replyMsg, String timeStamp, String nonce) throws AesException {
-		WXBizMsgCrypt pc = new WXBizMsgCrypt(WxConfig.getInstance().getToken(), WxConfig.getInstance().getAesKey(), WxConfig.getInstance().getAppId());
+		WXBizMsgCrypt pc = new WXBizMsgCrypt(wxconfig.getToken(), wxconfig.getAesKey(), wxconfig.getAppId());
 		return pc.encryptMsg(replyMsg, timeStamp, nonce);
 	}
 

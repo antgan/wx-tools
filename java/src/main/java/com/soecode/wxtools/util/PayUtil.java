@@ -24,11 +24,11 @@ public class PayUtil {
 	 * @param openId
 	 * @return
 	 */
-	public static WxUnifiedOrder createPayInfo(PayOrderInfo order, String notifyUrl , String openid) {
+	public static WxUnifiedOrder createPayInfo(WxConfig wxConfig,PayOrderInfo order, String notifyUrl , String openid) {
 		//map只是为了ASCII码从小到大排序（字典序）
 		Map<String, String> payinfo = new HashMap<>();	
-		payinfo.put("appid", WxConfig.getInstance().getAppId());
-		payinfo.put("mch_id", WxConfig.getInstance().getMchId());
+		payinfo.put("appid", wxConfig.getAppId());
+		payinfo.put("mch_id", wxConfig.getMchId());
 		payinfo.put("device_info", "WEB");
 		payinfo.put("nonce_str", StringUtils.randomStr(32));
 		payinfo.put("body", order.getOrderName());
@@ -40,7 +40,7 @@ public class PayUtil {
 		payinfo.put("notify_url", notifyUrl);
 		payinfo.put("trade_type", order.getTradeType());
 		payinfo.put("openid", openid);
-		payinfo.put("sign", createSign(payinfo, WxConfig.getInstance().getApiKey()));
+		payinfo.put("sign", createSign(payinfo, wxConfig.getApiKey()));
 		
 		//赋值对象
 		WxUnifiedOrder pay = new WxUnifiedOrder();

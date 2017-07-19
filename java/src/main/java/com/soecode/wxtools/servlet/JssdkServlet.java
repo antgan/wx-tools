@@ -28,7 +28,7 @@ import com.soecode.wxtools.exception.WxErrorException;
 @WebServlet("/jssdk/config")
 public class JssdkServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private IService iService = new WxService();
+	private IService iService = new WxService(WxConfig.getInstance("appId", "appSecret", "token", "aesKey", null, null));
 	
 	/**
 	 * 获取jssdk相关配置
@@ -53,7 +53,7 @@ public class JssdkServlet extends HttpServlet {
 			WxJsapiConfig config = null;
 			try {
 				config = iService.createJsapiConfig(url, list);
-				config.setAppid(WxConfig.getInstance().getAppId());
+				config.setAppid(iService.getWxConfig().getAppId());
 			} catch (WxErrorException e) {
 				e.printStackTrace();
 			}

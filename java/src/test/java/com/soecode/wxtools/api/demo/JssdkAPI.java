@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.soecode.wxtools.api.IService;
+import com.soecode.wxtools.api.WxConfig;
 import com.soecode.wxtools.api.WxService;
 import com.soecode.wxtools.bean.WxJsapiConfig;
 import com.soecode.wxtools.exception.WxErrorException;
@@ -16,7 +17,7 @@ import com.soecode.wxtools.exception.WxErrorException;
  *
  */
 public class JssdkAPI {
-	IService iService = new WxService();
+	IService iService = new WxService(WxConfig.getInstance("appId", "appSecret", "token", "aesKey", null, null));
 	/**
 	 * 获取JSSDK 中config的配置
 	 */

@@ -20,6 +20,9 @@ import com.soecode.wxtools.interceptor.DemoInterceptor;
 import com.soecode.wxtools.matcher.DemoMatcher;
 import com.soecode.wxtools.util.xml.XStreamTransformer;
 
+import net.xerllent.web.SiteManager;
+import net.xerllent.web.model.Site;
+
 /**
  * <pre>
  * Demo Servlet
@@ -36,7 +39,7 @@ import com.soecode.wxtools.util.xml.XStreamTransformer;
 @WebServlet("/wx")
 public class DemoServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private IService iService = new WxService();
+	//private IService iService = new WxService();
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -46,6 +49,13 @@ public class DemoServlet extends HttpServlet {
 		String timestamp = request.getParameter("timestamp");
 		String nonce = request.getParameter("nonce");
 		String echostr = request.getParameter("echostr");
+		
+		//sxh  根据公众号里预先设置url的appId获取数据库工号配置对象
+		String appId = request.getParameter("appId");
+		WxConfig config=getWxConfigFromSitesByAppId(appId);
+		
+		IService iService = new WxService(config);
+		
 		if (iService.checkSignature(signature, timestamp, nonce, echostr)) {
 			out.print(echostr);
 		}
@@ -59,6 +69,12 @@ public class DemoServlet extends HttpServlet {
 		PrintWriter out = response.getWriter();
 		// 获取encrypt_type 消息加解密方式标识
 		String encrypt_type = request.getParameter("encrypt_type");
+		
+		//sxh  根据公众号里预先设置url的appId获取数据库工号配置对象
+		String appId = request.getParameter("appId");
+		WxConfig config=getWxConfigFromSitesByAppId(appId);
+		IService iService = new WxService(config);
+		
 		// 创建一个路由器
 		WxMessageRouter router = new WxMessageRouter(iService);
 		try {
@@ -70,7 +86,7 @@ public class DemoServlet extends HttpServlet {
 				String msg_signature = request.getParameter("msg_signature");
 
 				// 微信服务器推送过来的加密消息是XML格式。使用WxXmlMessage中的decryptMsg()解密得到明文。
-				WxXmlMessage wx = WxXmlMessage.decryptMsg(request.getInputStream(), WxConfig.getInstance(), timestamp,
+				WxXmlMessage wx = WxXmlMessage.decryptMsg(request.getInputStream(), iService.getWxConfig(), timestamp,
 						nonce, msg_signature);
 				System.out.println("消息：\n " + wx.toString());
 				// 添加规则；这里的规则所有消息都交给DemoMatcher处理，交给DemoInterceptor处理，交给DemoHandler处理
@@ -81,7 +97,7 @@ public class DemoServlet extends HttpServlet {
 				WxXmlOutMessage xmlOutMsg = router.route(wx);
 				if (xmlOutMsg != null) {
 					// 将要返回的消息加密，返回
-					out.print(WxXmlOutMessage.encryptMsg(WxConfig.getInstance(), xmlOutMsg.toXml(), timestamp, nonce));// 返回给用户。
+					out.print(WxXmlOutMessage.encryptMsg(iService.getWxConfig(), xmlOutMsg.toXml(), timestamp, nonce));// 返回给用户。
 				}
 			//如果是明文模式，执行以下语句
 			} else {
@@ -100,5 +116,16 @@ public class DemoServlet extends HttpServlet {
 		} finally {
 			out.close();
 		}
+	}
+	
+	/**
+	 * 与站群数据库对接,用AppId
+	 * @throws Exception 
+	 * */
+	public static WxConfig getWxConfigFromSitesByAppId(String appId) throws ServletException{
+		Site site=SiteManager.getManager().getByAppId(appId);
+		if(site==null) throw new ServletException("站点中找不到这个微信appId配置"+appId);
+		
+		return WxConfig.getInstance(site.getAppId(), site.getAppSecret(), site.getToken(), site.getEncodingAESKey(), null, null);
 	}
 }

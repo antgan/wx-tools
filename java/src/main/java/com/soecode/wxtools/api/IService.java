@@ -808,4 +808,6 @@ public interface IService {
 	 */
 	<T, E> T execute(RequestExecutor<T, E> executor, String uri, E data) throws WxErrorException;
 
+	WxConfig getWxConfig();
+
 }

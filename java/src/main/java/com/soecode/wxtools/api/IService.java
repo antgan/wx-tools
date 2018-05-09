@@ -34,7 +34,7 @@ import com.soecode.wxtools.bean.result.WxMediaUploadResult;
 import com.soecode.wxtools.bean.result.WxMenuResult;
 import com.soecode.wxtools.bean.result.WxNewsMediaResult;
 import com.soecode.wxtools.bean.result.WxOAuth2AccessTokenResult;
-import com.soecode.wxtools.bean.result.WxUserGroupResult;
+import com.soecode.wxtools.bean.result.WxUserTagResult;
 import com.soecode.wxtools.bean.result.WxUserListResult;
 import com.soecode.wxtools.bean.result.WxVideoMediaResult;
 import com.soecode.wxtools.exception.WxErrorException;
@@ -349,40 +349,43 @@ public interface IService {
 	
 	/**
 	 * <pre>
-	 * 创建用户分组
+	 * 创建用户标签
 	 * 详情请见：{@link http://mp.weixin.qq.com/wiki/8/d6d33cf60bce2a2e4fb10a21be9591b8.html}
 	 * </pre>
 	 * @param name
 	 * @return
 	 * @throws WxErrorException
 	 */
-	WxUserGroupResult createUserGroup(String name) throws WxErrorException;
-	
+	WxUserTagResult createUserTag(String name) throws WxErrorException;
+
+	WxError deleteUserTag(int tagId) throws WxErrorException;
+
 	/**
 	 * <pre>
-	 * 查询所有用户分组
+	 * 查询所有用户标签
 	 * 详情请见：{@link http://mp.weixin.qq.com/wiki/8/d6d33cf60bce2a2e4fb10a21be9591b8.html}
 	 * </pre>
 	 * @param name
 	 * @return
 	 * @throws WxErrorException
 	 */
-	WxUserGroupResult queryAllUserGroup() throws WxErrorException;
-	
+	WxUserTagResult queryAllUserTag() throws WxErrorException;
+
 	/**
 	 * <pre>
-	 * 查询用户所在用户组
+	 * 查询用户标签下所有用户ID
 	 * 详情请见：{@link http://mp.weixin.qq.com/wiki/8/d6d33cf60bce2a2e4fb10a21be9591b8.html}
 	 * </pre>
-	 * @param openid
+	 * @param tagId
+	 * @param nextOpenid
 	 * @return
 	 * @throws WxErrorException
 	 */
-	int queryGroupIdByOpenId(String openid) throws WxErrorException;
+	WxUserListResult queryAllUserUnderByTag(int tagId, String nextOpenid) throws WxErrorException;
 	
 	/**
 	 * <pre>
-	 * 修改用户组名
+	 * 修改用户标签
 	 * 详情请见：{@link http://mp.weixin.qq.com/wiki/8/d6d33cf60bce2a2e4fb10a21be9591b8.html}
 	 * </pre>
 	 * @param groupId
@@ -390,42 +393,30 @@ public interface IService {
 	 * @return
 	 * @throws WxErrorException
 	 */
-	WxError updateUserGroupName(int groupid, String name) throws WxErrorException;
-	
+	WxError updateUserTagName(int tagId, String name) throws WxErrorException;
+
 	/**
 	 * <pre>
-	 * 移动一个用户到指定用户组里
-	 * 详情请见：{@link http://mp.weixin.qq.com/wiki/8/d6d33cf60bce2a2e4fb10a21be9591b8.html}
-	 * </pre>
-	 * @param openid
-	 * @param to_groupid
-	 * @return
-	 * @throws WxErrorException
-	 */
-	WxError movingUserToNewGroup(String openid, int to_groupid) throws WxErrorException;
-	
-	/**
-	 * <pre>
-	 * 批量移动用户到指定用户组
+	 * 批量移动用户到指定用户标签
 	 * 详情请见：{@link http://mp.weixin.qq.com/wiki/8/d6d33cf60bce2a2e4fb10a21be9591b8.html}
 	 * </pre>
 	 * @param openids
-	 * @param to_groupid
+	 * @param toTagId
 	 * @return
 	 * @throws WxErrorException
 	 */
-	WxError batchMovingUserToNewGroup(List<String> openids, int to_groupid) throws WxErrorException;
+	WxError batchMovingUserToNewTag(List<String> openids, int toTagId) throws WxErrorException;
 	
 	/**
 	 * <pre>
-	 * 删除用户组
+	 * 删除用户标签
 	 * 详情请见：{@link http://mp.weixin.qq.com/wiki/8/d6d33cf60bce2a2e4fb10a21be9591b8.html}
 	 * </pre>
-	 * @param groupid
+	 * @param tagId
 	 * @return
 	 * @throws WxErrorException
 	 */
-	WxError deleteUserGroup(int groupid) throws WxErrorException;
+	WxError batchRemoveUserTag(List<String> openids, int tagId) throws WxErrorException;
 	
 	/**
 	 * <pre>

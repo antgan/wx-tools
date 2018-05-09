@@ -147,21 +147,23 @@ public class WxConsts {
 	// 自定义菜单的按钮类型//
 	///////////////////////
 	/** 点击推事件 */
-	public static final String BUTTON_CLICK = "click";
+	public static final String MENU_BUTTON_CLICK = "click";
 	/** 跳转URL */
-	public static final String BUTTON_VIEW = "view";
+	public static final String MENU_BUTTON_VIEW = "view";
 	/** 扫码推事件 */
-	public static final String BUTTON_SCANCODE_PUSH = "scancode_push";
+	public static final String MENU_SCANCODE_PUSH = "scancode_push";
 	/** 扫码推事件且弹出“消息接收中”提示框 */
-	public static final String BUTTON_SCANCODE_WAITMSG = "scancode_waitmsg";
+	public static final String MENU_SCANCODE_WAITMSG = "scancode_waitmsg";
 	/** 弹出系统拍照发图 */
-	public static final String PIC_SYSPHOTO = "pic_sysphoto";
+	public static final String MENU_PIC_SYSPHOTO = "pic_sysphoto";
 	/** 弹出拍照或者相册发图 */
-	public static final String PIC_PHOTO_OR_ALBUM = "pic_photo_or_album";
+	public static final String MENU_PIC_PHOTO_OR_ALBUM = "pic_photo_or_album";
 	/** 弹出微信相册发图器 */
-	public static final String PIC_WEIXIN = "pic_weixin";
+	public static final String MENU_PIC_WEIXIN = "pic_weixin";
 	/** 弹出地理位置选择器 */
-	public static final String LOCATION_SELECT = "location_select";
+	public static final String MENU_LOCATION_SELECT = "location_select";
+	public static final String MENU_MEDIA_ID = "media_id";
+	public static final String MENU_VIEW_LIMITED = "view_limited";
 
 	///////////////////////
 	// 二维码///////////////
@@ -239,16 +241,16 @@ public class WxConsts {
 	public static final String URL_UPDATE_NEWS_MEDIA = "https://api.weixin.qq.com/cgi-bin/material/update_news?access_token=ACCESS_TOKEN";
 	
 	///////////////////////
-	// 用户分组管理相关
+	// 用户标签管理相关
 	///////////////////////
-	public static final String URL_CREATE_USER_GROUP = "https://api.weixin.qq.com/cgi-bin/groups/create?access_token=ACCESS_TOKEN";
-	public static final String URL_QUERY_ALL_USER_GROUP = "https://api.weixin.qq.com/cgi-bin/groups/get?access_token=ACCESS_TOKEN";
-	public static final String URL_QUERY_USER_GROUP_BY_OPENID = "https://api.weixin.qq.com/cgi-bin/groups/getid?access_token=ACCESS_TOKEN";
-	public static final String URL_UPDATE_USER_GROUP_NAME = "https://api.weixin.qq.com/cgi-bin/groups/update?access_token=ACCESS_TOKEN";
-	public static final String URL_MOVING_USER_GROUP = "https://api.weixin.qq.com/cgi-bin/groups/members/update?access_token=ACCESS_TOKEN";
-	public static final String URL_BATCH_MOVING_USER_GROUP = "https://api.weixin.qq.com/cgi-bin/groups/members/batchupdate?access_token=ACCESS_TOKEN";
-	public static final String URL_DELETE_USER_GROUP = "https://api.weixin.qq.com/cgi-bin/groups/delete?access_token=ACCESS_TOKEN";
-	
+	public static final String URL_CREATE_USER_TAG = "https://api.weixin.qq.com/cgi-bin/tags/create?access_token=ACCESS_TOKEN";
+	public static final String URL_DELETE_USER_TAG = "https://api.weixin.qq.com/cgi-bin/tags/delete?access_token=ACCESS_TOKEN";
+	public static final String URL_QUERY_ALL_USER_TAG = "https://api.weixin.qq.com/cgi-bin/tags/get?access_token=ACCESS_TOKEN";
+	public static final String URL_QUERY_ALL_USER_UNDER_TAG = "https://api.weixin.qq.com/cgi-bin/user/tag/get?access_token=ACCESS_TOKEN";
+	public static final String URL_UPDATE_USER_TAG_NAME = "https://api.weixin.qq.com/cgi-bin/tags/update?access_token=ACCESS_TOKEN";
+	public static final String URL_BATCH_MOVING_USER_TAG = "https://api.weixin.qq.com/cgi-bin/tags/members/batchtagging?access_token=ACCESS_TOKEN";
+	public static final String URL_BATCH_UN_TAG_USER_TAG = "https://api.weixin.qq.com/cgi-bin/tags/members/batchuntagging?access_token=ACCESS_TOKEN";
+
 	///////////////////////
 	// 用户相关
 	///////////////////////

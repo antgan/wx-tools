@@ -30,13 +30,13 @@ public class MenuAPI {
 		
 		//设置CLICK类型的按钮1
 		WxMenuButton btn1 = new WxMenuButton();
-		btn1.setType(WxConsts.BUTTON_CLICK);
+		btn1.setType(WxConsts.MENU_BUTTON_CLICK);
 		btn1.setKey("btn1_key");
 		btn1.setName("CLICK按钮1");
 		
 		//设置VIEW类型的按钮2
 		WxMenuButton btn2 = new WxMenuButton();
-		btn2.setType(WxConsts.BUTTON_VIEW);
+		btn2.setType(WxConsts.MENU_BUTTON_VIEW);
 		btn2.setUrl("http://www.baidu.com");
 		btn2.setName("VIEW按钮2");
 		
@@ -44,19 +44,19 @@ public class MenuAPI {
 		List<WxMenuButton> subList = new ArrayList<>();
 		//子按钮
 		WxMenuButton btn3_1 = new WxMenuButton();
-		btn2.setType(WxConsts.BUTTON_VIEW);
-		btn2.setUrl("http://www.baidu.com");
-		btn2.setName("子按钮3_1");
+		btn3_1.setType(WxConsts.MENU_BUTTON_VIEW);
+		btn3_1.setUrl("http://www.baidu.com");
+		btn3_1.setName("子按钮3_1");
 		WxMenuButton btn3_2 = new WxMenuButton();
-		btn3_2.setType(WxConsts.BUTTON_VIEW);
+		btn3_2.setType(WxConsts.MENU_BUTTON_VIEW);
 		btn3_2.setUrl("http://www.baidu.com");
 		btn3_2.setName("子按钮3_2");
 		subList.add(btn3_1);
 		subList.add(btn3_2);
 		//把子按钮列表设置进按钮3
 		WxMenuButton btn3 = new WxMenuButton();
-		btn1.setName("子按钮3");
-		btn1.setSub_button(subList);
+		btn3.setName("子按钮3");
+		btn3.setSub_button(subList);
 		
 		//将三个按钮设置进btnList
 		btnList.add(btn1);

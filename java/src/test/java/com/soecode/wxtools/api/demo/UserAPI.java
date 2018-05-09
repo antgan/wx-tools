@@ -11,7 +11,7 @@ import com.soecode.wxtools.bean.WxUserList.WxUser;
 import com.soecode.wxtools.bean.WxUserList.WxUser.WxUserGet;
 import com.soecode.wxtools.bean.result.WxError;
 import com.soecode.wxtools.bean.result.WxOAuth2AccessTokenResult;
-import com.soecode.wxtools.bean.result.WxUserGroupResult;
+import com.soecode.wxtools.bean.result.WxUserTagResult;
 import com.soecode.wxtools.bean.result.WxUserListResult;
 import com.soecode.wxtools.exception.WxErrorException;
 
@@ -28,8 +28,8 @@ public class UserAPI {
 	 */
 	public void createUserGroup(){
 		try {
-			WxUserGroupResult result = iService.createUserGroup("组名");
-			System.out.println(result.getGroup().getId());
+			WxUserTagResult result = iService.createUserTag("组名");
+			System.out.println(result.getTag().getId());
 		} catch (WxErrorException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -41,19 +41,7 @@ public class UserAPI {
 	 */
 	public void queryAllUserGroup(){
 		try {
-			WxUserGroupResult result = iService.queryAllUserGroup();
-		} catch (WxErrorException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-	/**
-	 * 查询用户在哪个分组
-	 */
-	public void queryGroupIdByOpenId(){
-		try {
-			int groupId = iService.queryGroupIdByOpenId("openid");
+			WxUserTagResult result = iService.queryAllUserTag();
 		} catch (WxErrorException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -66,7 +54,7 @@ public class UserAPI {
 	public void updateUserGroupName(){
 		try {
 			//组ID，新组名
-			iService.updateUserGroupName(1, "new group name");
+			iService.updateUserTagName(1, "new group name");
 		} catch (WxErrorException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -77,13 +65,13 @@ public class UserAPI {
 	 *  移动用户在某组
 	 */
 	public void movingUserToNewGroup(){
-		try {
-			WxError result = iService.movingUserToNewGroup("openid", 1);
-			System.out.println(result.getErrcode());
-		} catch (WxErrorException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		try {
+//			WxError result = iService.movingUserToNewGroup("openid", 1);
+//			System.out.println(result.getErrcode());
+//		} catch (WxErrorException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	}
 	
 	/**
@@ -95,7 +83,7 @@ public class UserAPI {
 		openidList.add("openid2");
 		
 		try {
-			iService.batchMovingUserToNewGroup(openidList, 2);
+			iService.batchMovingUserToNewTag(openidList, 2);
 		} catch (WxErrorException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -106,12 +94,12 @@ public class UserAPI {
 	 * 删除用户分组
 	 */
 	public void deleteUserGroup(){
-		try {
-			iService.deleteUserGroup(2);
-		} catch (WxErrorException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		try {
+////			iService.batchRemoveUserTag(2);
+//		} catch (WxErrorException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	}
 	
 	/**

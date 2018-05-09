@@ -1,9 +1,6 @@
 package com.soecode.wxtools.bean;
 
 import java.io.IOException;
-
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
 /**
@@ -11,7 +8,7 @@ import org.codehaus.jackson.map.ObjectMapper;
  * @author antgan
  *
  */
-public class WxGroupSender extends SenderContent{
+public class WxTagSender extends SenderContent{
 	private SenderFilter filter;
 	private String msgtype;
 	public SenderFilter getFilter() {
@@ -27,7 +24,7 @@ public class WxGroupSender extends SenderContent{
 		this.msgtype = msgtype;
 	}
 	
-	public String toJson() throws JsonGenerationException, JsonMappingException, IOException{
+	public String toJson() throws IOException{
 		ObjectMapper mapper = new ObjectMapper();
 		return mapper.writeValueAsString(this);
 	}

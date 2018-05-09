@@ -6,37 +6,38 @@ import com.soecode.wxtools.api.WxService;
 import com.soecode.wxtools.bean.WxMenu;
 import com.soecode.wxtools.bean.WxMenu.WxMenuButton;
 import com.soecode.wxtools.bean.WxMenu.WxMenuRule;
-import com.soecode.wxtools.exception.WxErrorException;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
 public class MenuTest {
+
   IService iService = new WxService();
 
   @Test
   public void should_create_normal_menu_successfully() throws Exception {
     WxMenu menu = getWxMenu();
-    //调用API即可
-    try {
-      //参数1--menu  ，参数2--是否是个性化定制。如果是个性化菜单栏，需要设置MenuRule
-      String result = iService.createMenu(menu, false);
-      Assert.assertEquals("{\"errcode\":0,\"errmsg\":\"ok\"}", result);
-    } catch (WxErrorException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
+    String result = iService.createMenu(menu, false);
+    Assert.assertEquals("{\"errcode\":0,\"errmsg\":\"ok\"}", result);
   }
 
-
-//TODO
   @Test
   public void should_create_condition_menu_successfully() throws Exception {
     WxMenu menu = getWxMenu();
     WxMenuRule matchrule = new WxMenuRule();
-//    matchrule.setTag_id();
+    matchrule.setTag_id("103");
+    matchrule.setCountry("中国");
+    matchrule.setProvince("广东");
     menu.setMatchrule(matchrule);
+    String result = iService.createMenu(menu, true);
+    System.out.println(result);
+  }
+
+  @Test
+  public void should_delete_condition_menu_successfully() throws Exception {
+    String result = iService.deleteMenu("443508866");
+    System.out.println(result);
   }
 
 

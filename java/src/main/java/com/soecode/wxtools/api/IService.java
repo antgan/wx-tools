@@ -10,7 +10,7 @@ import com.soecode.wxtools.bean.InvokePay;
 import com.soecode.wxtools.bean.PayOrderInfo;
 import com.soecode.wxtools.bean.PreviewSender;
 import com.soecode.wxtools.bean.TemplateSender;
-import com.soecode.wxtools.bean.WxGroupSender;
+import com.soecode.wxtools.bean.WxTagSender;
 import com.soecode.wxtools.bean.WxJsapiConfig;
 import com.soecode.wxtools.bean.WxMenu;
 import com.soecode.wxtools.bean.WxNewsInfo;
@@ -58,7 +58,7 @@ public interface IService {
 	 * @param msgSignature
 	 * @param timestamp
 	 * @param nonce
-	 * @param data  
+	 * @param data
 	 * @return 微信传输过来的数据，有可能是echoStr，有可能是xml消息
 	 */
 	boolean checkSignature(String msgSignature, String timestamp, String nonce, String data);
@@ -82,7 +82,7 @@ public interface IService {
 	 * 程序员在非必要情况下尽量不要主动调用此方法
 	 * 详情请见: {@link http://mp.weixin.qq.com/wiki/14/9f9c82c1af308e3b14ba9b973f99a8ba.html}
 	 * </pre>
-	 * 
+	 *
 	 * @param forceRefresh
 	 *            强制刷新
 	 * @return
@@ -106,7 +106,7 @@ public interface IService {
 	 * <pre>
 	 * 【自定义】菜单删除接口
 	 * 详情请见: {@link http://mp.weixin.qq.com/wiki/3/de21624f2d0d3dafde085dafaa226743.html}
-	 * 
+	 *
 	 * </pre>
 	 * @return String 查询结果
 	 * @throws WxErrorException
@@ -117,7 +117,7 @@ public interface IService {
 	 * <pre>
 	 * 【个性化】菜单删除接口
 	 * 详情请见: {@link http://mp.weixin.qq.com/wiki/0/c48ccd12b69ae023159b4bfaa7c39c20.html}
-	 * 
+	 *
 	 * </pre>
 	 * @param menuid
 	 * @return String 查询结果
@@ -146,7 +146,7 @@ public interface IService {
 	 * @throws WxErrorException
 	 */
 	WxCurMenuInfoResult getMenuCurInfo() throws WxErrorException;
-	
+
 	/**
 	 * <pre>
 	 * 个性化菜单栏
@@ -157,7 +157,7 @@ public interface IService {
 	 * @throws WxErrorException
 	 */
 	String menuTryMatch(String user_id) throws WxErrorException;
-	
+
 	/**
 	 * <pre>
 	 * 上传【临时】多媒体文件，三天后微信服务器自动删除。
@@ -207,8 +207,8 @@ public interface IService {
 	 * @params path
 	 */
 	File downloadTempMedia(String media_id, File path) throws WxErrorException;
-	
-	
+
+
 	/**
 	 * <pre>
 	 * 上传【永久】多媒体文件
@@ -246,7 +246,7 @@ public interface IService {
 	 * @throws WxErrorException
 	 */
 	WxMediaUploadResult uploadMedia(String mediaType, File file, WxVideoIntroduction introduction) throws WxErrorException;
-	
+
 	/**
 	 * <pre>
 	 * 下载【永久】多媒体文件，下载到{@link WxConfigStorage}中的【永久】目录下（MaterialDirFile）
@@ -258,7 +258,7 @@ public interface IService {
 	 * @params media_id
 	 */
 	File downloadMedia(String media_id,File path) throws WxErrorException;
-	
+
 	/**
 	 * 下载获取永久图文素材，返回图文信息结果{@link WxNewsMediaResult}
 	 * @param media_id
@@ -266,7 +266,7 @@ public interface IService {
 	 * @throws WxErrorException
 	 */
 	WxNewsMediaResult downloadNewsMedia(String media_id) throws WxErrorException;
-	
+
 	/**
 	 * <pre>
 	 * 下载获取永久视频素材，返回图文信息结果{@link WxVideoMediaResult}
@@ -277,7 +277,7 @@ public interface IService {
 	 * @throws WxErrorException
 	 */
 	WxVideoMediaResult downloadVideoMedia(String media_id,File path) throws WxErrorException;
-	
+
 	/**
 	 * 删除永久素材
 	 * @param media_id
@@ -285,22 +285,22 @@ public interface IService {
 	 * @throws WxErrorException
 	 */
 	WxError deleteMediaMaterial(String media_id) throws WxErrorException;
-	
+
 	/**
 	 * <pre>
 	 * 上传图片，获取腾讯域名下的图片资源路径
-	 * 
+	 *
 	 * </pre>
 	 * @return WxMediaUploadResult    获取成员变量Url
 	 * 								腾讯域名下的图片资源。用于图文正文
 	 * @throws WxErrorException
 	 */
 	WxMediaUploadResult imageDomainChange(File file) throws WxErrorException;
-	
+
 	/**
 	 * <pre>
 	 * 新增永久图文，最多8个
-	 * 
+	 *
 	 * 请注意，在图文消息的具体内容中，将过滤外部的图片链接，只能使用腾讯域名下的图片资源。
 	 * 可以调用 imageDomainChange() 方法将图片上传转成腾讯域名下的图片资源。
 	 * </pre>
@@ -313,17 +313,17 @@ public interface IService {
 	/**
 	 * <pre>
 	 * 修改永久图文素材
-	 * 
+	 *
 	 * </pre>
 	 * @param media_id  图文id
 	 * @param index  图文的位置，第一篇为0
 	 * @param WxNewsInfo 新的图文
-	 * 
+	 *
 	 * @return WxError, 若errcode = 0 修改成功
 	 * @throws WxErrorException
 	 */
 	WxError updateNewsInfo(String media_id, int index, WxNewsInfo newInfo) throws WxErrorException;
-	
+
 	/**
 	 * <pre>
 	 * 获取永久素材数量接口
@@ -333,12 +333,12 @@ public interface IService {
 	 * @throws WxErrorException
 	 */
 	WxMaterialCountResult getMaterialCount() throws WxErrorException;
-	
+
 	/**
 	 * <pre>
 	 * 批量获取永久素材资源信息
 	 * 详情请见：{@link http://mp.weixin.qq.com/wiki/15/8386c11b7bc4cdd1499c572bfe2e95b3.html}
-	 * </pre> 
+	 * </pre>
 	 * @param type
 	 * @param offset
 	 * @param count
@@ -346,7 +346,7 @@ public interface IService {
 	 * @throws WxErrorException
 	 */
 	WxBatchGetMaterialResult batchGetMeterial(String type, int offset, int count) throws WxErrorException;
-	
+
 	/**
 	 * <pre>
 	 * 创建用户标签
@@ -387,7 +387,7 @@ public interface IService {
 	 * @throws WxErrorException
 	 */
 	WxUserListResult queryAllUserUnderByTag(int tagId, String nextOpenid) throws WxErrorException;
-	
+
 	/**
 	 * <pre>
 	 * 修改用户标签
@@ -411,7 +411,7 @@ public interface IService {
 	 * @throws WxErrorException
 	 */
 	WxError batchMovingUserToNewTag(List<String> openids, int toTagId) throws WxErrorException;
-	
+
 	/**
 	 * <pre>
 	 * 删除用户标签
@@ -422,7 +422,7 @@ public interface IService {
 	 * @throws WxErrorException
 	 */
 	WxError batchRemoveUserTag(List<String> openids, int tagId) throws WxErrorException;
-	
+
 	/**
 	 * <pre>
 	 * 修改用户备注名
@@ -434,19 +434,19 @@ public interface IService {
 	 * @throws WxErrorException
 	 */
 	WxError updateUserRemark(String openid, String remark) throws WxErrorException;
-	
+
 	/**
 	 * <pre>
 	 * 获取用户个人信息
 	 * 详情请见：{@link http://mp.weixin.qq.com/wiki/1/8a5ce6257f1d3b2afb20f83e72b72ce9.html}
 	 * </pre>
 	 * @param openid
-	 * @param lang  返回结果的语言版本  {@link WxConsts} 
+	 * @param lang  返回结果的语言版本  {@link WxConsts}
 	 * @return
 	 * @throws WxErrorException
 	 */
 	WxUser getUserInfoByOpenId(WxUserGet userGet) throws WxErrorException;
-	
+
 	/**
 	 * <pre>
 	 * 批量获取用户信息
@@ -457,7 +457,7 @@ public interface IService {
 	 * @throws WxErrorException
 	 */
 	WxUserList batchGetUserInfo(List<WxUserGet> usersGet) throws WxErrorException;
-	
+
 	/**
 	 * <pre>
 	 * 批量获取关注者openid
@@ -498,9 +498,9 @@ public interface IService {
 	 * 构造oauth2授权的url连接
 	 * 详情请见: {@link http://mp.weixin.qq.com/wiki/4/9ac2e7b1f1d22e9e57260f6553822520.html}
 	 * </pre>
-	 * 
+	 *
 	 * @param redirectUri   重定向地址
-	 * @param scope {@link WxConsts} 
+	 * @param scope {@link WxConsts}
 	 * 				snsapi_base 用户静默授权
 	 * 				snsapi_userinfo 用户手动授权
 	 * @param state 重定向后会带上state参数，开发者可以填写a-zA-Z0-9的参数值，最多128字节
@@ -514,45 +514,45 @@ public interface IService {
 	 * 这个access_token跟全局的access_token不同，可以到官方文档查阅
 	 * {@link http://mp.weixin.qq.com/wiki/4/9ac2e7b1f1d22e9e57260f6553822520.html}
 	 * </pre>
-	 * @param code  
+	 * @param code
 	 * 				oauth2buildAuthorizationUrl()重定向后会携带code
 	 * @return
 	 * @throws WxErrorException
 	 */
-	WxOAuth2AccessTokenResult oauth2ToGetAccessToken(String code) throws WxErrorException; 
-	
+	WxOAuth2AccessTokenResult oauth2ToGetAccessToken(String code) throws WxErrorException;
+
 	/**
 	 * <pre>
 	 * 刷新access_token（如果需要）
 	 * 由于access_token拥有较短的有效期，当access_token超时后，可以使用refresh_token进行刷新，
 	 * refresh_token拥有较长的有效期（7天、30天、60天、90天），当refresh_token失效的后，需要用户重新授权
-	 * 
+	 *
 	 * 详情请见：{@link http://mp.weixin.qq.com/wiki/4/9ac2e7b1f1d22e9e57260f6553822520.html}
 	 * </pre>
 	 * @param refresh_token 填写通过access_token获取到的refresh_token参数
 	 * @return
 	 * @throws WxErrorException
 	 */
-	WxOAuth2AccessTokenResult oauth2ToGetRefreshAccessToken(String refresh_token) throws WxErrorException; 
-	
+	WxOAuth2AccessTokenResult oauth2ToGetRefreshAccessToken(String refresh_token) throws WxErrorException;
+
 	/**
 	 * <pre>
 	 * 拉取用户信息(需scope为 snsapi_userinfo)
 	 * 如果网页授权作用域为snsapi_userinfo，则此时开发者可以通过access_token和openid拉取用户信息了。
-	 * 
+	 *
 	 * 详情请见：{@link http://mp.weixin.qq.com/wiki/4/9ac2e7b1f1d22e9e57260f6553822520.html}
-	 * 
+	 *
 	 * </pre>
 	 * @param userGet
 	 * @return
 	 * @throws WxErrorException
 	 */
-	WxUser oauth2ToGetUserInfo(String access_token, WxUserGet userGet) throws WxErrorException; 
-	
+	WxUser oauth2ToGetUserInfo(String access_token, WxUserGet userGet) throws WxErrorException;
+
 	/**
 	 * <pre>
 	 * 检验授权凭证（access_token）是否有效
-	 * 
+	 *
 	 * 详情请见：{@link http://mp.weixin.qq.com/wiki/4/9ac2e7b1f1d22e9e57260f6553822520.html}
 	 * </pre>
 	 * @param access_token
@@ -560,8 +560,8 @@ public interface IService {
 	 * @return WxError 若errcode=0，有效；反之，无效。
 	 * @throws WxErrorException
 	 */
-	WxError oauth2CheckAccessToken(String access_token, String openid) throws WxErrorException; 
-	
+	WxError oauth2CheckAccessToken(String access_token, String openid) throws WxErrorException;
+
 	/**
 	 * <pre>
 	 * 生成二维码
@@ -573,8 +573,8 @@ public interface IService {
 	 * @return
 	 * @throws WxErrorException
 	 */
-	QrCodeResult createQrCode(WxQrcode qrcode) throws WxErrorException; 
-	
+	QrCodeResult createQrCode(WxQrcode qrcode) throws WxErrorException;
+
 	/**
 	 * <pre>
 	 * 下载/展示 二维码
@@ -584,21 +584,21 @@ public interface IService {
 	 * @return
 	 * @throws WxErrorException
 	 */
-	File downloadQrCode(File dir, String ticket) throws WxErrorException; 
-	
+	File downloadQrCode(File dir, String ticket) throws WxErrorException;
+
 	/**
 	 * 长链接转成短链接
 	 * @param long_url
 	 * @return
 	 * @throws WxErrorException
 	 */
-	String getShortUrl(String long_url) throws WxErrorException; 
-	
+	String getShortUrl(String long_url) throws WxErrorException;
+
 	/////////////////////////////////////////////////////////
-	
+
 	/**
 	 * 获得jsapi_ticket,不强制刷新jsapi_ticket
-	 * 
+	 *
 	 * @see #getJsapiTicket(boolean)
 	 * @return
 	 * @throws WxErrorException
@@ -612,7 +612,7 @@ public interface IService {
 	 *
 	 * 详情请见：http://mp.weixin.qq.com/wiki/11/74ad127cc054f6b80759c40f77ec03db.html
 	 * </pre>
-	 * 
+	 *
 	 * @param forceRefresh
 	 *            强制刷新
 	 * @return
@@ -627,53 +627,53 @@ public interface IService {
 	 * 详情请见：http://mp.weixin.qq.com/wiki/11/74ad127cc054f6b80759c40f77ec03db.html
 	 * 校验：http://mp.weixin.qq.com/debug/cgi-bin/sandbox?t=jsapisign
 	 * </pre>
-	 * 
+	 *
 	 * @param url 调用api的页面url
 	 * @param jsApiList 需要调用的api，详情见附录二【http://mp.weixin.qq.com/wiki/11/74ad127cc054f6b80759c40f77ec03db.html】
 	 * @return WxJsapiConfig
 	 */
 	public WxJsapiConfig createJsapiConfig(String url, List<String> jsApiList) throws WxErrorException;
-	
+
 	/**
 	 * <pre>
 	 * 获取微信服务器的ip段
 	 * 详情请见: {@link http://mp.weixin.qq.com/wiki/4/41ef0843d6e108cf6b5649480207561c.html}
 	 * </pre>
-	 * 
+	 *
 	 * @return { "ip_list": ["101.226.103.*", "101.226.62.*"] }
 	 * @throws WxErrorException
 	 */
 	String[] getCallbackIp() throws WxErrorException;
-	
+
 	/**
 	 * <pre>
-	 * 通过组 群发
+	 * 通过标签 群发
 	 * 详情请见: {@link http://mp.weixin.qq.com/wiki/15/40b6865b893947b764e2de8e4a1fb55f.html}
 	 * </pre>
-	 * 
-	 * @return 
+	 *
+	 * @return
 	 * @throws WxErrorException
 	 */
-	SenderResult sendAllByGroup(WxGroupSender sender) throws WxErrorException;
-	
+	SenderResult sendAllByTag(WxTagSender sender) throws WxErrorException;
+
 	/**
 	 * <pre>
 	 * 通过openid列表 群发
 	 * 详情请见: {@link http://mp.weixin.qq.com/wiki/15/40b6865b893947b764e2de8e4a1fb55f.html}
 	 * </pre>
-	 * 
-	 * @return 
+	 *
+	 * @return
 	 * @throws WxErrorException
 	 */
 	SenderResult sendAllByOpenid(WxOpenidSender sender) throws WxErrorException;
-	
+
 	/**
 	 * <pre>
 	 * 群发预览
 	 * 详情请见: {@link http://mp.weixin.qq.com/wiki/15/40b6865b893947b764e2de8e4a1fb55f.html}
 	 * </pre>
-	 * 
-	 * @return 
+	 *
+	 * @return
 	 * @throws WxErrorException
 	 */
 	SenderResult sendAllPreview(PreviewSender sender) throws WxErrorException;
@@ -687,113 +687,113 @@ public interface IService {
 	 * 4、如果多次群发发送的是一个图文消息，那么删除其中一次群发，就会删除掉这个图文消息也，导致所有群发都失效
 	 * 详情请见: {@link http://mp.weixin.qq.com/wiki/15/40b6865b893947b764e2de8e4a1fb55f.html}
 	 * </pre>
-	 * 
-	 * @return 
+	 *
+	 * @return
 	 * @throws WxErrorException
 	 */
 	SenderResult sendAllDelete(String msg_id) throws WxErrorException;
-	
+
 	/**
 	 * <pre>
 	 * 获取群发状态
-	 * 
+	 *
 	 * 详情请见: {@link http://mp.weixin.qq.com/wiki/15/40b6865b893947b764e2de8e4a1fb55f.html}
 	 * </pre>
-	 * 
-	 * @return 
+	 *
+	 * @return
 	 * @throws WxErrorException
 	 */
 	SenderResult sendAllGetStatus(String msg_id) throws WxErrorException;
-	
+
 	/**
 	 * <pre>
 	 * 模板消息--设置行业
-	 * 
+	 *
 	 * 参数参考：{@link http://mp.weixin.qq.com/wiki/5/6dde9eaa909f83354e0094dc3ad99e05.html}的行业代码
 	 * </pre>
-	 * 
-	 * @return 
+	 *
+	 * @return
 	 * @throws WxErrorException
 	 */
 	WxError templateSetIndustry(String industry1, String industry2) throws WxErrorException;
-	
+
 	/**
 	 * <pre>
 	 * 模板消息--获取设置的行业信息
-	 * 
+	 *
 	 * 参数参考：{@link http://mp.weixin.qq.com/wiki/5/6dde9eaa909f83354e0094dc3ad99e05.html}的行业代码
 	 * </pre>
-	 * 
-	 * @return 
+	 *
+	 * @return
 	 * @throws WxErrorException
 	 */
 	IndustryResult templateGetIndustry() throws WxErrorException;
-	
+
 	/**
 	 * <pre>
 	 * 模板消息--获取模板ID
-	 * 
+	 *
 	 * 参数参考：{@link http://mp.weixin.qq.com/wiki/5/6dde9eaa909f83354e0094dc3ad99e05.html}的行业代码
 	 * </pre>
-	 * 
-	 * @return 
+	 *
+	 * @return
 	 * @throws WxErrorException
 	 */
-	TemplateResult templateGetId(String template_id_short)throws WxErrorException; 
-	
+	TemplateResult templateGetId(String template_id_short)throws WxErrorException;
+
 	/**
 	 * <pre>
 	 * 模板消息--获取模板列表
-	 * 
+	 *
 	 * 参数参考：{@link http://mp.weixin.qq.com/wiki/5/6dde9eaa909f83354e0094dc3ad99e05.html}的行业代码
 	 * </pre>
-	 * 
-	 * @return 
+	 *
+	 * @return
 	 * @throws WxErrorException
 	 */
-	TemplateListResult templateGetList()throws WxErrorException; 
-	
+	TemplateListResult templateGetList()throws WxErrorException;
+
 	/**
 	 * <pre>
 	 * 模板消息--删除模板
-	 * 
+	 *
 	 * 参数参考：{@link http://mp.weixin.qq.com/wiki/5/6dde9eaa909f83354e0094dc3ad99e05.html}的行业代码
 	 * </pre>
-	 * 
-	 * @return 
+	 *
+	 * @return
 	 * @throws WxErrorException
 	 */
-	WxError templateDelete(String template_id)throws WxErrorException; 
-	
+	WxError templateDelete(String template_id)throws WxErrorException;
+
 	/**
 	 * <pre>
 	 * 模板消息--发送模板
-	 * 
+	 *
 	 * 参数参考：{@link http://mp.weixin.qq.com/wiki/5/6dde9eaa909f83354e0094dc3ad99e05.html}的行业代码
 	 * </pre>
-	 * 
-	 * @return 
+	 *
+	 * @return
 	 * @throws WxErrorException
 	 */
-	TemplateSenderResult templateSend(TemplateSender sender)throws WxErrorException; 
-	
+	TemplateSenderResult templateSend(TemplateSender sender)throws WxErrorException;
+
 	/**
 	 * <pre>
 	 * 支付--统一下单接口【未测试】
-	 * 
+	 *
 	 * 详情请见: {@link https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_1}
 	 * </pre>
-	 * 
-	 * @return 
+	 *
+	 * @return
 	 * @throws WxErrorException
 	 */
 	@Deprecated
 	InvokePay unifiedOrder(PayOrderInfo order, String notifyUrl , String openid) throws WxErrorException;
 
-	
+
 	/**
 	 * 当本Service没有实现某个API的时候，可以用这个，针对所有微信API中的GET请求
-	 * 
+	 *
 	 * @param url
 	 * @param queryParam
 	 * @return
@@ -803,7 +803,7 @@ public interface IService {
 
 	/**
 	 * 当本Service没有实现某个API的时候，可以用这个，针对所有微信API中的POST请求
-	 * 
+	 *
 	 * @param url
 	 * @param postData
 	 * @return
@@ -817,7 +817,7 @@ public interface IService {
 	 * 比{@link #get}和{@link #post}方法更灵活，可以自己构造RequestExecutor用来处理不同的参数和不同的返回类型。
 	 * 可以参考，{@link com.soecode.wxtools.utll.http.MediaDownloadGetRequestExecutor}的实现方法
 	 * </pre>
-	 * 
+	 *
 	 * @param executor
 	 * @param uri
 	 * @param data

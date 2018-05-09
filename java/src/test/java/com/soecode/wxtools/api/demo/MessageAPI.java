@@ -11,7 +11,7 @@ import com.soecode.wxtools.bean.SenderContent.Media;
 import com.soecode.wxtools.bean.SenderContent.Text;
 import com.soecode.wxtools.bean.SenderFilter;
 import com.soecode.wxtools.bean.TemplateSender;
-import com.soecode.wxtools.bean.WxGroupSender;
+import com.soecode.wxtools.bean.WxTagSender;
 import com.soecode.wxtools.bean.WxOpenidSender;
 import com.soecode.wxtools.bean.result.IndustryResult;
 import com.soecode.wxtools.bean.result.SenderResult;
@@ -32,7 +32,7 @@ public class MessageAPI {
 	 * 通过用户组来群发
 	 */
 	public void sendAllByGroup(){
-		WxGroupSender sender = new WxGroupSender();
+		WxTagSender sender = new WxTagSender();
 		//设置哪些组需要接受群发
 		sender.setFilter(new SenderFilter(true, 1));
 		//群发文本内容
@@ -40,7 +40,7 @@ public class MessageAPI {
 		//群发图片，以此类推
 		sender.setImage(new Media("media_id"));
 		try {
-			SenderResult result = iService.sendAllByGroup(new WxGroupSender());
+			SenderResult result = iService.sendAllByTag(new WxTagSender());
 			System.out.println(result.toString());
 		} catch (WxErrorException e) {
 			// TODO Auto-generated catch block

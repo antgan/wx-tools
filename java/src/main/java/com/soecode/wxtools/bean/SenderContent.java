@@ -51,7 +51,6 @@ public class SenderContent {
 	public static class Media{
 		private String media_id;
 		public Media() {
-			// TODO Auto-generated constructor stub
 		}
 		public Media(String media_id) {
 			this.media_id = media_id;
@@ -70,7 +69,6 @@ public class SenderContent {
 	public static class Text{
 		private String content;
 		public Text() {
-			// TODO Auto-generated constructor stub
 		}
 		public Text(String content){
 			this.content = content;

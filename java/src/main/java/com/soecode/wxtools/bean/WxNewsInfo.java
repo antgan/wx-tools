@@ -27,6 +27,8 @@ public class WxNewsInfo {
 	private String content;
 	private String url;
 	private String content_source_url;
+	private int need_open_comment;
+	private int only_fans_can_comment;
 
 	public String getTitle() {
 		return title;
@@ -100,15 +102,41 @@ public class WxNewsInfo {
 		this.content_source_url = content_source_url;
 	}
 
+	public int getNeed_open_comment() {
+		return need_open_comment;
+	}
+
+	public void setNeed_open_comment(int need_open_comment) {
+		this.need_open_comment = need_open_comment;
+	}
+
+	public int getOnly_fans_can_comment() {
+		return only_fans_can_comment;
+	}
+
+	public void setOnly_fans_can_comment(int only_fans_can_comment) {
+		this.only_fans_can_comment = only_fans_can_comment;
+	}
+
 	public String toJson() throws JsonGenerationException, JsonMappingException, IOException{
 		ObjectMapper mapper  = new ObjectMapper();
 		return mapper.writeValueAsString(this);
 	}
-	
+
 	@Override
 	public String toString() {
-		return "WxNewsInfo [title=" + title + ", thumb_media_id=" + thumb_media_id + ", thumb_url=" + thumb_url
-				+ ", show_cover_pic=" + show_cover_pic + ", author=" + author + ", digest=" + digest + ", content="
-				+ content + ", url=" + url + ", content_source_url=" + content_source_url + "]";
+		return "WxNewsInfo{" +
+				"title='" + title + '\'' +
+				", thumb_media_id='" + thumb_media_id + '\'' +
+				", thumb_url='" + thumb_url + '\'' +
+				", show_cover_pic=" + show_cover_pic +
+				", author='" + author + '\'' +
+				", digest='" + digest + '\'' +
+				", content='" + content + '\'' +
+				", url='" + url + '\'' +
+				", content_source_url='" + content_source_url + '\'' +
+				", need_open_comment=" + need_open_comment +
+				", only_fans_can_comment=" + only_fans_can_comment +
+				'}';
 	}
 }

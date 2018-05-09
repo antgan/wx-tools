@@ -20,7 +20,7 @@ import com.soecode.wxtools.bean.PayOrderInfo;
 import com.soecode.wxtools.bean.PreviewSender;
 import com.soecode.wxtools.bean.TemplateSender;
 import com.soecode.wxtools.bean.WxAccessToken;
-import com.soecode.wxtools.bean.WxGroupSender;
+import com.soecode.wxtools.bean.WxTagSender;
 import com.soecode.wxtools.bean.WxJsapiConfig;
 import com.soecode.wxtools.bean.WxMenu;
 import com.soecode.wxtools.bean.WxNewsInfo;
@@ -104,8 +104,7 @@ public class WxService implements IService {
 
   @Override
   public String getAccessToken() throws WxErrorException {
-//		return getAccessToken(false);
-    return "9_dcsu8NlSH1tcId7as7aBbKDWB3dhWwd9n-F7sBt_S2ghOOCkM133wr6X4H61xSNvNJMd-tK_KDW2RVwXtjNgovZv_W5AjsTreQMiJKj91nNn4rHp-vY9TLuv-9c5s2UbyITcMKhJ1TZ8PxmjISSbAGAOYY";
+		return getAccessToken(false);
   }
 
   @Override
@@ -752,14 +751,14 @@ public class WxService implements IService {
   }
 
   @Override
-  public SenderResult sendAllByGroup(WxGroupSender sender) throws WxErrorException {
+  public SenderResult sendAllByTag(WxTagSender sender) throws WxErrorException {
     SenderResult result = null;
-    String url = WxConsts.URL_GROUP_SEND_ALL.replace("ACCESS_TOKEN", getAccessToken());
+    String url = WxConsts.URL_TAG_SEND_ALL.replace("ACCESS_TOKEN", getAccessToken());
     try {
       String postResult = post(url, sender.toJson());
       result = SenderResult.fromJson(postResult);
     } catch (IOException e) {
-      throw new WxErrorException("[wx-tools]sendAllByGroup failure.");
+      throw new WxErrorException("[wx-tools]sendAllByTag failure.");
     }
     return result;
   }

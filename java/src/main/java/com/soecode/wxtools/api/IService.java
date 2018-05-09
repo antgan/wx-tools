@@ -468,7 +468,31 @@ public interface IService {
 	 * @throws WxErrorException
 	 */
 	WxUserListResult batchGetUserOpenId(String next_openid) throws WxErrorException;
-	
+
+	/**
+	 * 批量拉黑名单
+	 * @param userList
+	 * @return
+	 * @throws WxErrorException
+	 */
+	WxError batchAddUserToBlackList(List<String> userList) throws WxErrorException;
+
+	/**
+	 * 批量移除黑名单
+	 * @param userList
+	 * @return
+	 * @throws WxErrorException
+	 */
+	WxError batchRemoveUserFromBlackList(List<String> userList) throws WxErrorException;
+
+	/**
+	 * 批量获取黑名单
+	 * @param nextOpenId
+	 * @return
+	 * @throws WxErrorException
+	 */
+	WxUserListResult batchGetUsersFromBlackList(String nextOpenId) throws WxErrorException;
+
 	/**
 	 * <pre>
 	 * 构造oauth2授权的url连接

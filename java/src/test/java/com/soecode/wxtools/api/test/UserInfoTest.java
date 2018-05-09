@@ -85,4 +85,22 @@ public class UserInfoTest {
     System.out.println(result);
   }
 
+  @Test
+  public void should_batch_add_user_to_black_list_successfully() throws Exception {
+    WxError result = iService.batchAddUserToBlackList(Arrays.asList("oROCnuNihJnO9bnKOAORDFFriPgQ"));
+    System.out.println(result);
+  }
+
+  @Test
+  public void should_batch_remove_user_from_black_list_successfully() throws Exception {
+    WxError result = iService.batchRemoveUserFromBlackList(Arrays.asList("oROCnuNihJnO9bnKOAORDFFriPgQ"));
+    System.out.println(result);
+  }
+
+  @Test
+  public void should_batch_get_users_from_black_list_successfully() throws Exception {
+    WxUserListResult result = iService.batchGetUsersFromBlackList(null);
+    System.out.println(result);
+  }
+
 }

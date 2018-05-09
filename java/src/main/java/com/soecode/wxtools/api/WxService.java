@@ -437,13 +437,9 @@ public class WxService implements IService {
   public WxUserListResult queryAllUserUnderByTag(int tagId, String nextOpenid)
       throws WxErrorException {
     WxUserListResult result = null;
+    if(StringUtils.isEmpty(nextOpenid)) nextOpenid = "";
     String url = WxConsts.URL_QUERY_ALL_USER_UNDER_TAG.replace("ACCESS_TOKEN", getAccessToken());
-    String json = null;
-    if (StringUtils.isEmpty(nextOpenid)) {
-      json = "{\"tagid\":\"" + tagId + "\"}";
-    } else {
-      json = "{\"tagid\":\"" + tagId + "\",\"next_openid\":\"" + nextOpenid + "\"}";
-    }
+    String json = "{\"tagid\":\"" + tagId + "\",\"next_openid\":\"" + nextOpenid + "\"}";
     String postResult = post(url, json);
     try {
       result = WxUserListResult.fromJson(postResult);
@@ -543,6 +539,52 @@ public class WxService implements IService {
       result = WxUserListResult.fromJson(getResult);
     } catch (IOException e) {
       throw new WxErrorException("[wx-tools]batchGetUserOpenId failure.");
+    }
+    return result;
+  }
+
+  @Override
+  public WxError batchAddUserToBlackList(List<String> userList) throws WxErrorException {
+    WxError err = null;
+    String url = WxConsts.URL_BATCH_ADD_USER_TO_BLACK_LISE.replace("ACCESS_TOKEN", getAccessToken());
+    ObjectMapper mapper = new ObjectMapper();
+    try {
+      String json = "{\"openid_list\":" + mapper.writeValueAsString(userList) + "\"}";
+      String postResult = post(url, json);
+      err = WxError.fromJson(postResult);
+    } catch (IOException e) {
+      throw new WxErrorException("[wx-tools]batchAddUserToBlackList failure.");
+    }
+    return err;
+  }
+
+  @Override
+  public WxError batchRemoveUserFromBlackList(List<String> userList) throws WxErrorException {
+    WxError err = null;
+    String url = WxConsts.URL_BATCH_REMOVE_USER_FROM_BLACK_LISE.replace("ACCESS_TOKEN", getAccessToken());
+    ObjectMapper mapper = new ObjectMapper();
+    try {
+      String json = "{\"openid_list\":" + mapper.writeValueAsString(userList) + "\"}";
+      String postResult = post(url, json);
+      err = WxError.fromJson(postResult);
+    } catch (IOException e) {
+      throw new WxErrorException("[wx-tools]batchRemoveUserFromBlackList failure.");
+    }
+    return err;
+  }
+
+  @Override
+  public WxUserListResult batchGetUsersFromBlackList(String nextOpenId) throws WxErrorException {
+    WxUserListResult result = null;
+    if(StringUtils.isEmpty(nextOpenId)) nextOpenId = "";
+    String url = WxConsts.URL_BATCH_GET_USERS_FROM_BLACK_LISE.replace("ACCESS_TOKEN", getAccessToken());
+    ObjectMapper mapper = new ObjectMapper();
+    try {
+      String json = "{\"begin_openid\":" + nextOpenId + "\"}";
+      String postResult = post(url, json);
+      result = WxUserListResult.fromJson(postResult);
+    } catch (IOException e) {
+      throw new WxErrorException("[wx-tools]batchGetUsersFromBlackList failure.");
     }
     return result;
   }

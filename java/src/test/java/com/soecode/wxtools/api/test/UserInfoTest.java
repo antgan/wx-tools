@@ -1,7 +1,11 @@
 package com.soecode.wxtools.api.test;
 
 import com.soecode.wxtools.api.IService;
+import com.soecode.wxtools.api.WxConsts;
 import com.soecode.wxtools.api.WxService;
+import com.soecode.wxtools.bean.WxUserList;
+import com.soecode.wxtools.bean.WxUserList.WxUser;
+import com.soecode.wxtools.bean.WxUserList.WxUser.WxUserGet;
 import com.soecode.wxtools.bean.result.WxError;
 import com.soecode.wxtools.bean.result.WxUserListResult;
 import com.soecode.wxtools.bean.result.WxUserTagResult;
@@ -55,8 +59,30 @@ public class UserInfoTest {
   }
 
   @Test
-  public void should_test() throws Exception {
-    int result = iService.queryGroupIdByOpenId("oROCnuNihJnO9bnKOAORDFFriPgQ");
+  public void should_update_user_remark_successfully() throws Exception {
+    WxError result = iService.updateUserRemark("oROCnuNihJnO9bnKOAORDFFriPgQ", "Abel");
     System.out.println(result);
   }
+
+  @Test
+  public void should_query_user_info_successfully() throws Exception {
+    WxUser result = iService.getUserInfoByOpenId(new WxUserGet("oROCnuNihJnO9bnKOAORDFFriPgQ",
+        WxConsts.LANG_CHINA));
+    System.out.println(result);
+  }
+
+  @Test
+  public void should_batch_query_user_info_successfully() throws Exception {
+    WxUserList result = iService.batchGetUserInfo(Arrays.asList(new WxUserGet("oROCnuNihJnO9bnKOAORDFFriPgQ",
+        WxConsts.LANG_CHINA),new WxUserGet("oROCnuAQMnkPpEhsAYFzU-1xhKcQ",
+        WxConsts.LANG_CHINA)));
+    System.out.println(result);
+  }
+
+  @Test
+  public void should_batch_get_user_id_successfully() throws Exception {
+    WxUserListResult result = iService.batchGetUserOpenId(null);
+    System.out.println(result);
+  }
+
 }

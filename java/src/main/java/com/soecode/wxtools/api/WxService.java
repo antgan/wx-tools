@@ -507,9 +507,9 @@ public class WxService implements IService {
     WxUser user = null;
     String url = WxConsts.URL_GET_USER_INFO.replace("ACCESS_TOKEN", getAccessToken())
         .replace("OPENID", userGet.getOpenid()).replace("zh_CN", userGet.getLang());
-    String postResult = post(url, null);
+    String getResult = get(url, null);
     try {
-      user = WxUser.fromJson(postResult);
+      user = WxUser.fromJson(getResult);
     } catch (IOException e) {
       throw new WxErrorException("[wx-tools]getUserInfoByOpenId failure.");
     }
@@ -536,9 +536,8 @@ public class WxService implements IService {
   @Override
   public WxUserListResult batchGetUserOpenId(String next_openid) throws WxErrorException {
     WxUserListResult result = null;
-    String url = WxConsts.URL_BATCH_GET_USER_OPENID.replace("ACCESS_TOKEN", getAccessToken())
-        .replace("NEXT_OPENID",
-            next_openid);
+    if(StringUtils.isEmpty(next_openid)) next_openid = "";
+    String url = WxConsts.URL_BATCH_GET_USER_OPENID.replace("ACCESS_TOKEN", getAccessToken()).replace("NEXT_OPENID", next_openid);
     String getResult = get(url, null);
     try {
       result = WxUserListResult.fromJson(getResult);

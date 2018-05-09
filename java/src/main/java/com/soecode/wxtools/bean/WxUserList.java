@@ -54,6 +54,9 @@ public class WxUserList{
 		private int groupid; 
 		private String[] tagid_list;
 		private String[] privilege;
+		private String subscribe_scene;
+		private int qr_scene;
+		private String qr_scene_str;
 		
 		public String[] getPrivilege() {
 			return privilege;
@@ -175,6 +178,30 @@ public class WxUserList{
 			this.groupid = groupid;
 		}
 
+		public String getSubscribe_scene() {
+			return subscribe_scene;
+		}
+
+		public void setSubscribe_scene(String subscribe_scene) {
+			this.subscribe_scene = subscribe_scene;
+		}
+
+		public int getQr_scene() {
+			return qr_scene;
+		}
+
+		public void setQr_scene(int qr_scene) {
+			this.qr_scene = qr_scene;
+		}
+
+		public String getQr_scene_str() {
+			return qr_scene_str;
+		}
+
+		public void setQr_scene_str(String qr_scene_str) {
+			this.qr_scene_str = qr_scene_str;
+		}
+
 		public String toJson() throws JsonGenerationException, JsonMappingException, IOException {
 			ObjectMapper mapper = new ObjectMapper();
 			return mapper.writeValueAsString(this);
@@ -185,18 +212,29 @@ public class WxUserList{
 			return mapper.readValue(json, WxUser.class);
 		}
 
-	
-
 		@Override
 		public String toString() {
-			return "WxUser [subscribe=" + subscribe + ", openid=" + openid + ", nickname=" + nickname + ", sex=" + sex
-					+ ", language=" + language + ", city=" + city + ", province=" + province + ", country=" + country
-					+ ", headimgurl=" + headimgurl + ", subscribe_time=" + subscribe_time + ", unionid=" + unionid
-					+ ", remark=" + remark + ", groupid=" + groupid + ", tagid_list=" + Arrays.toString(tagid_list)
-					+ ", privilege=" + Arrays.toString(privilege) + "]";
+			return "WxUser{" +
+					"subscribe=" + subscribe +
+					", openid='" + openid + '\'' +
+					", nickname='" + nickname + '\'' +
+					", sex=" + sex +
+					", language='" + language + '\'' +
+					", city='" + city + '\'' +
+					", province='" + province + '\'' +
+					", country='" + country + '\'' +
+					", headimgurl='" + headimgurl + '\'' +
+					", subscribe_time='" + subscribe_time + '\'' +
+					", unionid='" + unionid + '\'' +
+					", remark='" + remark + '\'' +
+					", groupid=" + groupid +
+					", tagid_list=" + Arrays.toString(tagid_list) +
+					", privilege=" + Arrays.toString(privilege) +
+					", subscribe_scene='" + subscribe_scene + '\'' +
+					", qr_scene=" + qr_scene +
+					", qr_scene_str='" + qr_scene_str + '\'' +
+					'}';
 		}
-
-
 
 		/**
 		 * 获取用户信息参数类
@@ -208,7 +246,7 @@ public class WxUserList{
 			private String lang;
 			
 			public WxUserGet() {
-				// TODO Auto-generated constructor stub
+
 			}
 			
 			public WxUserGet(String openid, String lang) {

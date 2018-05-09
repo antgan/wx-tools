@@ -358,6 +358,12 @@ public interface IService {
 	 */
 	WxUserTagResult createUserTag(String name) throws WxErrorException;
 
+	/**
+	 * 删除用户标签
+	 * @param tagId
+	 * @return
+	 * @throws WxErrorException
+	 */
 	WxError deleteUserTag(int tagId) throws WxErrorException;
 
 	/**
@@ -365,7 +371,6 @@ public interface IService {
 	 * 查询所有用户标签
 	 * 详情请见：{@link http://mp.weixin.qq.com/wiki/8/d6d33cf60bce2a2e4fb10a21be9591b8.html}
 	 * </pre>
-	 * @param name
 	 * @return
 	 * @throws WxErrorException
 	 */
@@ -388,7 +393,7 @@ public interface IService {
 	 * 修改用户标签
 	 * 详情请见：{@link http://mp.weixin.qq.com/wiki/8/d6d33cf60bce2a2e4fb10a21be9591b8.html}
 	 * </pre>
-	 * @param groupId
+	 * @param tagId
 	 * @param name
 	 * @return
 	 * @throws WxErrorException

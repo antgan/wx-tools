@@ -176,10 +176,10 @@ public class WxService implements IService {
   }
 
   @Override
-  public String deleteMenu(String menuid) throws WxErrorException {
+  public String deleteMenu(String menuId) throws WxErrorException {
     String url = WxConsts.URL_DELETE_MENU_CONDITIONAL.replace("ACCESS_TOKEN", getAccessToken());
 
-    String json = "{" + "\"menuid\":" + menuid + "}";
+    String json = "{" + "\"menuid\":" + menuId + "}";
     String result = post(url, json);
     System.out.println("[wx-tools]Delete Conditional Menu result:" + result);
     return result;
@@ -210,9 +210,9 @@ public class WxService implements IService {
   }
 
   @Override
-  public String menuTryMatch(String user_id) throws WxErrorException {
+  public String menuTryMatch(String userId) throws WxErrorException {
     String url = WxConsts.URL_TRYMATCH_MENU.replace("ACCESS_TOKEN", getAccessToken());
-    String json = "{" + "\"user_id\":\"" + user_id + "\"" + "}";
+    String json = "{" + "\"user_id\":\"" + userId + "\"" + "}";
     return post(url, json);
   }
 
@@ -231,10 +231,10 @@ public class WxService implements IService {
     return execute(new MediaUploadRequestExecutor(), url, file);
   }
 
-  public File downloadTempMedia(String media_id, File path) throws WxErrorException {
+  public File downloadTempMedia(String mediaId, File path) throws WxErrorException {
     String url = WxConsts.URL_DOWNLOAD_TEMP_MEDIA.replace("ACCESS_TOKEN", getAccessToken())
         .replace("MEDIA_ID",
-            media_id);
+            mediaId);
     return execute(new MediaDownloadGetRequestExecutor(path), url, null);
   }
 
@@ -264,17 +264,17 @@ public class WxService implements IService {
   }
 
   @Override
-  public File downloadMedia(String media_id, File path) throws WxErrorException {
+  public File downloadMedia(String mediaId, File path) throws WxErrorException {
     String url = WxConsts.URL_DOWNLOAD_MATERIAL_MEDIA.replace("ACCESS_TOKEN", getAccessToken());
-    String json = "{" + "\"media_id\":\"" + media_id + "\"" + "}";
+    String json = "{" + "\"media_id\":\"" + mediaId + "\"" + "}";
     return execute(new MediaDownloadPostRequestExecutor(path), url, json);
   }
 
   @Override
-  public WxNewsMediaResult downloadNewsMedia(String media_id) throws WxErrorException {
+  public WxNewsMediaResult downloadNewsMedia(String mediaId) throws WxErrorException {
     WxNewsMediaResult newsResult = null;
     String url = WxConsts.URL_DOWNLOAD_MATERIAL_MEDIA.replace("ACCESS_TOKEN", getAccessToken());
-    String json = "{" + "\"media_id\":\"" + media_id + "\"" + "}";
+    String json = "{" + "\"media_id\":\"" + mediaId + "\"" + "}";
     String result = execute(new SimplePostRequestExecutor(), url, json);
     try {
       newsResult = WxNewsMediaResult.fromJson(result);
@@ -285,16 +285,16 @@ public class WxService implements IService {
   }
 
   @Override
-  public WxVideoMediaResult downloadVideoMedia(String media_id, File path) throws WxErrorException {
+  public WxVideoMediaResult downloadVideoMedia(String mediaId, File path) throws WxErrorException {
     String url = WxConsts.URL_DOWNLOAD_MATERIAL_MEDIA.replace("ACCESS_TOKEN", getAccessToken());
-    String json = "{" + "\"media_id\":\"" + media_id + "\"" + "}";
+    String json = "{" + "\"media_id\":\"" + mediaId + "\"" + "}";
     return execute(new VideoDownloadPostRequestExecutor(path), url, json);
   }
 
   @Override
-  public WxError deleteMediaMaterial(String media_id) throws WxErrorException {
+  public WxError deleteMediaMaterial(String mediaId) throws WxErrorException {
     String url = WxConsts.URL_DELETE_MATERIAL_MEDIA.replace("ACCESS_TOKEN", getAccessToken());
-    String json = "{" + "\"media_id\":\"" + media_id + "\"" + "}";
+    String json = "{" + "\"media_id\":\"" + mediaId + "\"" + "}";
     String result = execute(new SimplePostRequestExecutor(), url, json);
     WxError err = null;
     try {
@@ -329,13 +329,13 @@ public class WxService implements IService {
   }
 
   @Override
-  public WxError updateNewsInfo(String media_id, int index, WxNewsInfo newInfo)
+  public WxError updateNewsInfo(String mediaId, int index, WxNewsInfo newInfo)
       throws WxErrorException {
     WxError err = null;
     String url = WxConsts.URL_UPDATE_NEWS_MEDIA.replace("ACCESS_TOKEN", getAccessToken());
 
     try {
-      String json = "{" + "\"media_id\":" + "\"" + media_id + "\"," + "\"index\":" + index + ","
+      String json = "{" + "\"media_id\":" + "\"" + mediaId + "\"," + "\"index\":" + index + ","
           + "\"articles\":"
           + newInfo.toJson() + "}";
       String result = execute(new SimplePostRequestExecutor(), url, json);
@@ -529,10 +529,11 @@ public class WxService implements IService {
   }
 
   @Override
-  public WxUserListResult batchGetUserOpenId(String next_openid) throws WxErrorException {
+  public WxUserListResult batchGetUserOpenId(String nextOpenid) throws WxErrorException {
     WxUserListResult result = null;
-    if(StringUtils.isEmpty(next_openid)) next_openid = "";
-    String url = WxConsts.URL_BATCH_GET_USER_OPENID.replace("ACCESS_TOKEN", getAccessToken()).replace("NEXT_OPENID", next_openid);
+    if(StringUtils.isEmpty(nextOpenid)) nextOpenid = "";
+    String url = WxConsts.URL_BATCH_GET_USER_OPENID.replace("ACCESS_TOKEN", getAccessToken()).replace("NEXT_OPENID",
+        nextOpenid);
     String getResult = get(url, null);
     try {
       result = WxUserListResult.fromJson(getResult);
@@ -612,12 +613,12 @@ public class WxService implements IService {
   }
 
   @Override
-  public WxOAuth2AccessTokenResult oauth2ToGetRefreshAccessToken(String refresh_token)
+  public WxOAuth2AccessTokenResult oauth2ToGetRefreshAccessToken(String refreshToken)
       throws WxErrorException {
     WxOAuth2AccessTokenResult result = null;
     String url = WxConsts.URL_OAUTH2_GET_REFRESH_ACCESSTOKEN
         .replace("APPID", WxConfig.getInstance().getAppId())
-        .replace("REFRESH_TOKEN", refresh_token);
+        .replace("REFRESH_TOKEN", refreshToken);
     String getResult = get(url, null);
     try {
       result = WxOAuth2AccessTokenResult.fromJson(getResult);
@@ -628,10 +629,10 @@ public class WxService implements IService {
   }
 
   @Override
-  public WxUser oauth2ToGetUserInfo(String access_token, WxUserGet userGet)
+  public WxUser oauth2ToGetUserInfo(String accessToken, WxUserGet userGet)
       throws WxErrorException {
     WxUser user = null;
-    String url = WxConsts.URL_OAUTH2_GET_USER_INFO.replace("ACCESS_TOKEN", access_token)
+    String url = WxConsts.URL_OAUTH2_GET_USER_INFO.replace("ACCESS_TOKEN", accessToken)
         .replace("OPENID", userGet.getOpenid()).replace("zh_CN", userGet.getLang());
     String getResult = get(url, null);
     try {
@@ -643,10 +644,10 @@ public class WxService implements IService {
   }
 
   @Override
-  public WxError oauth2CheckAccessToken(String access_token, String openid)
+  public WxError oauth2CheckAccessToken(String accessToken, String openid)
       throws WxErrorException {
     WxError err = null;
-    String url = WxConsts.URL_OAUTH2_CHECK_ACCESSTOKEN.replace("ACCESS_TOKEN", access_token)
+    String url = WxConsts.URL_OAUTH2_CHECK_ACCESSTOKEN.replace("ACCESS_TOKEN", accessToken)
         .replace("OPENID",
             openid);
     String getResult = get(url, null);
@@ -790,9 +791,9 @@ public class WxService implements IService {
   }
 
   @Override
-  public SenderResult sendAllDelete(String msg_id) throws WxErrorException {
+  public SenderResult sendAllDelete(String msgId) throws WxErrorException {
     SenderResult result = null;
-    String json = "{\"msg_id\":" + msg_id + "}";
+    String json = "{\"msg_id\":" + msgId + "}";
     String url = WxConsts.URL_DELETE_SEND_ALL.replace("ACCESS_TOKEN", getAccessToken());
     try {
       String postResult = post(url, json);
@@ -804,9 +805,9 @@ public class WxService implements IService {
   }
 
   @Override
-  public SenderResult sendAllGetStatus(String msg_id) throws WxErrorException {
+  public SenderResult sendAllGetStatus(String msgId) throws WxErrorException {
     SenderResult result = null;
-    String json = "{\"msg_id\":\"" + msg_id + "\"}";
+    String json = "{\"msg_id\":\"" + msgId + "\"}";
     String url = WxConsts.URL_GET_STATUS_SEND_ALL.replace("ACCESS_TOKEN", getAccessToken());
     try {
       String postResult = post(url, json);
@@ -883,11 +884,11 @@ public class WxService implements IService {
   }
 
   @Override
-  public TemplateResult templateGetId(String template_id_short) throws WxErrorException {
+  public TemplateResult templateGetId(String templateIdShort) throws WxErrorException {
     TemplateResult result = null;
     String postResult = null;
     String url = WxConsts.URL_TEMPLATE_GET_ID.replace("ACCESS_TOKEN", getAccessToken());
-    String json = "{\"template_id_short\":\"" + template_id_short + "\"}";
+    String json = "{\"template_id_short\":\"" + templateIdShort + "\"}";
     try {
       postResult = post(url, json);
       result = TemplateResult.fromJson(postResult);
@@ -912,11 +913,11 @@ public class WxService implements IService {
   }
 
   @Override
-  public WxError templateDelete(String template_id) throws WxErrorException {
+  public WxError templateDelete(String templateId) throws WxErrorException {
     WxError result = null;
     String postResult = null;
     String url = WxConsts.URL_TEMPLATE_DELETE.replace("ACCESS_TOKEN", getAccessToken());
-    String json = "{\"template_id\":\"" + template_id + "\"}";
+    String json = "{\"template_id\":\"" + templateId + "\"}";
     try {
       postResult = post(url, json);
       result = WxError.fromJson(postResult);

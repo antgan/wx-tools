@@ -119,11 +119,11 @@ public interface IService {
 	 * 详情请见: {@link http://mp.weixin.qq.com/wiki/0/c48ccd12b69ae023159b4bfaa7c39c20.html}
 	 *
 	 * </pre>
-	 * @param menuid
+	 * @param menuId
 	 * @return String 查询结果
 	 * @throws WxErrorException
 	 */
-	String deleteMenu(String menuid) throws WxErrorException;
+	String deleteMenu(String menuId) throws WxErrorException;
 
 	/**
 	 * <pre>
@@ -152,11 +152,11 @@ public interface IService {
 	 * 个性化菜单栏
 	 * 测试个性化菜单匹配结果
 	 * </pre>
-	 * @param user_id user_id可以是粉丝的OpenID，也可以是粉丝的微信号。
+	 * @param userId user_id可以是粉丝的OpenID，也可以是粉丝的微信号。
 	 * @return
 	 * @throws WxErrorException
 	 */
-	String menuTryMatch(String user_id) throws WxErrorException;
+		String menuTryMatch(String userId) throws WxErrorException;
 
 	/**
 	 * <pre>
@@ -203,10 +203,10 @@ public interface IService {
 	 *
 	 * @return File 临时文件File
 	 * @throws WxErrorException
-	 * @params media_id
+	 * @params mediaId
 	 * @params path
 	 */
-	File downloadTempMedia(String media_id, File path) throws WxErrorException;
+	File downloadTempMedia(String mediaId, File path) throws WxErrorException;
 
 
 	/**
@@ -241,7 +241,7 @@ public interface IService {
 	 * </pre>
 	 *
 	 * @param mediaType 媒体类型  {@link WxConsts}
-	 * @param fileType  文件类型  {@link WxConsts}
+	 * @param file  文件
 	 * @param introduction 当上传为视频资源时(Video)，可以附带说明。其他资源传null即可
 	 * @throws WxErrorException
 	 */
@@ -255,36 +255,36 @@ public interface IService {
 	 *
 	 * @return 保存到本地的永久文件
 	 * @throws WxErrorException
-	 * @params media_id
+	 * @params mediaId
 	 */
-	File downloadMedia(String media_id,File path) throws WxErrorException;
+	File downloadMedia(String mediaId, File path) throws WxErrorException;
 
 	/**
 	 * 下载获取永久图文素材，返回图文信息结果{@link WxNewsMediaResult}
-	 * @param media_id
+	 * @param mediaId
 	 * @return
 	 * @throws WxErrorException
 	 */
-	WxNewsMediaResult downloadNewsMedia(String media_id) throws WxErrorException;
+	WxNewsMediaResult downloadNewsMedia(String mediaId) throws WxErrorException;
 
 	/**
 	 * <pre>
 	 * 下载获取永久视频素材，返回图文信息结果{@link WxVideoMediaResult}
 	 * 保存在 {@link WxConfigStorage} 下的永久目录下
 	 * </pre>
-	 * @param media_id
+	 * @param mediaId
 	 * @return
 	 * @throws WxErrorException
 	 */
-	WxVideoMediaResult downloadVideoMedia(String media_id,File path) throws WxErrorException;
+	WxVideoMediaResult downloadVideoMedia(String mediaId, File path) throws WxErrorException;
 
 	/**
 	 * 删除永久素材
-	 * @param media_id
+	 * @param mediaId
 	 * @return WxError ，若 errcode = 0 则删除成功
 	 * @throws WxErrorException
 	 */
-	WxError deleteMediaMaterial(String media_id) throws WxErrorException;
+	WxError deleteMediaMaterial(String mediaId) throws WxErrorException;
 
 	/**
 	 * <pre>
@@ -315,14 +315,14 @@ public interface IService {
 	 * 修改永久图文素材
 	 *
 	 * </pre>
-	 * @param media_id  图文id
+	 * @param mediaId  图文id
 	 * @param index  图文的位置，第一篇为0
 	 * @param WxNewsInfo 新的图文
 	 *
 	 * @return WxError, 若errcode = 0 修改成功
 	 * @throws WxErrorException
 	 */
-	WxError updateNewsInfo(String media_id, int index, WxNewsInfo newInfo) throws WxErrorException;
+	WxError updateNewsInfo(String mediaId, int index, WxNewsInfo newInfo) throws WxErrorException;
 
 	/**
 	 * <pre>
@@ -405,23 +405,24 @@ public interface IService {
 	 * 批量移动用户到指定用户标签
 	 * 详情请见：{@link http://mp.weixin.qq.com/wiki/8/d6d33cf60bce2a2e4fb10a21be9591b8.html}
 	 * </pre>
-	 * @param openids
+	 * @param userIdList
 	 * @param toTagId
 	 * @return
 	 * @throws WxErrorException
 	 */
-	WxError batchMovingUserToNewTag(List<String> openids, int toTagId) throws WxErrorException;
+	WxError batchMovingUserToNewTag(List<String> userIdList, int toTagId) throws WxErrorException;
 
 	/**
 	 * <pre>
 	 * 删除用户标签
 	 * 详情请见：{@link http://mp.weixin.qq.com/wiki/8/d6d33cf60bce2a2e4fb10a21be9591b8.html}
 	 * </pre>
+	 * @param userIdList
 	 * @param tagId
 	 * @return
 	 * @throws WxErrorException
 	 */
-	WxError batchRemoveUserTag(List<String> openids, int tagId) throws WxErrorException;
+	WxError batchRemoveUserTag(List<String> userIdList, int tagId) throws WxErrorException;
 
 	/**
 	 * <pre>
@@ -440,8 +441,7 @@ public interface IService {
 	 * 获取用户个人信息
 	 * 详情请见：{@link http://mp.weixin.qq.com/wiki/1/8a5ce6257f1d3b2afb20f83e72b72ce9.html}
 	 * </pre>
-	 * @param openid
-	 * @param lang  返回结果的语言版本  {@link WxConsts}
+	 * @param userGet
 	 * @return
 	 * @throws WxErrorException
 	 */
@@ -463,11 +463,11 @@ public interface IService {
 	 * 批量获取关注者openid
 	 * 详情请见：{@link http://mp.weixin.qq.com/wiki/12/54773ff6da7b8bdc95b7d2667d84b1d4.html}
 	 * </pre>
-	 * @param next_openid 第一个拉取的OPENID，不填默认从头开始拉取
+	 * @param nextOpenid 第一个拉取的OPENID，不填默认从头开始拉取
 	 * @return
 	 * @throws WxErrorException
 	 */
-	WxUserListResult batchGetUserOpenId(String next_openid) throws WxErrorException;
+	WxUserListResult batchGetUserOpenId(String nextOpenid) throws WxErrorException;
 
 	/**
 	 * 批量拉黑名单
@@ -529,11 +529,11 @@ public interface IService {
 	 *
 	 * 详情请见：{@link http://mp.weixin.qq.com/wiki/4/9ac2e7b1f1d22e9e57260f6553822520.html}
 	 * </pre>
-	 * @param refresh_token 填写通过access_token获取到的refresh_token参数
+	 * @param refreshToken 填写通过access_token获取到的refresh_token参数
 	 * @return
 	 * @throws WxErrorException
 	 */
-	WxOAuth2AccessTokenResult oauth2ToGetRefreshAccessToken(String refresh_token) throws WxErrorException;
+	WxOAuth2AccessTokenResult oauth2ToGetRefreshAccessToken(String refreshToken) throws WxErrorException;
 
 	/**
 	 * <pre>
@@ -543,11 +543,12 @@ public interface IService {
 	 * 详情请见：{@link http://mp.weixin.qq.com/wiki/4/9ac2e7b1f1d22e9e57260f6553822520.html}
 	 *
 	 * </pre>
+	 * @param accessToken
 	 * @param userGet
 	 * @return
 	 * @throws WxErrorException
 	 */
-	WxUser oauth2ToGetUserInfo(String access_token, WxUserGet userGet) throws WxErrorException;
+	WxUser oauth2ToGetUserInfo(String accessToken, WxUserGet userGet) throws WxErrorException;
 
 	/**
 	 * <pre>
@@ -555,12 +556,12 @@ public interface IService {
 	 *
 	 * 详情请见：{@link http://mp.weixin.qq.com/wiki/4/9ac2e7b1f1d22e9e57260f6553822520.html}
 	 * </pre>
-	 * @param access_token
+	 * @param accessToken
 	 * @param openid
 	 * @return WxError 若errcode=0，有效；反之，无效。
 	 * @throws WxErrorException
 	 */
-	WxError oauth2CheckAccessToken(String access_token, String openid) throws WxErrorException;
+	WxError oauth2CheckAccessToken(String accessToken, String openid) throws WxErrorException;
 
 	/**
 	 * <pre>
@@ -691,7 +692,7 @@ public interface IService {
 	 * @return
 	 * @throws WxErrorException
 	 */
-	SenderResult sendAllDelete(String msg_id) throws WxErrorException;
+	SenderResult sendAllDelete(String msgId) throws WxErrorException;
 
 	/**
 	 * <pre>
@@ -703,7 +704,7 @@ public interface IService {
 	 * @return
 	 * @throws WxErrorException
 	 */
-	SenderResult sendAllGetStatus(String msg_id) throws WxErrorException;
+	SenderResult sendAllGetStatus(String msgId) throws WxErrorException;
 
 	/**
 	 * <pre>
@@ -739,7 +740,7 @@ public interface IService {
 	 * @return
 	 * @throws WxErrorException
 	 */
-	TemplateResult templateGetId(String template_id_short)throws WxErrorException;
+	TemplateResult templateGetId(String templateIdShort)throws WxErrorException;
 
 	/**
 	 * <pre>
@@ -763,7 +764,7 @@ public interface IService {
 	 * @return
 	 * @throws WxErrorException
 	 */
-	WxError templateDelete(String template_id)throws WxErrorException;
+	WxError templateDelete(String templateId)throws WxErrorException;
 
 	/**
 	 * <pre>

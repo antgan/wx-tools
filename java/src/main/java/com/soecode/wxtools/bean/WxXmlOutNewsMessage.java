@@ -8,15 +8,6 @@ import com.soecode.wxtools.util.xml.XStreamCDataConverter;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 
-/**
- * <pre>
- * 被动回复消息--回复图文消息体
- * 
- * 详情:http://mp.weixin.qq.com/wiki/1/6239b44c206cab9145b1d52c67e6c551.html
- * </pre>
- * @author antgan
- *
- */
 @XStreamAlias("xml")
 public class WxXmlOutNewsMessage extends WxXmlOutMessage {
 

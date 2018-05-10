@@ -3,11 +3,6 @@ package com.soecode.wxtools.bean;
 import java.io.IOException;
 import org.codehaus.jackson.map.ObjectMapper;
 
-/**
- * 根据组群发
- * @author antgan
- *
- */
 public class WxTagSender extends SenderContent{
 	private SenderFilter filter;
 	private String msgtype;

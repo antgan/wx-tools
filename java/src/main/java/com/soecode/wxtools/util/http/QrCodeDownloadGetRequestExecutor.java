@@ -19,12 +19,6 @@ import com.soecode.wxtools.exception.WxErrorException;
 import com.soecode.wxtools.util.StringUtils;
 import com.soecode.wxtools.util.file.FileUtils;
 
-/**
- * 【二维码】素材请求下载器
- * 下载媒体文件POST请求执行器，请求的参数是String, 返回的结果是File
- * @author antgan
- *
- */
 public class QrCodeDownloadGetRequestExecutor implements RequestExecutor<File, Map<String,String>> {
 
 	private File qrDirFile;
@@ -40,7 +34,7 @@ public class QrCodeDownloadGetRequestExecutor implements RequestExecutor<File, M
 
 	@Override
 	public File execute(CloseableHttpClient httpclient, String uri, Map<String,String> params)
-			throws WxErrorException, ClientProtocolException, IOException {
+			throws WxErrorException, IOException {
 		if (params != null) {
 			uri += '?';
 			for(String key : params.keySet()){
@@ -54,14 +48,12 @@ public class QrCodeDownloadGetRequestExecutor implements RequestExecutor<File, M
 		try (CloseableHttpResponse response = httpclient.execute(httpGet)) {
 			Header[] contentTypeHeader = response.getHeaders("Content-Type");
 			if (contentTypeHeader != null && contentTypeHeader.length > 0) {
-				// 下载媒体文件出错
 				if (ContentType.TEXT_PLAIN.getMimeType().equals(contentTypeHeader[0].getValue())) {
 					String responseContent = Utf8ResponseHandler.INSTANCE.handleResponse(response);
 					throw new WxErrorException(WxError.fromJson(responseContent));
 				}
 			}
 			InputStream inputStream = InputStreamResponseHandler.INSTANCE.handleResponse(response);
-			// 视频文件不支持下载
 			String fileName = createFileName(response);
 			if (StringUtils.isBlank(fileName)) {
 				return null;
@@ -74,12 +66,10 @@ public class QrCodeDownloadGetRequestExecutor implements RequestExecutor<File, M
 
 	protected String createFileName(CloseableHttpResponse response) {
 		Header[] contentDispositionHeader = response.getHeaders("Cache-control");
-		//获取二维码寿命
 		Pattern p = Pattern.compile(".*max-age=(.*)");
 		Matcher m = p.matcher(contentDispositionHeader[0].getValue());
 		m.matches();
 		String maxage = m.group(m.groupCount());
-		//获取二维码类型
 		contentDispositionHeader = response.getHeaders("Content-Type");
 		p = Pattern.compile(".*image/(.*)");
 		m = p.matcher(contentDispositionHeader[0].getValue());

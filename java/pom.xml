@@ -1,76 +1,114 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.soecode.wx-tools</groupId>
   <artifactId>wx-tools</artifactId>
   <packaging>jar</packaging>
-  <version>1.0-SNAPSHOT</version>
+  <version>2.1.4-SNAPSHOT</version>
   <name>wx-tools</name>
   <url>http://maven.apache.org</url>
+  <parent>
+    <groupId>org.sonatype.oss</groupId>
+    <artifactId>oss-parent</artifactId>
+    <version>7</version>
+  </parent>
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <scm>
+    <url>https://github.com/antgan/wx-tools</url>
+    <connection>https://github.com/antgan/wx-tools.git</connection>
+    <developerConnection>http://ghb.soecode.com</developerConnection>
+  </scm>
+
+  <developers>
+    <developer>
+      <name>antgan</name>
+      <email>ghb@soecode.com</email>
+    </developer>
+  </developers>
+
   <dependencies>
-
-    <!-- HttpClient -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.11</version>
-			<scope>test</scope>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-			<version>3.1.0</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-	    <groupId>org.apache.httpcomponents</groupId>
-	    <artifactId>httpclient</artifactId>
-	    <version>4.3.6</version>
-	</dependency>
-	<!-- http://mvnrepository.com/artifact/org.apache.httpcomponents/httpmime -->
-	<dependency>
-	    <groupId>org.apache.httpcomponents</groupId>
-	    <artifactId>httpmime</artifactId>
-	    <version>4.3.6</version>
-	</dependency>
-	
-	<!-- JSON -->
-	<dependency>
-	    <groupId>org.codehaus.jackson</groupId>
-	    <artifactId>jackson-mapper-asl</artifactId>
-	    <version>1.9.13</version>
-	</dependency>
-	<!-- XML -->
-	<!-- http://mvnrepository.com/artifact/com.thoughtworks.xstream/xstream -->
-	<dependency>
-	    <groupId>com.thoughtworks.xstream</groupId>
-	    <artifactId>xstream</artifactId>
-	    <version>1.4.7</version>
-	</dependency>
-	<!-- IO -->
-	<!-- http://mvnrepository.com/artifact/commons-io/commons-io -->
-	<dependency>
-	    <groupId>commons-io</groupId>
-	    <artifactId>commons-io</artifactId>
-	    <version>2.4</version>
-	</dependency>
-	
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.11</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
+      <version>3.1.0</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpclient</artifactId>
+      <version>4.3.6</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpmime</artifactId>
+      <version>4.3.6</version>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.jackson</groupId>
+      <artifactId>jackson-mapper-asl</artifactId>
+      <version>1.9.13</version>
+    </dependency>
+    <dependency>
+      <groupId>com.thoughtworks.xstream</groupId>
+      <artifactId>xstream</artifactId>
+      <version>1.4.7</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>2.4</version>
+    </dependency>
   </dependencies>
   <build>
-  	<pluginManagement>
-  		<plugins>
-  			<plugin>
-  				<groupId>org.apache.maven.plugins</groupId>
-  				<artifactId>maven-compiler-plugin</artifactId>
-  				<version>2.1</version>
-  				<configuration>
-  					<source>1.7</source>
-  					<target>1.7</target>
-  				</configuration>
-  			</plugin>
-  		</plugins>
-  	</pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <configuration>
+          <encoding>UTF-8</encoding>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <encoding>UTF-8</encoding>
+          <source>1.8</source>
+          <target>1.8</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <appendAssemblyId>false</appendAssemblyId>
+          <descriptorRefs>
+            <descriptorRef>jar-with-dependencies</descriptorRef>
+          </descriptorRefs>
+        </configuration>
+        <executions>
+          <execution>
+            <id>make-assembly</id>
+            <phase>package</phase>
+            <goals>
+              <goal>assembly</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
   </build>
 </project>

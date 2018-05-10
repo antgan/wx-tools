@@ -7,11 +7,6 @@ import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
-/**
- * 二维码返回
- * @author antgan
- *
- */
 public class QrCodeResult {
 	private String ticket;
 	private int expire_seconds;
@@ -35,15 +30,6 @@ public class QrCodeResult {
 		this.url = url;
 	}
 	
-	/**
-	 * json --> obj
-	 * 
-	 * @param json
-	 * @return
-	 * @throws JsonParseException
-	 * @throws JsonMappingException
-	 * @throws IOException
-	 */
 	public static QrCodeResult fromJson(String json) throws JsonParseException, JsonMappingException, IOException {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);

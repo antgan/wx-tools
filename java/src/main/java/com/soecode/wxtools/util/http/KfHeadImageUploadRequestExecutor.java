@@ -12,12 +12,6 @@ import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 
-/**
- * 客服偷笑上传请求执行器，请求的参数是File, WxError
- * 
- * @author antgan
- *
- */
 public class KfHeadImageUploadRequestExecutor implements RequestExecutor<WxError, File> {
 
 	public KfHeadImageUploadRequestExecutor() {}

@@ -7,19 +7,6 @@ import java.io.InputStream;
 
 public class FileUtils {
 
-	/**
-	 * 创建临时文件
-	 * 
-	 * @param inputStream
-	 * @param name
-	 *            文件名
-	 * @param ext
-	 *            扩展名
-	 * @param tmpDirFile
-	 *            临时文件夹目录
-	 * @return
-	 * @throws IOException
-	 */
 	public static File createTmpFile(InputStream inputStream, String name, String ext, File tmpDirFile)
 			throws IOException {
 		FileOutputStream fos = null;
@@ -55,19 +42,6 @@ public class FileUtils {
 		}
 	}
 	
-	/**
-	 * 创建【永久】文件
-	 * 
-	 * @param inputStream
-	 * @param name
-	 *            文件名
-	 * @param ext
-	 *            扩展名
-	 * @param materialDirFile
-	 *            永久文件夹目录
-	 * @return
-	 * @throws IOException
-	 */
 	public static File createMaterialFile(InputStream inputStream, String name, String ext, File materialDirFile)
 			throws IOException {
 		FileOutputStream fos = null;
@@ -102,32 +76,10 @@ public class FileUtils {
 		}
 	}
 
-	/**
-	 * 创建【永久】文件
-	 * 
-	 * @param inputStream
-	 * @param name
-	 *            文件名
-	 * @param ext
-	 *            扩展名
-	 * @return
-	 * @throws IOException
-	 */
 	public static File createMaterialFile(InputStream inputStream, String name, String ext) throws IOException {
 		return createMaterialFile(inputStream, name, ext, null);
 	}
 	
-	/**
-	 * 创建【临时】文件
-	 * 
-	 * @param inputStream
-	 * @param name
-	 *            文件名
-	 * @param ext
-	 *            扩展名
-	 * @return
-	 * @throws IOException
-	 */
 	public static File createTmpFile(InputStream inputStream, String name, String ext) throws IOException {
 		return createTmpFile(inputStream, name, ext, null);
 	}

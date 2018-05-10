@@ -11,11 +11,6 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import com.soecode.wxtools.bean.WxMenu;
 
-/**
- * 微信菜单栏查询返回结果
- * @author antgan
- *
- */
 public class WxMenuResult {
 	private WxMenu menu;
 	private List<WxMenu> conditionalmenu;
@@ -40,26 +35,12 @@ public class WxMenuResult {
 	public String toString() {
 		return "WxMenuResult [menu=" + menu + ", conditionalmenu=" + conditionalmenu + "]";
 	}
-	/**
-	 * obj --> json
-	 * @return
-	 * @throws JsonGenerationException
-	 * @throws JsonMappingException
-	 * @throws IOException
-	 */
+
 	public String toJson() throws JsonGenerationException, JsonMappingException, IOException {
 		ObjectMapper mapper = new ObjectMapper();
 		return mapper.writeValueAsString(this);
 	}
 
-	/**
-	 * json --> obj
-	 * @param json
-	 * @return
-	 * @throws JsonParseException
-	 * @throws JsonMappingException
-	 * @throws IOException
-	 */
 	public static WxMenuResult fromJson(String json) throws JsonParseException, JsonMappingException, IOException {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);

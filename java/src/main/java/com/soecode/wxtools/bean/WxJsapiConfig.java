@@ -7,12 +7,6 @@ import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
-/**
- * Jsapi signature
- * 
- * @author antgan
- *
- */
 public class WxJsapiConfig {
 	private String appid;
 

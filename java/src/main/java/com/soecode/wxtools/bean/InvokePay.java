@@ -6,11 +6,6 @@ import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
-/**
- * 调起支付功能
- * @author antgan
- *
- */
 public class InvokePay {
 	private String appId;
 	private String timeStamp;

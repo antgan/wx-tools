@@ -23,12 +23,6 @@ import com.soecode.wxtools.exception.WxErrorException;
 import com.soecode.wxtools.util.StringUtils;
 import com.soecode.wxtools.util.file.FileUtils;
 
-/**
- * 【视频】素材请求下载器 下载媒体文件POST请求执行器，请求的参数是String, 返回的结果是File
- * 
- * @author antgan
- *
- */
 public class VideoDownloadPostRequestExecutor implements RequestExecutor<WxVideoMediaResult, String> {
 
 	private File materialDirFile;
@@ -47,14 +41,12 @@ public class VideoDownloadPostRequestExecutor implements RequestExecutor<WxVideo
 			throws WxErrorException, ClientProtocolException, IOException {
 		WxVideoMediaResult result = null;
 		
-		//获取Video下载地址
 		HttpPost httpPost = new HttpPost(uri);
 		if (params != null) {
 			httpPost.setEntity(new StringEntity(params,"UTF-8"));
 		}
 		try (CloseableHttpResponse response = httpclient.execute(httpPost)) {
 			String responseContent = Utf8ResponseHandler.INSTANCE.handleResponse(response);
-			//如果请求发生错误，抛出异常
 			ObjectMapper mapper = new ObjectMapper();
 			JsonNode node = mapper.readTree(responseContent);
 			if(node.get("errcode")!=null && !(node.get("errcode").asInt()==0)){
@@ -64,19 +56,16 @@ public class VideoDownloadPostRequestExecutor implements RequestExecutor<WxVideo
 			result = mapper.readValue(responseContent, WxVideoMediaResult.class);		
 		}
 		
-		//下载Video
 		HttpGet httpGet = new HttpGet(result.getDown_url());
 		try (CloseableHttpResponse response = httpclient.execute(httpGet)) {
 			Header[] contentTypeHeader = response.getHeaders("Content-Type");
 			if (contentTypeHeader != null && contentTypeHeader.length > 0) {
-				// 下载媒体文件出错
 				if (ContentType.TEXT_PLAIN.getMimeType().equals(contentTypeHeader[0].getValue())) {
 					String responseContent = Utf8ResponseHandler.INSTANCE.handleResponse(response);
 					throw new WxErrorException(WxError.fromJson(responseContent));
 				}
 			}
 			InputStream inputStream = InputStreamResponseHandler.INSTANCE.handleResponse(response);
-			// 视频文件不支持下载
 			String fileName = getFileName(response);
 			if (StringUtils.isBlank(fileName)) {
 				return null;

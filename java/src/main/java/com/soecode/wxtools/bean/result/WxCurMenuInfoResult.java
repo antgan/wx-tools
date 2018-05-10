@@ -10,15 +10,6 @@ import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
-/**
- * <pre>
- * 获取当前公众号 菜单配置 返回结果
- * 
- * 详情：http://mp.weixin.qq.com/wiki/14/293d0cb8de95e916d1216a33fcb81fd6.html
- * </pre>
- * @author antgan
- *
- */
 public class WxCurMenuInfoResult {
 	private int is_menu_open;
 	private WxCurSelfMenuInfo selfmenu_info;
@@ -39,26 +30,11 @@ public class WxCurMenuInfoResult {
 		this.selfmenu_info = selfmenu_info;
 	}
 	
-	/**
-	 * obj --> json
-	 * @return
-	 * @throws JsonGenerationException
-	 * @throws JsonMappingException
-	 * @throws IOException
-	 */
 	public String toJson() throws JsonGenerationException, JsonMappingException, IOException {
 		ObjectMapper mapper = new ObjectMapper();
 		return mapper.writeValueAsString(this);
 	}
 
-	/**
-	 * json --> obj
-	 * @param json
-	 * @return
-	 * @throws JsonParseException
-	 * @throws JsonMappingException
-	 * @throws IOException
-	 */
 	public static WxCurMenuInfoResult fromJson(String json) throws JsonParseException, JsonMappingException, IOException {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -72,11 +48,6 @@ public class WxCurMenuInfoResult {
 		return "WxCurMenuInfoResult [is_menu_open=" + is_menu_open + ", selfmenu_info=" + selfmenu_info + "]";
 	}
 
-	/**
-	 * 菜单栏信息
-	 * @author antgan
-	 *
-	 */
 	public static class WxCurSelfMenuInfo{
 		private List<WxCurMenuButtonInfo> button = new ArrayList<>();
 
@@ -95,11 +66,6 @@ public class WxCurMenuInfoResult {
 		
 	}
 	
-	/**
-	 * 菜单栏按钮结果
-	 * @author antgan
-	 *
-	 */
 	public static class WxCurMenuButtonInfo {
 		private String type;
 		private String name;
@@ -159,11 +125,6 @@ public class WxCurMenuInfoResult {
 		
 	}
 	
-	/**
-	 * 按钮
-	 * @author antgan
-	 *
-	 */
 	public static class WxCurMenuButton{
 		private List<WxCurMenuButtonInfo> list = new ArrayList<WxCurMenuButtonInfo>();
 		public List<WxCurMenuButtonInfo> getList() {
@@ -179,11 +140,6 @@ public class WxCurMenuInfoResult {
 		
 	}
 	
-	/**
-	 * 图文
-	 * @author antgan
-	 *
-	 */
 	public static class WxCurMenuNews{
 		private List<WxCurMenuNewsInfo> list = new ArrayList<>();
 		public List<WxCurMenuNewsInfo> getList() {
@@ -199,11 +155,6 @@ public class WxCurMenuInfoResult {
 		
 	}
 	
-	/**
-	 * 图文信息结果
-	 * @author antgan
-	 *
-	 */
 	public static class WxCurMenuNewsInfo{
 		private String title;//图文消息的标题
 		private String author;//作者

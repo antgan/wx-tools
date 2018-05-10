@@ -7,11 +7,6 @@ import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
-/**
- * 模板
- * @author antgan
- *
- */
 public class TemplateResult extends WxError{
 
 	private String template_id;
@@ -21,9 +16,7 @@ public class TemplateResult extends WxError{
 	private String deputy_industry;
 	private String content;
 	private String example;
-	
-	
-	
+
 	public String getTitle() {
 		return title;
 	}
@@ -79,15 +72,6 @@ public class TemplateResult extends WxError{
 				+ example + "]";
 	}
 
-	/**
-	 * json --> obj
-	 * 
-	 * @param json
-	 * @return
-	 * @throws JsonParseException
-	 * @throws JsonMappingException
-	 * @throws IOException
-	 */
 	public static TemplateResult fromJson(String json) throws JsonParseException, JsonMappingException, IOException {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);

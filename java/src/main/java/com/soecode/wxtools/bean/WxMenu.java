@@ -9,15 +9,6 @@ import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
-/**
- * <pre>
- * 菜单栏
- *
- * 详情：http://mp.weixin.qq.com/wiki/10/0234e39a2025342c17a7d23595c6b40a.html
- * </pre>
- *
- * @author antgan
- */
 public class WxMenu {
 
   private List<WxMenuButton> button = new ArrayList<WxMenuButton>();
@@ -50,17 +41,11 @@ public class WxMenu {
     this.menuid = menuid;
   }
 
-  /**
-   * obj --> json
-   */
   public String toJson() throws JsonGenerationException, JsonMappingException, IOException {
     ObjectMapper mapper = new ObjectMapper();
     return mapper.writeValueAsString(this);
   }
 
-  /**
-   * json --> obj
-   */
   public static WxMenu fromJson(String json)
       throws JsonParseException, JsonMappingException, IOException {
     ObjectMapper mapper = new ObjectMapper();
@@ -72,11 +57,6 @@ public class WxMenu {
     return "WxMenu [button=" + button + ", matchrule=" + matchrule + ", menuid=" + menuid + "]";
   }
 
-  /**
-   * 菜单栏按钮
-   *
-   * @author antgan
-   */
   public static class WxMenuButton {
 
     private String type;
@@ -158,11 +138,6 @@ public class WxMenu {
     }
   }
 
-  /**
-   * 菜单栏匹配规则
-   *
-   * @author antgan
-   */
   public static class WxMenuRule {
 
     private String tag_id;

@@ -2,11 +2,6 @@ package com.soecode.wxtools.bean;
 
 import java.util.List;
 
-/**
- * 群发内容
- * @author antgan
- *
- */
 public class SenderContent {
 	private Media mpnews;
 	private NewsList news;

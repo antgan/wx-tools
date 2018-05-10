@@ -6,17 +6,6 @@ import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
-/**
- * <pre>
- * 图文信息
- * 
- * 各个字段意思查阅官方文档
- * 详情：http://mp.weixin.qq.com/wiki/10/10ea5a44870f53d79449290dfd43d006.html
- * </pre>
- * 
- * @author antgan
- *
- */
 public class WxNewsInfo {
 	private String title;
 	private String thumb_media_id;

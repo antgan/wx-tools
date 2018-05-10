@@ -9,11 +9,6 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import com.soecode.wxtools.bean.WxAccessToken;
 
-/**
- * OAuth2.0 认证 access_token
- * @author antgan
- *
- */
 public class WxOAuth2AccessTokenResult extends WxAccessToken{
 	private String refresh_token;
 	private String openid;

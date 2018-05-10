@@ -3,19 +3,9 @@ package com.soecode.wxtools.api;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * <pre>
- * 微信API 常量，请求地址等
- * 具体可参照微信公众平台官方文档。
- * </pre>
 
- * @author antgan
- *
- */
 public class WxConsts {
-	////////////////////////////////////////////////////////////
-	// 微信推送过来的消息的类型，和发送给微信xml格式消息的消息类型 ////
-	///////////////////////////////////////////////////////////
+
 	public static final String XML_MSG_TEXT = "text";
 	public static final String XML_MSG_IMAGE = "image";
 	public static final String XML_MSG_VOICE = "voice";
@@ -27,9 +17,6 @@ public class WxConsts {
 	public static final String XML_MSG_EVENT = "event";
 	public static final String XML_TRANSFER_CUSTOMER_SERVICE = "transfer_customer_service";
 
-	/////////////////////////
-	// 主动发送消息的消息类型///
-	/////////////////////////
 	public static final String CUSTOM_MSG_TEXT = "text";
 	public static final String CUSTOM_MSG_IMAGE = "image";
 	public static final String CUSTOM_MSG_VOICE = "voice";
@@ -41,9 +28,6 @@ public class WxConsts {
 	public static final String CUSTOM_MSG_SAFE_NO = "0";
 	public static final String CUSTOM_MSG_SAFE_YES = "1";
 
-	///////////////////////
-	// 群发消息/客服的消息类型////
-	///////////////////////
 	public static final String MASS_MSG_MPNEWS = "mpnews";
 	public static final String MASS_MSG_NEWS = "news";
 	public static final String MASS_MSG_TEXT = "text";
@@ -53,9 +37,6 @@ public class WxConsts {
 	public static final String MASS_MSG_VIDEO = "video";
 	public static final String MASS_MSG_MUSIC = "music";
 
-	////////////////////////////////////////
-	// 群发消息后微信端推送给服务器的反馈消息///
-	////////////////////////////////////////
 	public static final String MASS_ST_SUCCESS = "send success";
 	public static final String MASS_ST_FAIL = "send fail";
 	public static final String MASS_ST_涉嫌广告 = "err(10001)";
@@ -68,28 +49,6 @@ public class WxConsts {
 	public static final String MASS_ST_涉嫌互推_互相宣传 = "err(22000)";
 	public static final String MASS_ST_涉嫌其他 = "err(21000)";
 
-	/**
-	 * 群发反馈消息代码所对应的文字描述
-	 */
-	public static final Map<String, String> MASS_ST_2_DESC = new HashMap<String, String>();
-
-	static {
-		MASS_ST_2_DESC.put(MASS_ST_SUCCESS, "发送成功");
-		MASS_ST_2_DESC.put(MASS_ST_FAIL, "发送失败");
-		MASS_ST_2_DESC.put(MASS_ST_涉嫌广告, "涉嫌广告");
-		MASS_ST_2_DESC.put(MASS_ST_涉嫌政治, "涉嫌政治");
-		MASS_ST_2_DESC.put(MASS_ST_涉嫌社会, "涉嫌社会");
-		MASS_ST_2_DESC.put(MASS_ST_涉嫌色情, "涉嫌色情");
-		MASS_ST_2_DESC.put(MASS_ST_涉嫌违法犯罪, "涉嫌违法犯罪");
-		MASS_ST_2_DESC.put(MASS_ST_涉嫌欺诈, "涉嫌欺诈");
-		MASS_ST_2_DESC.put(MASS_ST_涉嫌版权, "涉嫌版权");
-		MASS_ST_2_DESC.put(MASS_ST_涉嫌互推_互相宣传, "涉嫌互推_互相宣传");
-		MASS_ST_2_DESC.put(MASS_ST_涉嫌其他, "涉嫌其他");
-	}
-
-	//////////////////////////
-	// 微信端推送过来的事件类型//
-	//////////////////////////
 	public static final String EVT_SUBSCRIBE = "subscribe";
 	public static final String EVT_UNSUBSCRIBE = "unsubscribe";
 	public static final String EVT_SCAN = "SCAN";
@@ -105,108 +64,49 @@ public class WxConsts {
 	public static final String EVT_LOCATION_SELECT = "location_select";
 	public static final String EVT_TEMPLATESENDJOBFINISH = "TEMPLATESENDJOBFINISH";
 	public static final String EVT_ENTER_AGENT = "enter_agent";
-	/**
-	 * 资质认证成功
-	 */
 	public static final String EVT_QUALIFICATION_VERIFY_SUCCESS = "qualification_verify_success";
-	/**
-	 * 资质认证失败
-	 */
 	public static final String EVT_QUALIFICATION_VERIFY_FAIL = "qualification_verify_fail";
-	/**
-	 * 名称认证成功（即命名成功）
-	 */
 	public static final String EVT_NAMING_VERIFY_SUCCESS = "naming_verify_success";
-	/**
-	 * 名称认证失败（这时虽然客户端不打勾，但仍有接口权限）
-	 */
 	public static final String EVT_NAMING_VERIFY_FAIL = "naming_verify_fail";
-	/**
-	 * 年审通知
-	 */
 	public static final String EVT_ANNUAL_RENEW = "annual_renew";
-	/**
-	 * 认证过期失效通知
-	 */
 	public static final String EVT_VERIFY_EXPIRED = "verify_expired";
-	///////////////////////
-	// 上传多媒体文件的类型//
-	///////////////////////
+
 	public static final String MEDIA_IMAGE = "image";
 	public static final String MEDIA_VOICE = "voice";
 	public static final String MEDIA_VIDEO = "video";
 	public static final String MEDIA_THUMB = "thumb";
 	public static final String MEDIA_FILE = "file";
-
-	///////////////////////
-	// 文件类型/////////////
-	///////////////////////
 	public static final String FILE_JPG = "jpeg";
 	public static final String FILE_MP3 = "mp3";
 	public static final String FILE_AMR = "amr";
 	public static final String FILE_MP4 = "mp4";
 
-	///////////////////////
-	// 自定义菜单的按钮类型//
-	///////////////////////
-	/** 点击推事件 */
 	public static final String MENU_BUTTON_CLICK = "click";
-	/** 跳转URL */
 	public static final String MENU_BUTTON_VIEW = "view";
-	/** 扫码推事件 */
 	public static final String MENU_SCANCODE_PUSH = "scancode_push";
-	/** 扫码推事件且弹出“消息接收中”提示框 */
 	public static final String MENU_SCANCODE_WAITMSG = "scancode_waitmsg";
-	/** 弹出系统拍照发图 */
 	public static final String MENU_PIC_SYSPHOTO = "pic_sysphoto";
-	/** 弹出拍照或者相册发图 */
 	public static final String MENU_PIC_PHOTO_OR_ALBUM = "pic_photo_or_album";
-	/** 弹出微信相册发图器 */
 	public static final String MENU_PIC_WEIXIN = "pic_weixin";
-	/** 弹出地理位置选择器 */
 	public static final String MENU_LOCATION_SELECT = "location_select";
 	public static final String MENU_MEDIA_ID = "media_id";
 	public static final String MENU_VIEW_LIMITED = "view_limited";
 
-	///////////////////////
-	// 二维码///////////////
-	///////////////////////
-	/**
-	 * 临时二维码
-	 */
 	public static final String QR_CODE_LIMIT_SCENE = "QR_LIMIT_SCENE";
-	/**
-	 * 永久二维码
-	 */
 	public static final String QR_CODE_LIMIT_STR_SCENE = "QR_LIMIT_STR_SCENE";
-	
-	
-	///////////////////////
-	// oauth2网页授权的scope
-	///////////////////////
-	/** 不弹出授权页面，直接跳转，只能获取用户openid */
+
 	public static final String OAUTH2_SCOPE_BASE = "snsapi_base";
-	/** 弹出授权页面，可通过openid拿到昵称、性别、所在地。并且，即使在未关注的情况下，只要用户授权，也能获取其信息 */
 	public static final String OAUTH2_SCOPE_USER_INFO = "snsapi_userinfo";
 
-	///////////////////////
-	// 语言////////////////
-	///////////////////////
 	public static final String LANG_CHINA = "zh_CN";
 	public static final String LANG_CHINA_TAIWAN = "zh_TW";
 	public static final String LANG_ENGLISH = "en";
 	
-	///////////////////////
-	// 永久素材类型/////////
-	///////////////////////
 	public static final String MATERIAL_NEWS = "news";
 	public static final String MATERIAL_VOICE = "voice";
 	public static final String MATERIAL_IMAGE = "image";
 	public static final String MATERIAL_VIDEO = "video";
 	
-	///////////////////////
-	// 群发类型/////////
-	///////////////////////
 	public static final String SEND_ALL_NEWS = "mpnews";
 	public static final String SEND_ALL_TEXT = "text";
 	public static final String SEND_ALL_VOICE = "voice";
@@ -214,12 +114,7 @@ public class WxConsts {
 	public static final String SEND_ALL_VIDEO = "mpvideo";
 	
 
-	/////////////////////////////////// 请求URL常量//////////////////////////////////////////
-	// ACCESSTOKEN
 	public static final String URL_GET_ACCESSTOEKN = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET";
-	///////////////////////
-	// 菜单栏
-	///////////////////////
 	public static final String URL_GET_WX_SERVICE_IP = "https://api.weixin.qq.com/cgi-bin/getcallbackip?access_token=ACCESS_TOKEN";
 	public static final String URL_CREATE_MENU = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=ACCESS_TOKEN";
 	public static final String URL_CREATE_MENU_CONDITIONAL = "https://api.weixin.qq.com/cgi-bin/menu/addconditional?access_token=ACCESS_TOKEN";
@@ -229,9 +124,6 @@ public class WxConsts {
 	public static final String URL_GET_CURRENT_MENU_INFO = "https://api.weixin.qq.com/cgi-bin/get_current_selfmenu_info?access_token=ACCESS_TOKEN";
 	public static final String URL_TRYMATCH_MENU = "https://api.weixin.qq.com/cgi-bin/menu/trymatch?access_token=ACCESS_TOKEN";
 	
-	///////////////////////
-	// 多媒体相关
-	///////////////////////
 	public static final String URL_UPLOAD_TEMP_MEDIA = "https://api.weixin.qq.com/cgi-bin/media/upload?access_token=ACCESS_TOKEN&type=TYPE";
 	public static final String URL_DOWNLOAD_TEMP_MEDIA = "https://api.weixin.qq.com/cgi-bin/media/get?access_token=ACCESS_TOKEN&media_id=MEDIA_ID";
 	public static final String URL_UPLOAD_MATERIAL_MEDIA = "https://api.weixin.qq.com/cgi-bin/material/add_material?access_token=ACCESS_TOKEN";
@@ -243,9 +135,6 @@ public class WxConsts {
 	public static final String URL_IMAGE_DOMAIN_CHANGE = "https://api.weixin.qq.com/cgi-bin/media/uploadimg?access_token=ACCESS_TOKEN";
 	public static final String URL_UPDATE_NEWS_MEDIA = "https://api.weixin.qq.com/cgi-bin/material/update_news?access_token=ACCESS_TOKEN";
 
-	///////////////////////
-	// 用户标签管理相关
-	///////////////////////
 	public static final String URL_CREATE_USER_TAG = "https://api.weixin.qq.com/cgi-bin/tags/create?access_token=ACCESS_TOKEN";
 	public static final String URL_DELETE_USER_TAG = "https://api.weixin.qq.com/cgi-bin/tags/delete?access_token=ACCESS_TOKEN";
 	public static final String URL_QUERY_ALL_USER_TAG = "https://api.weixin.qq.com/cgi-bin/tags/get?access_token=ACCESS_TOKEN";
@@ -254,9 +143,6 @@ public class WxConsts {
 	public static final String URL_BATCH_MOVING_USER_TAG = "https://api.weixin.qq.com/cgi-bin/tags/members/batchtagging?access_token=ACCESS_TOKEN";
 	public static final String URL_BATCH_UN_TAG_USER_TAG = "https://api.weixin.qq.com/cgi-bin/tags/members/batchuntagging?access_token=ACCESS_TOKEN";
 
-	///////////////////////
-	// 用户相关
-	///////////////////////
 	public static final String URL_UPDATE_USER_REMARK = "https://api.weixin.qq.com/cgi-bin/user/info/updateremark?access_token=ACCESS_TOKEN";
 	public static final String URL_GET_USER_INFO = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=ACCESS_TOKEN&openid=OPENID&lang=zh_CN";
 	public static final String URL_BATCH_GET_USER_INFO = "https://api.weixin.qq.com/cgi-bin/user/info/batchget?access_token=ACCESS_TOKEN";
@@ -270,35 +156,20 @@ public class WxConsts {
 	public static final String URL_BATCH_REMOVE_USER_FROM_BLACK_LISE = "https://api.weixin.qq.com/cgi-bin/tags/members/batchunblacklist?access_token=ACCESS_TOKEN";
 	public static final String URL_BATCH_GET_USERS_FROM_BLACK_LISE = "https://api.weixin.qq.com/cgi-bin/tags/members/getblacklist?access_token=ACCESS_TOKEN";
 	
-	///////////////////////
-	// 二维码相关
-	///////////////////////
 	public static final String URL_GET_QR_CODE = "https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=TOKEN";
 	public static final String URL_DOWNLOAD_QR_CODE = "https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=TICKET";
 	public static final String URL_LONGURL_TO_SHORTURL = "https://api.weixin.qq.com/cgi-bin/shorturl?access_token=ACCESS_TOKEN";
 
-	/////////////////////////
-	//////JsapiTicket
-	/////////////////////////
 	public static final String URL_GET_JS_API_TICKET = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=ACCESS_TOKEN&type=jsapi";
 	
-	/////////////////////////
-	//////群发相关(不支持卡券)
-	/////////////////////////
 	public static final String URL_TAG_SEND_ALL = "https://api.weixin.qq.com/cgi-bin/message/mass/sendall?access_token=ACCESS_TOKEN";
 	public static final String URL_OPENID_SEND_ALL = "https://api.weixin.qq.com/cgi-bin/message/mass/send?access_token=ACCESS_TOKEN";
 	public static final String URL_DELETE_SEND_ALL ="https://api.weixin.qq.com/cgi-bin/message/mass/delete?access_token=ACCESS_TOKEN";
 	public static final String URL_PREVIEW_SEND_ALL ="https://api.weixin.qq.com/cgi-bin/message/mass/preview?access_token=ACCESS_TOKEN";
 	public static final String URL_GET_STATUS_SEND_ALL = "https://api.weixin.qq.com/cgi-bin/message/mass/get?access_token=ACCESS_TOKEN";
 	
-	/////////////////////////
-	//////支付相关
-	/////////////////////////
 	public static final String URL_PAY_UNIFIEORDER = "https://api.mch.weixin.qq.com/pay/unifiedorder";
 	
-	/////////////////////////
-	//////模板消息
-	/////////////////////////
 	public static final String URL_TEMPLATE_SET_INDUSTRY = "https://api.weixin.qq.com/cgi-bin/template/api_set_industry?access_token=ACCESS_TOKEN";
 	public static final String URL_TEMPLATE_GET_INDUSTRY = "https://api.weixin.qq.com/cgi-bin/template/get_industry?access_token=ACCESS_TOKEN";
 	public static final String URL_TEMPLATE_GET_ID = "https://api.weixin.qq.com/cgi-bin/template/api_add_template?access_token=ACCESS_TOKEN";
@@ -306,9 +177,6 @@ public class WxConsts {
 	public static final String URL_TEMPLATE_DELETE = "https://api.weixin.qq.com/cgi-bin/template/del_private_template?access_token=ACCESS_TOKEN";
 	public static final String URL_TEMPLATE_SEND = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=ACCESS_TOKEN";
 
-	/////////////////////////
-	//////客服相关
-	/////////////////////////
 	public static final String URL_ADD_KF_ACCOUNT = "https://api.weixin.qq.com/customservice/kfaccount/add?access_token=ACCESS_TOKEN";
 	public static final String URL_UPDATE_KF_ACCOUNT = "https://api.weixin.qq.com/customservice/kfaccount/update?access_token=ACCESS_TOKEN";
 	public static final String URL_DELETE_KF_ACCOUNT = "https://api.weixin.qq.com/customservice/kfaccount/del?access_token=ACCESS_TOKEN";

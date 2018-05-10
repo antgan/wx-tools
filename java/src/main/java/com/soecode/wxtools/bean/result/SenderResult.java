@@ -8,11 +8,6 @@ import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
-/**
- * 群发结果
- * @author antgan
- *
- */
 public class SenderResult extends WxError{
 
 	private long msg_id;

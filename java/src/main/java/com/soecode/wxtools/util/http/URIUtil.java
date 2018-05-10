@@ -4,11 +4,6 @@ import java.io.UnsupportedEncodingException;
 
 import com.soecode.wxtools.util.StringUtils;
 
-/**
- * URL Encoding
- * @author antgan
- *
- */
 public class URIUtil {
 
 	private static final String ALLOWED_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.!~*'()";

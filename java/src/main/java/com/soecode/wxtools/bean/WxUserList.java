@@ -10,13 +10,6 @@ import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
-/**
- * <pre>
- * 微信用户信息/批量用户信息
- * 详情：http://mp.weixin.qq.com/wiki/1/8a5ce6257f1d3b2afb20f83e72b72ce9.html
- * </pre>
- * @author antgan
- */
 public class WxUserList{
 	private List<WxUser> user_info_list = new ArrayList<>();
 
@@ -236,11 +229,6 @@ public class WxUserList{
 					'}';
 		}
 
-		/**
-		 * 获取用户信息参数类
-		 * @author antgan
-		 *
-		 */
 		public static class WxUserGet{
 			private String openid;
 			private String lang;

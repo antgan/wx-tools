@@ -19,13 +19,6 @@ import com.soecode.wxtools.exception.WxErrorException;
 import com.soecode.wxtools.util.StringUtils;
 import com.soecode.wxtools.util.file.FileUtils;
 
-/**
- * 【临时】素材请求下载器
- * 下载媒体文件GET请求执行器，请求的参数是String, 返回的结果是File
- * 
- * @author antgan
- *
- */
 public class MediaDownloadGetRequestExecutor implements RequestExecutor<File, Map<String,String>> {
 
 	private File tmpDirFile;
@@ -65,7 +58,6 @@ public class MediaDownloadGetRequestExecutor implements RequestExecutor<File, Ma
 				}
 			}
 			InputStream inputStream = InputStreamResponseHandler.INSTANCE.handleResponse(response);
-			// 视频文件不支持下载
 			String fileName = getFileName(response);
 			if (StringUtils.isBlank(fileName)) {
 				return null;

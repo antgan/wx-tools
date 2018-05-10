@@ -10,11 +10,6 @@ import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.util.EntityUtils;
 
-/**
- * 处理InputStream
- * @author antgan
- *
- */
 public class InputStreamResponseHandler implements ResponseHandler<InputStream> {
 
 	public static final ResponseHandler<InputStream> INSTANCE = new InputStreamResponseHandler();

@@ -4,9 +4,6 @@ import java.io.IOException;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.ObjectMapper;
 
-/**
- * 客服
- */
 public class KfAccount {
 
   @JsonProperty("kf_account")

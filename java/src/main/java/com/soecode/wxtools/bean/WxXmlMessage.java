@@ -17,23 +17,8 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 
 
-/**
- * <pre>
- * 微信推送过来的消息，也是同步回复给用户的消息，xml格式
- * 相关字段的解释看微信开发者文档：
- * http://mp.weixin.qq.com/wiki/17/f298879f8fb29ab98b2f2971d42552fd.html
- * http://mp.weixin.qq.com/wiki/7/9f89d962eba4c5924ed95b513ba69d9b.html
-
- * </pre>
- *
- * @author antgan
- */
 @XStreamAlias("xml")
 public class WxXmlMessage {
-
-	///////////////////////
-	// 以下都是微信推送过来的消息的xml的element所对应的属性
-	///////////////////////
 
 	@XStreamAlias("ToUserName")
 	@XStreamConverter(value = XStreamCDataConverter.class)
@@ -148,35 +133,15 @@ public class WxXmlMessage {
 	@XStreamConverter(value = XStreamCDataConverter.class)
 	private String toKfAccount;
 	
-
-	///////////////////////////////////////
-	// 群发消息返回的结果
-	///////////////////////////////////////
-	/**
-	 * 群发的结果
-	 */
 	@XStreamAlias("Status")
 	@XStreamConverter(value = XStreamCDataConverter.class)
 	private String status;
-	/**
-	 * group_id下粉丝数；或者openid_list中的粉丝数
-	 */
 	@XStreamAlias("TotalCount")
 	private Integer totalCount;
-	/**
-	 * 过滤（过滤是指特定地区、性别的过滤、用户设置拒收的过滤，用户接收已超4条的过滤）后，准备发送的粉丝数，原则上，filterCount =
-	 * sentCount + errorCount
-	 */
 	@XStreamAlias("FilterCount")
 	private Integer filterCount;
-	/**
-	 * 发送成功的粉丝数
-	 */
 	@XStreamAlias("SentCount")
 	private Integer sentCount;
-	/**
-	 * 发送失败的粉丝数
-	 */
 	@XStreamAlias("ErrorCount")
 	private Integer errorCount;
 
@@ -205,36 +170,10 @@ public class WxXmlMessage {
 		this.createTime = createTime;
 	}
 
-	/**
-	 * <pre>
-	 * 当接受用户消息时，可能会获得以下值：
-	 * {@link WxConsts#XML_MSG_TEXT}
-	 * {@link WxConsts#XML_MSG_IMAGE}
-	 * {@link WxConsts#XML_MSG_VOICE}
-	 * {@link WxConsts#XML_MSG_VIDEO}
-	 * {@link WxConsts#XML_MSG_LOCATION}
-	 * {@link WxConsts#XML_MSG_LINK}
-	 * {@link WxConsts#XML_MSG_EVENT}
-	 * </pre>
-	 *
-	 * @return
-	 */
 	public String getMsgType() {
 		return msgType;
 	}
 
-	/**
-	 * <pre>
-	 * 当发送消息的时候使用：
-	 * {@link WxConsts#XML_MSG_TEXT}
-	 * {@link WxConsts#XML_MSG_IMAGE}
-	 * {@link WxConsts#XML_MSG_VOICE}
-	 * {@link WxConsts#XML_MSG_VIDEO}
-	 * {@link WxConsts#XML_MSG_NEWS}
-	 * </pre>
-	 *
-	 * @param msgType
-	 */
 	public void setMsgType(String msgType) {
 		this.msgType = msgType;
 	}
@@ -439,33 +378,13 @@ public class WxXmlMessage {
 		return XStreamTransformer.fromXml(WxXmlMessage.class, is);
 	}
 
-	/**
-	 * 密文转明文
-	 *
-	 * @param encryptedXml
-	 * @param wxConfigStorage
-	 * @param timestamp
-	 * @param nonce
-	 * @param msgSignature
-	 * @return
-	 * @throws AesException 
-	 */
 	public static WxXmlMessage decryptMsg(String encryptedXml, WxConfig wxConfig,
 			String timestamp, String nonce, String msgSignature) throws AesException {
 		WXBizMsgCrypt pc = new WXBizMsgCrypt(WxConfig.getInstance().getToken(), WxConfig.getInstance().getAesKey(), WxConfig.getInstance().getAppId());
 		String plainText = pc.decryptMsg(msgSignature, timestamp, nonce, encryptedXml);
 		return fromXml(plainText);
 	}
-	/**
-	 * 密文转明文
-	 * @param is
-	 * @param wxConfig
-	 * @param timestamp
-	 * @param nonce
-	 * @param msgSignature
-	 * @return
-	 * @throws AesException
-	 */
+
 	public static WxXmlMessage decryptMsg(InputStream is, WxConfig wxConfig, String timestamp,
 			String nonce, String msgSignature) throws AesException {
 		try {
@@ -586,11 +505,6 @@ public class WxXmlMessage {
 				+ ", sendLocationInfo=" + sendLocationInfo + "]";
 	}
 
-	/**
-	 * 微信客服
-	 * @author antgan
-	 *
-	 */
 	public static class WxKf{
 		@XStreamAlias("KfAccount")
 		@XStreamConverter(value = XStreamCDataConverter.class)
@@ -636,11 +550,6 @@ public class WxXmlMessage {
 			this.scanType = scanType;
 		}
 
-		/**
-		 * 扫描结果，即二维码对应的字符串信息
-		 * 
-		 * @return
-		 */
 		public String getScanResult() {
 			return scanResult;
 		}

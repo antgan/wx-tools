@@ -6,14 +6,6 @@ import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
-/**
- * <pre>
- * 二维码生成
- * 详情：http://mp.weixin.qq.com/wiki/18/167e7d94df85d8389df6c94a7a8f78ba.html
- * </pre>
- * @author antgan
- *
- */
 public class WxQrcode {
 	private int expire_seconds;
 	private String action_name;
@@ -54,11 +46,6 @@ public class WxQrcode {
 				+ action_info + "]";
 	}
 
-	/**
-	 * 二维码动作
-	 * @author antgan
-	 *
-	 */
 	public static class WxQrActionInfo{
 		private WxScene scene;
 
@@ -80,11 +67,6 @@ public class WxQrcode {
 			return "WxQrActionInfo [scene=" + scene + "]";
 		}
 		
-		/**
-		 * 二维码场景
-		 * @author antgan
-		 *
-		 */
 		public static class WxScene{
 			private int scene_id;
 			private String scene_str;

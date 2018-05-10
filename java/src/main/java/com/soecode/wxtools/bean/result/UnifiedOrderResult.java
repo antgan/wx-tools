@@ -5,11 +5,6 @@ import com.soecode.wxtools.util.xml.XStreamTransformer;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 
-/**
- * 统一下单结果返回
- * @author antgan
- *
- */
 @XStreamAlias("xml")
 public class UnifiedOrderResult {
 	@XStreamAlias("return_code")

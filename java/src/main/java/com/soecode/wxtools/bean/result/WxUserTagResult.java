@@ -7,11 +7,6 @@ import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
-/**
- * 微信用户分组返回
- * @author antgan
- *
- */
 public class WxUserTagResult {
 	private WxUserTag tag;
 	private List<WxUserTag> tags;
@@ -32,15 +27,6 @@ public class WxUserTagResult {
 		this.tags = tags;
 	}
 
-	/**
-	 * json --> obj
-	 * 
-	 * @param json
-	 * @return
-	 * @throws JsonParseException
-	 * @throws JsonMappingException
-	 * @throws IOException
-	 */
 	public static WxUserTagResult fromJson(String json) throws JsonParseException, JsonMappingException, IOException {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -55,11 +41,6 @@ public class WxUserTagResult {
 				'}';
 	}
 
-	/**
-	 * 分组信息
-	 * @author antgan
-	 *
-	 */
 	public static class WxUserTag {
 		private int id;
 		private String name;

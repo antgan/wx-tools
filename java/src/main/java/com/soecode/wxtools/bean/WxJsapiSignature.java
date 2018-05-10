@@ -1,11 +1,5 @@
 package com.soecode.wxtools.bean;
 
-/**
- * Jsapi signature
- * 
- * @author antgan
- *
- */
 public class WxJsapiSignature {
 	private String appid;
 

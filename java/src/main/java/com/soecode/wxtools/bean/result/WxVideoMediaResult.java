@@ -1,10 +1,5 @@
 package com.soecode.wxtools.bean.result;
 
-/**
- * 【永久】视频素材下载结果
- * @author antgan
- *
- */
 public class WxVideoMediaResult {
 	private String title;
 	private String description;

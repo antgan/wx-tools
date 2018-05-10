@@ -8,18 +8,9 @@ import org.apache.commons.codec.digest.DigestUtils;
 
 import com.soecode.wxtools.exception.AesException;
 
-/**
- * SHA1 
- * @author
- */
+
 public class SHA1 {
 
-	/**
-	 * 串接arr参数，生成sha1 digest
-	 *
-	 * @param arr
-	 * @return
-	 */
 	public static String gen(String token, String timestamp,String nonce) throws NoSuchAlgorithmException {
 		String[] arr = new String[] { token, timestamp, nonce };
 		Arrays.sort(arr);
@@ -30,12 +21,6 @@ public class SHA1 {
 		return DigestUtils.shaHex(content.toString());
 	}
 
-	/**
-	 * 用&串接arr参数，生成sha1 digest
-	 *
-	 * @param arr
-	 * @return
-	 */
 	public static String genWithAmple(String... arr) throws NoSuchAlgorithmException {
 		Arrays.sort(arr);
 		StringBuffer sb = new StringBuffer();
@@ -46,16 +31,7 @@ public class SHA1 {
 		String string1 = sb.toString().substring(0, sb.length()-1);
 		return DigestUtils.shaHex(string1);
 	}
-	
-	/**
-	 * 用SHA1算法生成安全签名
-	 * @param token 票据
-	 * @param timestamp 时间戳
-	 * @param nonce 随机字符串
-	 * @param encrypt 密文
-	 * @return 安全签名
-	 * @throws AesException 
-	 */
+
 	public static String getSHA1(String token, String timestamp, String nonce, String encrypt) throws AesException
 			  {
 		try {

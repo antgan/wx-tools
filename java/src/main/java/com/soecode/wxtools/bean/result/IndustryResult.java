@@ -7,11 +7,6 @@ import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
-/**
- * 模板行业
- * @author antgan
- *
- */
 public class IndustryResult {
 	private Industry primary_industry;
 	private Industry secondary_industry;
@@ -32,15 +27,6 @@ public class IndustryResult {
 		this.secondary_industry = secondary_industry;
 	}
 	
-	/**
-	 * json --> obj
-	 * 
-	 * @param json
-	 * @return
-	 * @throws JsonParseException
-	 * @throws JsonMappingException
-	 * @throws IOException
-	 */
 	public static IndustryResult fromJson(String json) throws JsonParseException, JsonMappingException, IOException {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);

@@ -13,15 +13,6 @@ import com.soecode.wxtools.util.xml.XStreamCDataConverter;
 import com.soecode.wxtools.util.xml.XStreamTransformer;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
-/**
- * <pre>
- * 被动回复消息--消息体超类
- * 
- * 详情:http://mp.weixin.qq.com/wiki/1/6239b44c206cab9145b1d52c67e6c551.html
- * </pre>
- * @author antgan
- *
- */
 
 @XStreamAlias("xml")
 public abstract class WxXmlOutMessage {
@@ -77,65 +68,31 @@ public abstract class WxXmlOutMessage {
 		return XStreamTransformer.toXml((Class) this.getClass(), this);
 	}
 
-	/**
-	 * 转换成加密的xml格式
-	 * @return
-	 * @throws AesException 
-	 */
 	public static String encryptMsg(WxConfig wxconfig, String replyMsg, String timeStamp, String nonce) throws AesException {
 		WXBizMsgCrypt pc = new WXBizMsgCrypt(WxConfig.getInstance().getToken(), WxConfig.getInstance().getAesKey(), WxConfig.getInstance().getAppId());
 		return pc.encryptMsg(replyMsg, timeStamp, nonce);
 	}
 
-	/**
-	 * 获得文本消息builder
-	 * 
-	 * @return
-	 */
 	public static TextBuilder TEXT() {
 		return new TextBuilder();
 	}
 
-	/**
-	 * 获得图片消息builder
-	 * 
-	 * @return
-	 */
 	public static ImageBuilder IMAGE() {
 		return new ImageBuilder();
 	}
 
-	/**
-	 * 获得语音消息builder
-	 * 
-	 * @return
-	 */
 	public static VoiceBuilder VOICE() {
 		return new VoiceBuilder();
 	}
 
-	/**
-	 * 获得视频消息builder
-	 * 
-	 * @return
-	 */
 	public static VideoBuilder VIDEO() {
 		return new VideoBuilder();
 	}
 
-	/**
-	 * 获得图文消息builder
-	 * 
-	 * @return
-	 */
 	public static NewsBuilder NEWS() {
 		return new NewsBuilder();
 	}
 	
-	/**
-	 * 获取音乐消息builder
-	 * @return
-	 */
 	public static MusicBuilder MUSIC(){
 		return new MusicBuilder();
 	}

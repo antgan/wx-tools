@@ -8,37 +8,28 @@ import com.soecode.wxtools.bean.WxAccessToken;
 import com.soecode.wxtools.exception.WxErrorException;
 import com.soecode.wxtools.util.StringUtils;
 
-/**
- * 微信全局配置对象-从配置文件读取
- * @author antgan
- * @datetime 2016/12/14
- *
- */
 public class WxConfig {
 	private static final String configFile = "/wx.properties";
 	private static WxConfig config = null;
-	
-	//配置文件读取项
+
 	private volatile String appId;
 	private volatile String appSecret;
 	private volatile String token;
 	private volatile String aesKey;
 	private volatile String mchId;
 	private volatile String apiKey;
-	
-	//内存更新
+
 	private volatile String accessToken;
 	private volatile long expiresTime;
 	private volatile String jsapiTicket;
 	private volatile long jsapiTicketExpiresTime;
 	
 	public WxConfig() {
-		//写读配置文件代码
 		Properties p = new Properties();
 		InputStream inStream = this.getClass().getResourceAsStream(configFile);
 		if(inStream == null){
 			try {
-				throw new WxErrorException("根目录找不到文件");
+				throw new WxErrorException("Can't find file");
 			} catch (WxErrorException e) {
 				e.printStackTrace();
 			}
@@ -60,18 +51,14 @@ public class WxConfig {
 			inStream.close();
 		} catch (IOException e) {
 			try {
-				throw new WxErrorException("load wx.properties error,class根目录下找不到wx.properties文件");
+				throw new WxErrorException("load wx.properties error,class, can't find wx.properties");
 			} catch (WxErrorException e1) {
 				e1.printStackTrace();
 			}
 		}
 		System.out.println("load wx.properties success");
 	}
-	
-	/**
-	 * 同步获取/加载单例
-	 * @return
-	 */
+
 	public static synchronized WxConfig getInstance(){
 		if(config == null){
 			config = new WxConfig();
@@ -122,17 +109,12 @@ public class WxConfig {
 
 	public synchronized void updateJsapiTicket(String jsapiTicket, int expiresInSeconds) {
 		this.jsapiTicket = jsapiTicket;
-		// 预留200秒的时间
 		this.jsapiTicketExpiresTime = System.currentTimeMillis() + (expiresInSeconds - 200) * 1000l;
 	}
 	
 	public void expireJsapiTicket() {
 		this.jsapiTicketExpiresTime = 0;
 	}
-
-	
-	//getter
-
 
 	public String getAppId() {
 		return appId;

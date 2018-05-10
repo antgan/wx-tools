@@ -7,11 +7,6 @@ import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
-/**
- * 多媒体上传结果
- * @author antgan
- *
- */
 public class WxMediaUploadResult {
 
 	private String type;

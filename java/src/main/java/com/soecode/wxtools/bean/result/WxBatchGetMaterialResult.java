@@ -9,11 +9,6 @@ import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
-/**
- * 批量获取素材资源结果
- * @author antgan
- *
- */
 public class WxBatchGetMaterialResult {
 	private int total_count;
 	private int item_count;
@@ -43,14 +38,6 @@ public class WxBatchGetMaterialResult {
 		this.item_count = item_count;
 	}
 
-	/**
-	 * json --> obj
-	 * @param json
-	 * @return
-	 * @throws JsonParseException
-	 * @throws JsonMappingException
-	 * @throws IOException
-	 */
 	public static WxBatchGetMaterialResult fromJson(String json) throws JsonParseException, JsonMappingException, IOException {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -63,14 +50,6 @@ public class WxBatchGetMaterialResult {
 				+ "]";
 	}
 
-
-
-
-	/**
-	 * 资源素材Item
-	 * @author antgan
-	 *
-	 */
 	public static class MaterialItem{
 		private String media_id;
 		private WxNewsMediaResult content;

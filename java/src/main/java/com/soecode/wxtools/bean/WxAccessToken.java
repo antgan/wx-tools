@@ -5,11 +5,6 @@ import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
-/**
- * 微信AccessToken，微信API接口调用凭证
- * @author antgan
- *
- */
 public class WxAccessToken {
 	private String access_token;
 	private int expires_in = -1;

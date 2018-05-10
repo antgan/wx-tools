@@ -4,10 +4,6 @@ import java.security.MessageDigest;
 
 public class MD5 {
 
-	/*************MD5****************/
-	/*** 
-     * MD5加码 生成32位md5码 
-     */  
 	public static String getMD5(String origin, String charsetname) {
 		String resultString = null;
 		try {

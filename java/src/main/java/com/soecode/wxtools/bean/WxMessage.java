@@ -15,12 +15,6 @@ import com.soecode.wxtools.bean.msgbuilder.TextBuilder;
 import com.soecode.wxtools.bean.msgbuilder.VideoBuilder;
 import com.soecode.wxtools.bean.msgbuilder.VoiceBuilder;
 
-/**
- * 消息
- * 
- * @author
- *
- */
 public class WxMessage {
 
 	private String toUser;
@@ -82,19 +76,6 @@ public class WxMessage {
 		this.safe = safe;
 	}
 
-	/**
-	 * <pre>
-	 * 请使用
-	 * {@link WxConsts#CUSTOM_MSG_TEXT}
-	 * {@link WxConsts#CUSTOM_MSG_IMAGE}
-	 * {@link WxConsts#CUSTOM_MSG_VOICE}
-	 * {@link WxConsts#CUSTOM_MSG_MUSIC}
-	 * {@link WxConsts#CUSTOM_MSG_VIDEO}
-	 * {@link WxConsts#CUSTOM_MSG_NEWS}
-	 * </pre>
-	 * 
-	 * @param msgType
-	 */
 	public void setMsgType(String msgType) {
 		this.msgType = msgType;
 	}
@@ -209,56 +190,26 @@ public class WxMessage {
 
 	}
 
-	/**
-	 * 获得文本消息builder
-	 * 
-	 * @return
-	 */
 	public static TextBuilder TEXT() {
 		return new TextBuilder();
 	}
 
-	/**
-	 * 获得图片消息builder
-	 * 
-	 * @return
-	 */
 	public static ImageBuilder IMAGE() {
 		return new ImageBuilder();
 	}
 
-	/**
-	 * 获得语音消息builder
-	 * 
-	 * @return
-	 */
 	public static VoiceBuilder VOICE() {
 		return new VoiceBuilder();
 	}
 
-	/**
-	 * 获得视频消息builder
-	 * 
-	 * @return
-	 */
 	public static VideoBuilder VIDEO() {
 		return new VideoBuilder();
 	}
 
-	/**
-	 * 获得图文消息builder
-	 * 
-	 * @return
-	 */
 	public static NewsBuilder NEWS() {
 		return new NewsBuilder();
 	}
 
-	/**
-	 * 获得文件消息builder
-	 * 
-	 * @return
-	 */
 	public static FileBuilder FILE() {
 		return new FileBuilder();
 	}

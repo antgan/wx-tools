@@ -19,12 +19,6 @@ import com.soecode.wxtools.exception.WxErrorException;
 import com.soecode.wxtools.util.StringUtils;
 import com.soecode.wxtools.util.file.FileUtils;
 
-/**
- * 【永久】素材请求下载器
- * 下载媒体文件POST请求执行器，请求的参数是String, 返回的结果是File
- * @author antgan
- *
- */
 public class MediaDownloadPostRequestExecutor implements RequestExecutor<File, String> {
 
 	private File materialDirFile;
@@ -50,14 +44,12 @@ public class MediaDownloadPostRequestExecutor implements RequestExecutor<File, S
 		try (CloseableHttpResponse response = httpclient.execute(httpPost)) {
 			Header[] contentTypeHeader = response.getHeaders("Content-Type");
 			if (contentTypeHeader != null && contentTypeHeader.length > 0) {
-				// 下载媒体文件出错
 				if (ContentType.TEXT_PLAIN.getMimeType().equals(contentTypeHeader[0].getValue())) {
 					String responseContent = Utf8ResponseHandler.INSTANCE.handleResponse(response);
 					throw new WxErrorException(WxError.fromJson(responseContent));
 				}
 			}
 			InputStream inputStream = InputStreamResponseHandler.INSTANCE.handleResponse(response);
-			// 视频文件不支持下载
 			String fileName = getFileName(response);
 			if (StringUtils.isBlank(fileName)) {
 				return null;

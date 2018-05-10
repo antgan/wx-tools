@@ -8,11 +8,6 @@ import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
-/**
- * 获取自身的模板列表
- * @author antgan
- *
- */
 public class TemplateListResult {
 
 	private List<TemplateResult> template_list;
@@ -25,16 +20,6 @@ public class TemplateListResult {
 		this.template_list = template_list;
 	}
 	
-
-	/**
-	 * json --> obj
-	 * 
-	 * @param json
-	 * @return
-	 * @throws JsonParseException
-	 * @throws JsonMappingException
-	 * @throws IOException
-	 */
 	public static TemplateListResult fromJson(String json) throws JsonParseException, JsonMappingException, IOException {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);

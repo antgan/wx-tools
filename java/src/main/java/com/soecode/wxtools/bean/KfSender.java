@@ -1,9 +1,6 @@
 package com.soecode.wxtools.bean;
 
-import com.soecode.wxtools.api.WxConsts;
-import com.soecode.wxtools.bean.SenderContent.NewsList.News;
 import java.io.IOException;
-import java.util.Arrays;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 

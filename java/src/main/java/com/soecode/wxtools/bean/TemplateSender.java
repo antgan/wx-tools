@@ -6,11 +6,6 @@ import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
-/**
- * 发送模板消息
- * @author antgan
- *
- */
 public class TemplateSender {
 
 	private String touser;
@@ -47,13 +42,6 @@ public class TemplateSender {
 				+ "]";
 	}
 	
-	/**
-	 * obj --> json
-	 * @return
-	 * @throws JsonGenerationException
-	 * @throws JsonMappingException
-	 * @throws IOException
-	 */
 	public String toJson() throws JsonGenerationException, JsonMappingException, IOException {
 		ObjectMapper mapper = new ObjectMapper();
 		return mapper.writeValueAsString(this);

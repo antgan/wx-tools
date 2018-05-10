@@ -7,11 +7,6 @@ import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
-/**
- * 永久素材数量统计结果
- * @author antgan
- *
- */
 public class WxMaterialCountResult {
 	private int voice_count;
 	private int video_count;
@@ -47,14 +42,6 @@ public class WxMaterialCountResult {
 				+ image_count + ", news_count=" + news_count + "]";
 	}
 
-	/**
-	 * json --> obj
-	 * @param json
-	 * @return
-	 * @throws JsonParseException
-	 * @throws JsonMappingException
-	 * @throws IOException
-	 */
 	public static WxMaterialCountResult fromJson(String json) throws JsonParseException, JsonMappingException, IOException {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);

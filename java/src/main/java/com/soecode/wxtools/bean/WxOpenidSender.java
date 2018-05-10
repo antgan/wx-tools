@@ -7,11 +7,6 @@ import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
-/**
- * 根据Openid列表群发
- * @author antgan
- *
- */
 public class WxOpenidSender extends SenderContent{
 	List<String> touser;
 	private String msgtype;

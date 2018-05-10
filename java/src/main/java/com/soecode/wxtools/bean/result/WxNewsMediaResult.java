@@ -11,12 +11,6 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import com.soecode.wxtools.bean.WxNewsInfo;
 
-/**
- * 获取【永久】素材--图文消息结果
- * 
- * @author antgan
- *
- */
 public class WxNewsMediaResult {
 	private List<WxNewsInfo> news_item = new ArrayList<>();
 	private String update_time;
@@ -46,15 +40,6 @@ public class WxNewsMediaResult {
 		this.news_item = news_item;
 	}
 
-	/**
-	 * json --> obj
-	 * 
-	 * @param json
-	 * @return
-	 * @throws JsonParseException
-	 * @throws JsonMappingException
-	 * @throws IOException
-	 */
 	public static WxNewsMediaResult fromJson(String json) throws JsonParseException, JsonMappingException, IOException {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);

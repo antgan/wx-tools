@@ -8,11 +8,6 @@ import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
-/**
- * 获取关注者列表接口结果
- * @author antgan
- *
- */
 public class WxUserListResult {
 	private int total;
 	private int count;
@@ -56,27 +51,13 @@ public class WxUserListResult {
 		return "WxUserListResult [total=" + total + ", count=" + count + ", data=" + data + ", next_openid="
 				+ next_openid + "]";
 	}
-	
-	/**
-	 * json --> obj
-	 * 
-	 * @param json
-	 * @return
-	 * @throws JsonParseException
-	 * @throws JsonMappingException
-	 * @throws IOException
-	 */
+
 	public static WxUserListResult fromJson(String json) throws JsonParseException, JsonMappingException, IOException {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 		return mapper.readValue(json, WxUserListResult.class);
 	}
 
-	/**
-	 * Openid列表
-	 * @author antgan
-	 *
-	 */
 	public static class WxOpenId {
 		private String[] openid;
 

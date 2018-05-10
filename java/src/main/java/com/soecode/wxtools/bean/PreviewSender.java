@@ -7,11 +7,6 @@ import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 
-/**
- * 预览-群发
- *
- * @author antgan
- */
 public class PreviewSender extends SenderContent {
 
   private String touser;

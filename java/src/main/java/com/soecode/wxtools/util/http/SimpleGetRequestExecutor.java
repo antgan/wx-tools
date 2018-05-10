@@ -13,12 +13,6 @@ import org.codehaus.jackson.map.ObjectMapper;
 import com.soecode.wxtools.bean.result.WxError;
 import com.soecode.wxtools.exception.WxErrorException;
 
-/**
- * 简单的GET请求执行器，请求的参数是String, 返回的结果也是String
- * 
- * @author Antgan
- *
- */
 public class SimpleGetRequestExecutor implements RequestExecutor<String, Map<String,String>> {
 	@Override
 	public String execute(CloseableHttpClient httpclient, String uri, Map<String,String> params)
@@ -34,7 +28,6 @@ public class SimpleGetRequestExecutor implements RequestExecutor<String, Map<Str
 		
 		try (CloseableHttpResponse response = httpclient.execute(httpGet)) {
 			String responseContent = Utf8ResponseHandler.INSTANCE.handleResponse(response);
-			//如果请求发生错误，抛出异常
 			ObjectMapper mapper = new ObjectMapper();
 			JsonNode node = mapper.readTree(responseContent);
 			if(node.get("errcode")!=null && !(node.get("errcode").asInt()==0)){

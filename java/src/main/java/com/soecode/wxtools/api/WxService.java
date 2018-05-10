@@ -69,33 +69,15 @@ import com.soecode.wxtools.util.http.SimplePostRequestExecutor;
 import com.soecode.wxtools.util.http.URIUtil;
 import com.soecode.wxtools.util.http.VideoDownloadPostRequestExecutor;
 
-/**
- * 统一业务处理类
- *
- * @author antgan
- * @date 2016/12/14
- */
 public class WxService implements IService {
 
-  //全局的是否正在刷新access token的锁
   protected static final Object globalAccessTokenRefreshLock = new Object();
-  //全局的是否正在刷新jsapi_ticket的锁
   protected static final Object globalJsapiTicketRefreshLock = new Object();
-  //HttpClient
   protected CloseableHttpClient httpClient;
 
-  /**
-   * 构造方法，初始化httpClient
-   */
   public WxService() {
     httpClient = HttpClients.createDefault();
   }
-
-  /*****************************
-   *                           *
-   *    以下为微信公众号API接口     *
-   *                           *
-   *****************************/
 
   @Override
   public boolean checkSignature(String signature, String timestamp, String nonce, String echostr) {
@@ -108,8 +90,7 @@ public class WxService implements IService {
 
   @Override
   public String getAccessToken() throws WxErrorException {
-    return "9_u46_pyEukIb_VCb0Cb6frVvtOQbqIf0rm2ft5iJOIAGKCZLJWZjkqDRtHoqha-bcwPpC9K1BgDoK2D8HeUIwSjnGKaWntuu1zNvDBAWFNshTBu7ZwL9vFAJdx2mPPfgE5S5YHYpNeS7u9UeEEHNgABAKNT";
-//		return getAccessToken(false);
+		return getAccessToken(false);
   }
 
   @Override
@@ -1019,9 +1000,6 @@ public class WxService implements IService {
     return execute(new SimplePostRequestExecutor(), url, params);
   }
 
-  /**
-   * 向微信端发送请求，在这里执行的策略是当发生access_token过期时才去刷新，然后重新执行请求，而不是全局定时请求
-   */
   public <T, E> T execute(RequestExecutor<T, E> executor, String uri, E data)
       throws WxErrorException {
     try {
@@ -1031,9 +1009,6 @@ public class WxService implements IService {
     }
   }
 
-  /**
-   * 请求执行器
-   */
   protected synchronized <T, E> T executeInternal(RequestExecutor<T, E> executor, String uri,
       E data)
       throws WxErrorException {

@@ -6,12 +6,6 @@ import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
-/**
- * 微信错误码说明 http://mp.weixin.qq.com/wiki/10/6380dc743053a91c544ffd2b7c959166.html
- * 
- * @author antgan
- *
- */
 public class WxError{
 
 	private int errcode;
@@ -19,7 +13,6 @@ public class WxError{
 	private String errmsg;
 
 	public WxError() {
-		// TODO Auto-generated constructor stub
 	}
 	
 	public WxError(int errcode, String errmsg) {

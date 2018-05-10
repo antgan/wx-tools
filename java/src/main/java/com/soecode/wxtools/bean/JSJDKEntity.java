@@ -2,11 +2,6 @@ package com.soecode.wxtools.bean;
 
 import java.util.List;
 
-/**
- * JS-SDK 参数实体
- * @author 甘海彬
- *
- */
 public class JSJDKEntity {
 	private String appId;
 	private String timestamp;

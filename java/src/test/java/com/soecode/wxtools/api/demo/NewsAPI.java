@@ -8,12 +8,14 @@ import com.soecode.wxtools.api.WxService;
 import com.soecode.wxtools.bean.WxNewsInfo;
 import com.soecode.wxtools.bean.result.WxError;
 import com.soecode.wxtools.exception.WxErrorException;
+import org.junit.Ignore;
 
 /**
  * 图文相关API
  * @author antgan
  *
  */
+@Ignore
 public class NewsAPI {
 	IService iService = new WxService();
 	

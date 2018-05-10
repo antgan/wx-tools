@@ -10,8 +10,10 @@ import com.soecode.wxtools.bean.result.WxError;
 import com.soecode.wxtools.bean.result.WxUserListResult;
 import com.soecode.wxtools.bean.result.WxUserTagResult;
 import java.util.Arrays;
+import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore
 public class UserInfoTest {
   IService iService = new WxService();
 

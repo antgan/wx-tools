@@ -12,12 +12,14 @@ import com.soecode.wxtools.bean.WxMenu.WxMenuRule;
 import com.soecode.wxtools.bean.result.WxCurMenuInfoResult;
 import com.soecode.wxtools.bean.result.WxMenuResult;
 import com.soecode.wxtools.exception.WxErrorException;
+import org.junit.Ignore;
 
 /**
  * 菜单栏相关API用法
  * @author antgan
  *
  */
+@Ignore
 public class MenuAPI {
 	IService iService = new WxService();
 	

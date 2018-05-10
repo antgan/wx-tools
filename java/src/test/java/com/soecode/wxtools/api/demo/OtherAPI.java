@@ -9,12 +9,14 @@ import com.soecode.wxtools.bean.WxQrcode.WxQrActionInfo;
 import com.soecode.wxtools.bean.WxQrcode.WxQrActionInfo.WxScene;
 import com.soecode.wxtools.bean.result.QrCodeResult;
 import com.soecode.wxtools.exception.WxErrorException;
+import org.junit.Ignore;
 
 /**
  * 另外一些API调用示例，如二维码生产等
  * @author antgan
  *
  */
+@Ignore
 public class OtherAPI {
 	IService iService = new WxService();
 	/**

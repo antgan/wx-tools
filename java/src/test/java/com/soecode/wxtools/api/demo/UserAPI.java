@@ -14,12 +14,14 @@ import com.soecode.wxtools.bean.result.WxOAuth2AccessTokenResult;
 import com.soecode.wxtools.bean.result.WxUserTagResult;
 import com.soecode.wxtools.bean.result.WxUserListResult;
 import com.soecode.wxtools.exception.WxErrorException;
+import org.junit.Ignore;
 
 /**
  * 用户相关API示例
  * @author antgan
  *
  */
+@Ignore
 public class UserAPI {
 	IService iService = new WxService();
 		

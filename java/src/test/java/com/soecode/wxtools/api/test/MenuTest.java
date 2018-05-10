@@ -9,8 +9,10 @@ import com.soecode.wxtools.bean.WxMenu.WxMenuRule;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore
 public class MenuTest {
 
   IService iService = new WxService();

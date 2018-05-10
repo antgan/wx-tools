@@ -7,6 +7,7 @@ import com.soecode.wxtools.api.IService;
 import com.soecode.wxtools.api.WxService;
 import com.soecode.wxtools.bean.WxJsapiConfig;
 import com.soecode.wxtools.exception.WxErrorException;
+import org.junit.Ignore;
 
 /**
  * Js SDK API示例<br>
@@ -15,6 +16,7 @@ import com.soecode.wxtools.exception.WxErrorException;
  * @author antgan
  *
  */
+@Ignore
 public class JssdkAPI {
 	IService iService = new WxService();
 	/**

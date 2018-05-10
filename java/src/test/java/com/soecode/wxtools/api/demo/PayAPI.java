@@ -5,12 +5,14 @@ import com.soecode.wxtools.api.WxService;
 import com.soecode.wxtools.bean.InvokePay;
 import com.soecode.wxtools.bean.PayOrderInfo;
 import com.soecode.wxtools.exception.WxErrorException;
+import org.junit.Ignore;
 
 /**
  * 支付API 【未测试】
  * @author antgan
  *
  */
+@Ignore
 public class PayAPI {
 	IService iService = new WxService();
 	/**

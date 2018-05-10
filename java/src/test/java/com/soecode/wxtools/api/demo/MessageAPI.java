@@ -19,12 +19,14 @@ import com.soecode.wxtools.bean.result.TemplateListResult;
 import com.soecode.wxtools.bean.result.TemplateResult;
 import com.soecode.wxtools.bean.result.TemplateSenderResult;
 import com.soecode.wxtools.exception.WxErrorException;
+import org.junit.Ignore;
 
 /**
  * 关于消息的API使用示例
  * @author antgan
  *
  */
+@Ignore
 public class MessageAPI {
 	IService iService =  new WxService();
 

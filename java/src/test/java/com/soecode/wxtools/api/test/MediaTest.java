@@ -8,8 +8,10 @@ import com.soecode.wxtools.bean.result.WxMediaUploadResult;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore
 public class MediaTest {
 
   IService iService = new WxService();

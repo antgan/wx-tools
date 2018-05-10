@@ -18,12 +18,14 @@ import com.soecode.wxtools.bean.result.WxMediaUploadResult;
 import com.soecode.wxtools.bean.result.WxNewsMediaResult;
 import com.soecode.wxtools.bean.result.WxVideoMediaResult;
 import com.soecode.wxtools.exception.WxErrorException;
+import org.junit.Ignore;
 
 /**
  * 上传相关API示例
  * @author antgan
  *
  */
+@Ignore
 public class UploadMediaAPI {
 
 	IService iService = new WxService();

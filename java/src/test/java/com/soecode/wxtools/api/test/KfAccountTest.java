@@ -12,8 +12,10 @@ import com.soecode.wxtools.bean.result.KfAccountListResult;
 import com.soecode.wxtools.bean.result.WxError;
 import java.io.File;
 import java.util.Arrays;
+import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore
 public class KfAccountTest {
   IService iService = new WxService();
 

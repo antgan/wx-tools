@@ -1,5 +1,8 @@
 package com.soecode.wxtools.api;
 
+import com.soecode.wxtools.bean.KfAccount;
+import com.soecode.wxtools.bean.KfSender;
+import com.soecode.wxtools.bean.result.KfAccountListResult;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -790,6 +793,36 @@ public interface IService {
 	 */
 	@Deprecated
 	InvokePay unifiedOrder(PayOrderInfo order, String notifyUrl , String openid) throws WxErrorException;
+
+	/**
+	 * 添加客服
+	 * @param account
+	 * @return
+	 * @throws WxErrorException
+	 */
+	WxError addKfAccount(KfAccount account) throws WxErrorException;
+
+	/**
+	 * 更改客服
+	 * @param account
+	 * @return
+	 * @throws WxErrorException
+	 */
+	WxError updateKfAccount(KfAccount account) throws WxErrorException;
+
+	/**
+	 * 删除客服
+	 * @param account
+	 * @return
+	 * @throws WxErrorException
+	 */
+	WxError deleteKfAccount(KfAccount account) throws WxErrorException;
+
+	WxError updateKfHeadImage(String kfAccount, File file) throws WxErrorException;
+
+	KfAccountListResult getAllKfAccount() throws WxErrorException;
+
+	WxError sendMessageByKf(KfSender sender) throws WxErrorException;
 
 
 	/**

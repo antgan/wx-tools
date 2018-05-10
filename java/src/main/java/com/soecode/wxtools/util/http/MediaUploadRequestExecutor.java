@@ -31,7 +31,6 @@ public class MediaUploadRequestExecutor implements RequestExecutor<WxMediaUpload
 	private WxVideoIntroduction introduction;
 	
 	public MediaUploadRequestExecutor() {
-		// TODO Auto-generated constructor stub
 	}
 	
 	public MediaUploadRequestExecutor(WxVideoIntroduction introduction){

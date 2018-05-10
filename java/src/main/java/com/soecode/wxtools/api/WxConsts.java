@@ -42,13 +42,16 @@ public class WxConsts {
 	public static final String CUSTOM_MSG_SAFE_YES = "1";
 
 	///////////////////////
-	// 群发消息的消息类型////
+	// 群发消息/客服的消息类型////
 	///////////////////////
-	public static final String MASS_MSG_NEWS = "mpnews";
+	public static final String MASS_MSG_MPNEWS = "mpnews";
+	public static final String MASS_MSG_NEWS = "news";
 	public static final String MASS_MSG_TEXT = "text";
 	public static final String MASS_MSG_VOICE = "voice";
 	public static final String MASS_MSG_IMAGE = "image";
-	public static final String MASS_MSG_VIDEO = "mpvideo";
+	public static final String MASS_MSG_MPVIDEO = "mpvideo";
+	public static final String MASS_MSG_VIDEO = "video";
+	public static final String MASS_MSG_MUSIC = "music";
 
 	////////////////////////////////////////
 	// 群发消息后微信端推送给服务器的反馈消息///

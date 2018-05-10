@@ -1,6 +1,10 @@
 package com.soecode.wxtools.api;
 
+import com.soecode.wxtools.bean.KfAccount;
+import com.soecode.wxtools.bean.KfSender;
+import com.soecode.wxtools.bean.result.KfAccountListResult;
 import com.soecode.wxtools.util.StringUtils;
+import com.soecode.wxtools.util.http.KfHeadImageUploadRequestExecutor;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -104,7 +108,8 @@ public class WxService implements IService {
 
   @Override
   public String getAccessToken() throws WxErrorException {
-		return getAccessToken(false);
+    return "9_u46_pyEukIb_VCb0Cb6frVvtOQbqIf0rm2ft5iJOIAGKCZLJWZjkqDRtHoqha-bcwPpC9K1BgDoK2D8HeUIwSjnGKaWntuu1zNvDBAWFNshTBu7ZwL9vFAJdx2mPPfgE5S5YHYpNeS7u9UeEEHNgABAKNT";
+//		return getAccessToken(false);
   }
 
   @Override
@@ -853,6 +858,67 @@ public class WxService implements IService {
     ivp.setPaySign(PayUtil.createSign(map, WxConfig.getInstance().getApiKey()));
     ;
     return ivp;
+  }
+
+  @Override
+  public WxError addKfAccount(KfAccount account) throws WxErrorException {
+    String url = WxConsts.URL_ADD_KF_ACCOUNT.replace("ACCESS_TOKEN", getAccessToken());
+    try {
+      String postResult = post(url, account.toJson());
+      return WxError.fromJson(postResult);
+    } catch (IOException e) {
+      throw new WxErrorException("[wx-tools]addKfAccount failure.");
+    }
+  }
+
+  @Override
+  public WxError updateKfAccount(KfAccount account) throws WxErrorException {
+    String url = WxConsts.URL_UPDATE_KF_ACCOUNT.replace("ACCESS_TOKEN", getAccessToken());
+    try {
+      String postResult = post(url, account.toJson());
+      return WxError.fromJson(postResult);
+    } catch (IOException e) {
+      throw new WxErrorException("[wx-tools]updateKfAccount failure.");
+    }
+  }
+
+  @Override
+  public WxError deleteKfAccount(KfAccount account) throws WxErrorException {
+    String url = WxConsts.URL_DELETE_KF_ACCOUNT.replace("ACCESS_TOKEN", getAccessToken());
+    try {
+      String postResult = post(url, account.toJson());
+      return WxError.fromJson(postResult);
+    } catch (IOException e) {
+      throw new WxErrorException("[wx-tools]deleteKfAccount failure.");
+    }
+  }
+
+  @Override
+  public WxError updateKfHeadImage(String kfAccount, File file) throws WxErrorException {
+    String url = WxConsts.URL_UPDATE_KF_HEAD_IMAGE.replace("ACCESS_TOKEN", getAccessToken()).replace("KFACCOUNT", kfAccount);
+    return execute(new KfHeadImageUploadRequestExecutor(), url, file);
+  }
+
+  @Override
+  public KfAccountListResult getAllKfAccount() throws WxErrorException {
+    String url = WxConsts.URL_GET_ALL_KF_ACCOUNT.replace("ACCESS_TOKEN", getAccessToken());
+    try {
+      String getResult = get(url, null);
+      return KfAccountListResult.fromJson(getResult);
+    } catch (IOException e) {
+      throw new WxErrorException("[wx-tools]getAllKfAccount failure.");
+    }
+  }
+
+  @Override
+  public WxError sendMessageByKf(KfSender sender) throws WxErrorException {
+    String url = WxConsts.URL_KF_SEND_MESSAGE_TO_USER.replace("ACCESS_TOKEN", getAccessToken());
+    try {
+      String postResult = post(url, sender.toJson());
+      return WxError.fromJson(postResult);
+    } catch (IOException e) {
+      throw new WxErrorException("[wx-tools]sendMessageByKf failure.");
+    }
   }
 
   @Override

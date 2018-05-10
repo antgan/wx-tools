@@ -19,7 +19,7 @@ public class MessageTest {
   public void should_preview_send_news_to_user() throws Exception {
     PreviewSender sender = new PreviewSender();
     sender.setTouser("oROCnuNihJnO9bnKOAORDFFriPgQ");
-    sender.setMsgtype(WxConsts.MASS_MSG_NEWS);
+    sender.setMsgtype(WxConsts.MASS_MSG_MPNEWS);
     sender.setMpnews(new Media("QR3FgphTwoIpP1FZ-4c__cQTEeIHxMl7e_rWAfFYyfo"));
     SenderResult result = iService.sendAllPreview(sender);
     System.out.println(result.toString());
@@ -32,7 +32,7 @@ public class MessageTest {
     openidList.add("oROCnuNihJnO9bnKOAORDFFriPgQ");
     openidList.add("oROCnuAQMnkPpEhsAYFzU-1xhKcQ");
     sender.setTouser(openidList);
-    sender.setMsgtype(WxConsts.MASS_MSG_NEWS);
+    sender.setMsgtype(WxConsts.MASS_MSG_MPNEWS);
     sender.setMpnews(new Media("QR3FgphTwoIpP1FZ-4c__cQTEeIHxMl7e_rWAfFYyfo"));
     SenderResult result = iService.sendAllByOpenid(sender);
     System.out.println(result.toString());

@@ -54,7 +54,7 @@ public class DemoServlet extends HttpServlet {
 
 				WxXmlMessage wx = WxXmlMessage.decryptMsg(request.getInputStream(), WxConfig.getInstance(), timestamp,
 						nonce, msg_signature);
-				System.out.println("消息：\n " + wx.toString());
+				System.out.println("Message：\n " + wx.toString());
 				router.rule().matcher(new DemoMatcher()).interceptor(new DemoInterceptor()).handler(new DemoHandler()).end();
 				WxXmlOutMessage xmlOutMsg = router.route(wx);
 				if (xmlOutMsg != null) {
@@ -62,7 +62,7 @@ public class DemoServlet extends HttpServlet {
 				}
 			} else {
 				WxXmlMessage wx = XStreamTransformer.fromXml(WxXmlMessage.class, request.getInputStream());
-				System.out.println("消息：\n " + wx.toString());
+				System.out.println("Message：\n " + wx.toString());
 				iService.getAccessToken();
 				router.rule().matcher(new DemoMatcher()).interceptor(new DemoInterceptor()).handler(new DemoHandler()).end();
 				WxXmlOutMessage xmlOutMsg = router.route(wx);

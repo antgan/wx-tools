@@ -1,9 +1,5 @@
 package com.soecode.wxtools.api;
 
-import java.util.HashMap;
-import java.util.Map;
-
-
 public class WxConsts {
 
 	public static final String XML_MSG_TEXT = "text";
@@ -36,18 +32,6 @@ public class WxConsts {
 	public static final String MASS_MSG_MPVIDEO = "mpvideo";
 	public static final String MASS_MSG_VIDEO = "video";
 	public static final String MASS_MSG_MUSIC = "music";
-
-	public static final String MASS_ST_SUCCESS = "send success";
-	public static final String MASS_ST_FAIL = "send fail";
-	public static final String MASS_ST_涉嫌广告 = "err(10001)";
-	public static final String MASS_ST_涉嫌政治 = "err(20001)";
-	public static final String MASS_ST_涉嫌社会 = "err(20004)";
-	public static final String MASS_ST_涉嫌色情 = "err(20002)";
-	public static final String MASS_ST_涉嫌违法犯罪 = "err(20006)";
-	public static final String MASS_ST_涉嫌欺诈 = "err(20008)";
-	public static final String MASS_ST_涉嫌版权 = "err(20013)";
-	public static final String MASS_ST_涉嫌互推_互相宣传 = "err(22000)";
-	public static final String MASS_ST_涉嫌其他 = "err(21000)";
 
 	public static final String EVT_SUBSCRIBE = "subscribe";
 	public static final String EVT_UNSUBSCRIBE = "unsubscribe";

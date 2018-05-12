@@ -10,6 +10,9 @@ Wx-tools是基于微信公众平台API的轻量级框架。
 ## 超级详细的实例教程，基于SpringBoot+Wx-tools
 * [音乐爬虫推送公众号](https://blog.csdn.net/antgan/article/details/80288061)
 
+## w3cschool官方文档
+* [wx-tools文档](https://www.w3cschool.cn/wxtools/)
+
 ## 讨论：
 * BUG反馈及建议：https://github.com/antgan/wx-tools/issues
 * 微信开发交流QQ群：570937047

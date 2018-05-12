@@ -19,3 +19,12 @@ Wx-tools是基于微信公众平台API的轻量级框架。
 
 ## 博主有话说：
 * 哟哟哟，终于有时间更新啦！这次教程写得浅显易懂。希望喜欢的给个star咯！！略略略~
+
+## maven依赖
+```
+<dependency>
+  <groupId>com.soecode.wx-tools</groupId>
+  <artifactId>wx-tools</artifactId>
+  <version>2.1.4-RELEASE</version>
+</dependency>
+```

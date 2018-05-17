@@ -536,11 +536,6 @@ public class WxXmlMessage {
 		@XStreamConverter(value = XStreamCDataConverter.class)
 		private String scanResult;
 
-		/**
-		 * 扫描类型，一般是qrcode
-		 * 
-		 * @return
-		 */
 		public String getScanType() {
 
 			return scanType;

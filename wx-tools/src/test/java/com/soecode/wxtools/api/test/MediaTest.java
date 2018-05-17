@@ -30,7 +30,7 @@ public class MediaTest {
 
   @Test
   public void should_upload_media_successfully() throws Exception {
-    WxMediaUploadResult result = iService.uploadMedia(WxConsts.MEDIA_IMAGE, new File("D:/wx/wx.jpg"), null);
+    WxMediaUploadResult result = iService.uploadMedia(WxConsts.MEDIA_IMAGE, new File("D:/wx/20180517141550.jpg"), null);
     System.out.println(result);
   }
 
@@ -42,7 +42,7 @@ public class MediaTest {
     news1.setContent("xxx");
     news1.setNeed_open_comment(1);
 
-    List<WxNewsInfo> newsList = new ArrayList<>();
+    List<WxNewsInfo> newsList = new ArrayList<WxNewsInfo>();
     newsList.add(news1);
     String mediaId = iService.addNewsMedia(newsList);
     System.out.println(mediaId);

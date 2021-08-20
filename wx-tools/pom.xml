@@ -3,9 +3,9 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>com.soecode.wx-tools</groupId>
+    <groupId>com.okracode.wx</groupId>
     <artifactId>wx-tools-parent</artifactId>
-    <version>2.1.4-RELEASE</version>
+    <version>1.0.0</version>
   </parent>
   <artifactId>wx-tools</artifactId>
   <name>wx-tools</name>

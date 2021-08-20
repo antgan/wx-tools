@@ -7,10 +7,10 @@
     <artifactId>oss-parent</artifactId>
     <version>7</version>
   </parent>
-  <groupId>com.soecode.wx-tools</groupId>
+  <groupId>com.okracode.wx</groupId>
   <artifactId>wx-tools-parent</artifactId>
   <packaging>pom</packaging>
-  <version>2.1.4-RELEASE</version>
+  <version>1.0.0</version>
   <name>wx-tools-parent</name>
   <description>Wx-tools is a lightweight framework based on WeChat public platform API.</description>
   <url>https://github.com/antgan/wx-tools</url>
